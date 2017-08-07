@@ -22,6 +22,7 @@ public class HDDriveHandler {
     private double currentError    = 0.0;
     private double previousError   = 0.0;
     private double totalError      = 0.0;
+    private double result          = 0.0;
 
     private double tolerance = 0.0;
 
@@ -131,6 +132,11 @@ public class HDDriveHandler {
         previousError   = 0.0;
         totalError      = 0.0;
         tolerance       = 0.0;
+        result          = 0.0;
+    }
+
+    public double getCurrentPIDResult(){
+        return result;
     }
 
     public boolean isOnTarget(){
@@ -172,7 +178,7 @@ public class HDDriveHandler {
             }
         }
 
-        double result = p     * currentError +
+               result = p     * currentError +
                         i  * totalError +
                         d  * (currentError - previousError) +
                         ff     * targetAngle;
