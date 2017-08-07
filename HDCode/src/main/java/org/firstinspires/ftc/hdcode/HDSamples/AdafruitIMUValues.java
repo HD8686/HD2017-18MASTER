@@ -40,6 +40,14 @@ public class AdafruitIMUValues extends HDOpMode{
         telemetry.addData("Y Heading: ", IMU1.getYheading());
         telemetry.addData("Z Heading: ", IMU1.getZheading());
         telemetry.update();
+
+        if(gamepad1.b){
+            IMU1.initializeIMU();
+
+            while(gamepad1.b){
+                idle();
+            }
+        }
     }
 
 

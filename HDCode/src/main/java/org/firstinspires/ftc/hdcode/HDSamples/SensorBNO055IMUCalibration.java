@@ -138,7 +138,9 @@ public class SensorBNO055IMUCalibration extends LinearOpMode
         parameters.loggingTag     = "IMU";
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
-
+        String filename1 = "AdafruitIMUCalibration.json";
+        File file1 = AppUtil.getInstance().getSettingsFile(filename1);
+        imu.writeCalibrationData(BNO055IMU.CalibrationData.deserialize(ReadWriteFile.readFile(file1)));
         composeTelemetry();
         telemetry.log().add("Waiting for start...");
 

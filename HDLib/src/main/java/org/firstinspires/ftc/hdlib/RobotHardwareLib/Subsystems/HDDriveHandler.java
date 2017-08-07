@@ -127,6 +127,10 @@ public class HDDriveHandler {
         backRight.setPower(rightPower);
     }
 
+    public void motorBreak(){
+        tankDrive(0, 0);
+    }
+
     public void resetPIDvalues(){
         currentError    = 0.0;
         previousError   = 0.0;
@@ -138,6 +142,8 @@ public class HDDriveHandler {
     public double getCurrentPIDResult(){
         return result;
     }
+
+    public double getCurrentError(){ return currentError;}
 
     public boolean isOnTarget(){
         boolean isOnTarget = false;
@@ -184,7 +190,11 @@ public class HDDriveHandler {
                         ff     * targetAngle;
         previousError = currentError;
 
-        tankDrive(result, -result);
+        if((Math.abs(currentError) < tolerance)){
+            motorBreak();
+        }else {
+            tankDrive(result, -result);
+        }
 
     }
 
