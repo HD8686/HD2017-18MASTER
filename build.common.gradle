@@ -102,3 +102,11 @@ repositories {
 }
 
 apply from: 'build.release.gradle'
+
+repositories{
+    jcenter()
+}
+
+dependencies{
+    compile 'org.apache.commons:commons-lang3:3.4'
+}
