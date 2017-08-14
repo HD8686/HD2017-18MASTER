@@ -86,6 +86,13 @@ public class HDDriveHandler {
         backRight.setMode(RunMode);
     }
 
+    public void setBrakeMode(DcMotor.ZeroPowerBehavior zpb){
+        frontLeft.setZeroPowerBehavior(zpb);
+        frontRight.setZeroPowerBehavior(zpb);
+        backLeft.setZeroPowerBehavior(zpb);
+        backRight.setZeroPowerBehavior(zpb);
+    }
+
     /**
      * Reset encoders of drive train motors, then put them back in their original runmodes.
      */
@@ -265,6 +272,14 @@ public class HDDriveHandler {
             throw new IllegalArgumentException("gyroTurn: max speed lower than min speed!");
         }
 
+        if (gyroRangeMax > gyroRangeMin) {
+            if (targetAngle > gyroRangeMax) {
+                throw new IllegalArgumentException("gyroTurn: tried to turn past Gyro Range!");
+            } else if (targetAngle < gyroRangeMin) {
+                throw new IllegalArgumentException("gyroTurn: tried to turn below Gyro Range!");
+            }
+        }
+
         this.tolerance = tolerance;
 
         currentError = targetAngle - gyroHeading;
@@ -307,7 +322,7 @@ public class HDDriveHandler {
         if((Math.abs(currentError) < tolerance)){
             motorBreak();
         }else {
-            tankDrive(result, -result);
+            tankDrive(-result, result);
         }
 
     }

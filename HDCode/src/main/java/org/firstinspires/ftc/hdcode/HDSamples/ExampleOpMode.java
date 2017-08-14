@@ -50,7 +50,7 @@ public class ExampleOpMode extends HDOpMode {
 
         SM = new HDStateMachine(robotDrive);
 
-        robotDrive.reverseSide(HDDriveHandler.Side.Left);
+        robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robotDrive.resetEncoders();
 
         Runnable reset = new Runnable() {
@@ -83,23 +83,23 @@ public class ExampleOpMode extends HDOpMode {
                         SM.setNextState(exampleStates.driveForward, HDWaitTypes.Timer, 2.5);
                         break;
                     case driveForward:
-                        SM.setNextState(exampleStates.wait1, HDWaitTypes.EncoderChangeBoth, 2500);
+                        SM.setNextState(exampleStates.wait1, HDWaitTypes.EncoderChangeBoth, 2500.0);
                         robotDrive.tankDrive(.25, .25);
                         break;
                     case wait1:
-                        SM.setNextState(exampleStates.gyroTurn, HDWaitTypes.Timer, .25);
+                        SM.setNextState(exampleStates.gyroTurn, HDWaitTypes.Timer, 0.25);
                         robotDrive.motorBreak();
                         break;
                     case gyroTurn:
                         SM.setNextState(exampleStates.wait2, HDWaitTypes.driveHandlerTarget);
-                        robotDrive.gyroTurn(90.0, 0.009, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, IMU1.getZheading());
+                        robotDrive.gyroTurn(90.0, 0.007, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, IMU1.getZheading());
                         break;
                     case wait2:
                         SM.setNextState(exampleStates.driveForward2, HDWaitTypes.Timer, .25);
                         robotDrive.motorBreak();
                         break;
                     case driveForward2:
-                        SM.setNextState(exampleStates.DONE, HDWaitTypes.EncoderChangeBoth, 2500);
+                        SM.setNextState(exampleStates.DONE, HDWaitTypes.EncoderChangeBoth, 2500.0);
                         robotDrive.tankDrive(.25, .25);
                         break;
                     case DONE:

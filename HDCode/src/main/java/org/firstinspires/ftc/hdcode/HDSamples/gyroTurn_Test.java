@@ -30,12 +30,15 @@ public class gyroTurn_Test extends HDOpMode{
         IMU1 = new AdafruitIMU("imu", 10);
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
-        robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robotDrive.reverseSide(HDDriveHandler.Side.Right);
+        robotDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robotDrive.setBrakeMode(DcMotor.ZeroPowerBehavior.BRAKE);
+        IMU1.initializeIMU();
     }
 
     @Override
     public void initializeLoop() {
-
+        dashboard.addProgramSpecificTelemetry(1, "Gyro Z Heading: %f", IMU1.getZheading());
     }
 
     @Override
@@ -45,14 +48,19 @@ public class gyroTurn_Test extends HDOpMode{
 
     @Override
     public void continuousRun(double elapsedTime) {
+        dashboard.addProgramSpecificTelemetry(5, "onTarget? " + String.valueOf(robotDrive.isOnTarget()));
         if(IMU1.isCalibrated()) {
-                robotDrive.gyroTurn(90.0, 0.009, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, IMU1.getZheading());
-                telemetry.addData("3. PID_Values: ", robotDrive.getCurrentPIDResult());
-                telemetry.addData("2. Gyro Z Heading: ", IMU1.getZheading());
-                telemetry.addData("1. Current Error: ", robotDrive.getCurrentError());
-                telemetry.addData("4. Left Motor Power: ", frontLeft.getPower());
-                telemetry.addData("5. Right Motor Power: ", frontRight.getPower());
-                telemetry.update();
+                robotDrive.gyroTurn(90.0, 0.007, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, IMU1.getZheading());
+                dashboard.addProgramSpecificTelemetry(0, "PID Values: %f", robotDrive.getCurrentPIDResult());
+                dashboard.addProgramSpecificTelemetry(1, "Gyro Z Heading: %f", IMU1.getZheading());
+                dashboard.addProgramSpecificTelemetry(2, "Current Error: %f", robotDrive.getCurrentError());
+                dashboard.addProgramSpecificTelemetry(3, "Left Motor Power: %f", frontLeft.getPower());
+                dashboard.addProgramSpecificTelemetry(4, "Right Motor Power: %f", frontRight.getPower());
+                dashboard.addProgramSpecificTelemetry(6, "backLeft Encoder: %d", backLeft.getCurrentPosition());
+                dashboard.addProgramSpecificTelemetry(7, "frontLeft Encoder: %d", frontLeft.getCurrentPosition());
+                dashboard.addProgramSpecificTelemetry(8, "backRight Encoder: %d", backRight.getCurrentPosition());
+                dashboard.addProgramSpecificTelemetry(9, "frontRight Encoder: %d", frontRight.getCurrentPosition());
+
         }else{
             robotDrive.motorBreak();
         }
