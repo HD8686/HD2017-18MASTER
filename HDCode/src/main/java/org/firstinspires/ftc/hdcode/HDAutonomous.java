@@ -15,8 +15,7 @@ import org.firstinspires.ftc.hdlib.Telemetry.HDMenu.HDTextMenu;
 
 public class HDAutonomous extends HDOpMode{
 
-    private enum Strategy
-    {
+    private enum Strategy {
         AUTO1,
         AUTO2
     }
