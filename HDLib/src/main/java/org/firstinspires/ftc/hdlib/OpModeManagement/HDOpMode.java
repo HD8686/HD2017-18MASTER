@@ -12,7 +12,7 @@ import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
 
 public abstract class HDOpMode extends LinearOpMode {
 
-    private HDTelemetry mDisplay;
+    public HDTelemetry mDisplay;
     public HDDashboard dashboard;
     public ElapsedTime elapsedTime = new ElapsedTime();
     private static HDOpMode instance = null;

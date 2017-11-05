@@ -26,6 +26,9 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
         instance = this;
         this.curDashboard = DBInstance;
         this.mHardwareMap = HDOpMode.getInstance().hardwareMap;
+        clearDiagnosticSpecificTelemetry();
+        clearLibrarySpecificTelemetry();
+        clearProgramSpecificTelemetry();
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.ContinuousRun);
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.InitializeLoop);
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.Start);

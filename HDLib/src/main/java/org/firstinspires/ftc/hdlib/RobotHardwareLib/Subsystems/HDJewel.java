@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 /**
  * Created by FIRSTMentor on 11/4/2017.
  */
@@ -21,10 +23,10 @@ public class HDJewel {
     private ColorSensor leftColor, rightColor;
     public DistanceSensor leftDistance, rightDistance;
 
-    private double leftJewelUp = 0.0;
-    private double rightJewelUp = 0.0;
-    private double leftJewelDown = 0.0;
-    private double rightJewelDown = 0.0;
+    private double leftJewelUp = 0.07;
+    private double rightJewelUp = 0.71;
+    private double leftJewelDown = 0.69;
+    private double rightJewelDown = 0.34;
 
     public HDJewel(HardwareMap hardwareMap){
 
@@ -45,13 +47,15 @@ public class HDJewel {
         int redValue = leftColor.red();
         int greenValue = leftColor.green();
         int blueValue = leftColor.blue();
+        double colorDistance = leftDistance.getDistance(DistanceUnit.CM);
+        boolean isBall = (colorDistance < 200 && colorDistance > 0);
         boolean isRed = redValue > blueValue && redValue > greenValue;
         boolean isBlue = blueValue > redValue && blueValue > greenValue;
         if(isRed && isBlue){
             return jewelColor.INCONCLUSIVE;
-        } else if(isRed){
+        } else if(isRed && isBall){
             return jewelColor.RED;
-        } else if(isBlue){
+        } else if(isBlue & isBall){
             return jewelColor.BLUE;
         } else{
             return jewelColor.INCONCLUSIVE;
@@ -62,13 +66,15 @@ public class HDJewel {
         int redValue = rightColor.red();
         int greenValue = rightColor.green();
         int blueValue = rightColor.blue();
+        double colorDistance = rightDistance.getDistance(DistanceUnit.CM);
+        boolean isBall = (colorDistance < 200 && colorDistance > 0);
         boolean isRed = redValue > blueValue && redValue > greenValue;
         boolean isBlue = blueValue > redValue && blueValue > greenValue;
         if(isRed && isBlue){
             return jewelColor.INCONCLUSIVE;
-        } else if(isRed){
+        } else if(isRed && isBall){
             return jewelColor.RED;
-        } else if(isBlue){
+        } else if(isBlue && isBall){
             return jewelColor.BLUE;
         } else{
             return jewelColor.INCONCLUSIVE;

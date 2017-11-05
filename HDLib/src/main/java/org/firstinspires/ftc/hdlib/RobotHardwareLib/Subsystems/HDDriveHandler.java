@@ -29,7 +29,7 @@ public class HDDriveHandler {
 
     private boolean continuousGyro;
 
-    private DcMotor frontLeft, frontRight, backLeft, backRight;
+    public DcMotor frontLeft, frontRight, backLeft, backRight;
 
     private DcMotor.RunMode currRunMode = DcMotor.RunMode.RUN_USING_ENCODER;
     private Alliance alliance = Alliance.BLUE_ALLIANCE;
@@ -190,7 +190,7 @@ public class HDDriveHandler {
      * @param gyroAngle The current yaw angle of the robot
      */
     public void mecanumDrive_Polar(double magnitude, double direction, double rotation, double gyroAngle){
-        if(alliance == Alliance.RED_ALLIANCE){
+        if(alliance == Alliance.BLUE_ALLIANCE){
             direction = -direction;
             rotation = -rotation;
         }
@@ -268,6 +268,10 @@ public class HDDriveHandler {
      */
     public void gyroTurn(double targetAngle, double p, double i, double d, double ff, double tolerance, double maxSpeed, double minSpeed, double gyroHeading){
 
+        if(alliance == Alliance.BLUE_ALLIANCE){
+           targetAngle = -targetAngle;
+        }
+
         if(maxSpeed < minSpeed){
             throw new IllegalArgumentException("gyroTurn: max speed lower than min speed!");
         }
@@ -322,7 +326,7 @@ public class HDDriveHandler {
         if((Math.abs(currentError) < tolerance)){
             motorBreak();
         }else {
-            tankDrive(-result, result);
+            tankDrive(result, -result);
         }
 
     }

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Created by akash on 8/8/2017.
@@ -16,9 +17,9 @@ import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 @TeleOp
 public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
-    HDGamepad driverGamepad;
-    HDGamepad servoBoyGamepad;
-    HDRobot robot;
+    private HDGamepad driverGamepad;
+    private HDGamepad servoBoyGamepad;
+    private HDRobot robot;
 
 
     @Override
@@ -31,6 +32,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
         robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.robotJewel.raiseLeftServo();
+        robot.robotJewel.raiseRightServo();
     }
 
     @Override
@@ -48,6 +52,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     public void continuousRun(double elapsedTime) {
         if(robot.IMU1.isCalibrated()) {
             dashboard.addProgramSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
+            dashboard.addProgramSpecificTelemetry(1, "Left Color: %s, Right Color: %s", String.valueOf(robot.bottomLeftColor.red()), String.valueOf(robot.bottomRightColor.red()));
+            dashboard.addProgramSpecificTelemetry(2, "Left Distance: %s, Right Distance: %s", String.valueOf(robot.robotJewel.leftDistance.getDistance(DistanceUnit.CM)), String.valueOf(robot.robotJewel.rightDistance.getDistance(DistanceUnit.CM)));
             robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 0);
         }else{
             robot.robotDrive.motorBreak();
@@ -59,6 +65,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(instance == driverGamepad){
             switch (button) {
                 case A:
+                    if(pressed){
+                        robot.robotJewel.lowerLeftServo();
+                        robot.robotJewel.lowerRightServo();
+                    }else{
+                        robot.robotJewel.raiseLeftServo();
+                        robot.robotJewel.raiseRightServo();
+                    }
                     break;
                 case B:
                     break;

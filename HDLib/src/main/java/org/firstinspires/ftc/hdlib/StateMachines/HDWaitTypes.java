@@ -8,9 +8,12 @@ public enum HDWaitTypes {
     Nothing,
     ODStoLine,
     ODStoField,
+    ColorToLine,
+    ColorToField,
     Range,
     EncoderChangeLeft,
     EncoderChangeRight,
     EncoderChangeBoth,
+    EncoderChangeIndividual,
     driveHandlerTarget,
 }

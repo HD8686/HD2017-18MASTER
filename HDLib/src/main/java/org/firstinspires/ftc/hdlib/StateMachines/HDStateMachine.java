@@ -7,6 +7,8 @@ package org.firstinspires.ftc.hdlib.StateMachines;
  */
 
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+
 import org.firstinspires.ftc.hdlib.General.HDGeneralLib;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.Sensors.HDMROpticalDistance;
@@ -33,9 +35,15 @@ public class HDStateMachine {
     private HDDriveHandler rDrive;
     private HDWaitTypes currWaitType = HDWaitTypes.Nothing;
     private DecimalFormat df;
-    private int prevEncoderLeft = 0;
-    private int prevEncoderRight = 0;
-    private double changeEncoder = 0.0;
+    private int prevEncoder0 = 0;
+    private int prevEncoder1 = 0;
+    private int prevEncoder2 = 0;
+    private int prevEncoder3 = 0;
+    private double changeEncoder0 = 0.0;
+    private double changeEncoder1 = 0.0;
+    private double changeEncoder2 = 0.0;
+    private double changeEncoder3 = 0.0;
+    private ColorSensor currColor;
     private Runnable reset;
 
     /**
@@ -62,13 +70,21 @@ public class HDStateMachine {
      * @param typetoWait The type of end condition you want, could be Time, Encoder Counts, PID Target(gyroTurn), etc.
      * @param Argument The argument that goes with the end condition you want for example Seconds, Encoder Ticks, Degrees and others.
      */
-    public void setNextState(Object sL, HDWaitTypes typetoWait, Object Argument, Object Argument2){
+    public void setNextState(Object sL, HDWaitTypes typetoWait, Object Argument, Object Argument2, Object Argument3, Object Argument4) {
         if(!waitingActive) {
             currWaitType = typetoWait;
             switch (typetoWait) {
                 case Timer:
                     waitingActive = true;
                     timerExpire = HDGeneralLib.getCurrentTimeSeconds() + ((double) Argument);
+                    break;
+                case ColorToField:
+                    waitingActive = true;
+                    currColor = ((ColorSensor) Argument);
+                    break;
+                case ColorToLine:
+                    waitingActive = true;
+                    currColor = ((ColorSensor) Argument);
                     break;
                 case ODStoLine:
                     waitingActive = true;
@@ -85,21 +101,32 @@ public class HDStateMachine {
                     break;
                 case EncoderChangeLeft:
                     waitingActive = true;
-                    prevEncoderLeft = rDrive.getLeftEncoderAverage();
-                    prevEncoderRight = rDrive.getRightEncoderAverage();
-                    changeEncoder = ((double) Argument);
+                    prevEncoder0 = rDrive.getLeftEncoderAverage();
+                    prevEncoder1 = rDrive.getRightEncoderAverage();
+                    changeEncoder0 = ((double) Argument);
                     break;
                 case EncoderChangeRight:
                     waitingActive = true;
-                    prevEncoderLeft = rDrive.getLeftEncoderAverage();
-                    prevEncoderRight = rDrive.getRightEncoderAverage();
-                    changeEncoder = ((double) Argument);
+                    prevEncoder0 = rDrive.getLeftEncoderAverage();
+                    prevEncoder1 = rDrive.getRightEncoderAverage();
+                    changeEncoder0 = ((double) Argument);
                     break;
                 case EncoderChangeBoth:
                     waitingActive = true;
-                    prevEncoderLeft = rDrive.getLeftEncoderAverage();
-                    prevEncoderRight = rDrive.getRightEncoderAverage();
-                    changeEncoder = ((double) Argument);
+                    prevEncoder0 = rDrive.getLeftEncoderAverage();
+                    prevEncoder1 = rDrive.getRightEncoderAverage();
+                    changeEncoder0 = ((double) Argument);
+                    break;
+                case EncoderChangeIndividual:
+                    waitingActive = true;
+                    prevEncoder0 = rDrive.frontLeft.getCurrentPosition();
+                    prevEncoder1 = rDrive.frontRight.getCurrentPosition();
+                    prevEncoder2 = rDrive.backLeft.getCurrentPosition();
+                    prevEncoder3 = rDrive.backRight.getCurrentPosition();
+                    changeEncoder0 = ((double) Argument);
+                    changeEncoder1 = ((double) Argument2);
+                    changeEncoder2 = ((double) Argument3);
+                    changeEncoder3 = ((double) Argument4);
                     break;
                 case driveHandlerTarget:
                     waitingActive = true;
@@ -117,8 +144,18 @@ public class HDStateMachine {
      * @param typetoWait The type of end condition you want, could be Time, Encoder Counts, PID Target(gyroTurn), etc.
      * @param Argument The argument that goes with the end condition you want for example Seconds, Encoder Ticks, Degrees and others.
      */
+    public void setNextState(Object sL, HDWaitTypes typetoWait, Object Argument, Object Argument2){
+        setNextState(sL, typetoWait, Argument, Argument2, 0, 0);
+    }
+
+    /**
+     * Use this function to set a condition to wait for, and then switch to the next state which you set
+     * @param sL This is the next state you want it to switch to once your end condition has been met
+     * @param typetoWait The type of end condition you want, could be Time, Encoder Counts, PID Target(gyroTurn), etc.
+     * @param Argument The argument that goes with the end condition you want for example Seconds, Encoder Ticks, Degrees and others.
+     */
     public void setNextState(Object sL, HDWaitTypes typetoWait, Object Argument){
-        setNextState(sL,typetoWait,Argument, 0);
+        setNextState(sL,typetoWait,Argument, 0, 0, 0);
     }
 
     /**
@@ -128,7 +165,7 @@ public class HDStateMachine {
      * This function is for the wait types that don't require a argument.
      */
     public void setNextState(Object sL, HDWaitTypes typetoWait){
-        setNextState(sL, typetoWait, 0);
+        setNextState(sL, typetoWait, 0, 0, 0, 0);
     }
 
 
@@ -141,9 +178,15 @@ public class HDStateMachine {
         currWaitType = HDWaitTypes.Nothing;
         hasRun = false;
         targetRange = 0.0;
-        prevEncoderLeft = 0;
-        prevEncoderRight = 0;
-        changeEncoder = 0.0;
+        prevEncoder0 = 0;
+        prevEncoder1 = 0;
+        prevEncoder2 = 0;
+        prevEncoder3 = 0;
+        changeEncoder0 = 0.0;
+        changeEncoder1 = 0.0;
+        changeEncoder2 = 0.0;
+        changeEncoder3 = 0.0;
+        currColor = null;
         this.reset.run();
     }
 
@@ -169,6 +212,22 @@ public class HDStateMachine {
                         HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"Delay Left: " + (String.valueOf(df.format(this.timerExpire - HDGeneralLib.getCurrentTimeSeconds()))));
                         }
                     break;
+                case ColorToLine:
+                    if(currColor.blue() > 23 || currColor.red() > 23){
+                        this.resetValues();
+                        State = nextState;
+                    }else{
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "Color B: %s, Color R: %s", currColor.blue(), currColor.red());
+                    }
+                    break;
+                case ColorToField:
+                    if(currColor.blue() < 21 || currColor.red() < 21){
+                        this.resetValues();
+                        State = nextState;
+                    }else{
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "Color B: %s, Color R: %s", currColor.blue(), currColor.red());
+                    }
+                    break;
                 case ODStoLine:
                     if(currODS.getRawLightDetected() > .3){
                         this.resetValues();
@@ -193,28 +252,36 @@ public class HDStateMachine {
                         HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"Range_Button_Pusher Value: " + (String.valueOf(currRange.getUSValue())));
                     }
                     break;
-                case EncoderChangeBoth:
-                    if(((Math.abs(rDrive.getLeftEncoderAverage() - prevEncoderLeft) + Math.abs(rDrive.getRightEncoderAverage() - prevEncoderRight))/2) > changeEncoder){
+                case EncoderChangeIndividual:
+                    if(((Math.abs(rDrive.frontLeft.getCurrentPosition() - prevEncoder0)) > changeEncoder0) && ((Math.abs(rDrive.frontRight.getCurrentPosition() - prevEncoder1)) > changeEncoder1) && ((Math.abs(rDrive.backLeft.getCurrentPosition() - prevEncoder2)) > changeEncoder2) && ((Math.abs(rDrive.backRight.getCurrentPosition() - prevEncoder3)) > changeEncoder3)){
                         this.resetValues();
                         State = nextState;
                     }else{
-                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"L Enc. Chg: %s, R Enc. Cng: %s", (String.valueOf(df.format(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoderLeft)))), (String.valueOf(df.format(Math.abs(rDrive.getRightEncoderAverage() - prevEncoderRight)))));
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"LF Enc. Chg: %s, LB Enc. Chg: %s, RF Enc. Cng: %s, RB Enc. Chg: %s,", (String.valueOf(df.format((Math.abs(rDrive.frontLeft.getCurrentPosition() - prevEncoder0))))), String.valueOf(df.format((Math.abs(rDrive.backLeft.getCurrentPosition() - prevEncoder2)))), String.valueOf(df.format((Math.abs(rDrive.frontRight.getCurrentPosition() - prevEncoder1)))), String.valueOf(df.format((Math.abs(rDrive.backRight.getCurrentPosition() - prevEncoder3)))));
+                    }
+                    break;
+                case EncoderChangeBoth:
+                    if(((Math.abs(rDrive.getLeftEncoderAverage() - prevEncoder0) + Math.abs(rDrive.getRightEncoderAverage() - prevEncoder1))/2) > changeEncoder0){
+                        this.resetValues();
+                        State = nextState;
+                    }else{
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"L Enc. Chg: %s, R Enc. Cng: %s", (String.valueOf(df.format(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoder0)))), (String.valueOf(df.format(Math.abs(rDrive.getRightEncoderAverage() - prevEncoder1)))));
                     }
                     break;
                 case EncoderChangeLeft:
-                    if(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoderLeft) > changeEncoder){
+                    if(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoder0) > changeEncoder0){
                         this.resetValues();
                         State = nextState;
                     }else {
-                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "L Enc. Chg: %s", String.valueOf(df.format(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoderLeft))));
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "L Enc. Chg: %s", String.valueOf(df.format(Math.abs(rDrive.getLeftEncoderAverage() - prevEncoder0))));
                     }
                     break;
                 case EncoderChangeRight:
-                    if(Math.abs(rDrive.getRightEncoderAverage() - prevEncoderRight) > changeEncoder){
+                    if(Math.abs(rDrive.getRightEncoderAverage() - prevEncoder1) > changeEncoder0){
                         this.resetValues();
                         State = nextState;
                     }else {
-                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "R Enc. Chg: %s", String.valueOf(df.format(Math.abs(rDrive.getRightEncoderAverage() - prevEncoderRight))));
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1, "R Enc. Chg: %s", String.valueOf(df.format(Math.abs(rDrive.getRightEncoderAverage() - prevEncoder1))));
                     }
                     break;
                 case driveHandlerTarget:

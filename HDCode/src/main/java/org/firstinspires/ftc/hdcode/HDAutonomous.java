@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.hdcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.hdcode.Autonomous.Auto1;
 import org.firstinspires.ftc.hdcode.Autonomous.Auto2;
 import org.firstinspires.ftc.hdlib.General.Alliance;
@@ -13,6 +15,7 @@ import org.firstinspires.ftc.hdlib.Telemetry.HDMenu.HDTextMenu;
  * Created by Akash on 9/23/2017.
  */
 
+@Autonomous
 public class HDAutonomous extends HDOpMode{
 
     private enum Strategy {
@@ -23,11 +26,11 @@ public class HDAutonomous extends HDOpMode{
     private HDAuto HDAuto;
     private double delay = 0.0;
     private Strategy strategy;
-    private Alliance alliance = Alliance.BLUE_ALLIANCE;
+    private Alliance alliance = Alliance.RED_ALLIANCE;
 
     @Override
     public void initialize() {
-        HDNumberMenu delayMenu;
+        /*HDNumberMenu delayMenu;
         HDTextMenu strategyMenu;
         HDTextMenu allianceMenu;
 
@@ -57,7 +60,8 @@ public class HDAutonomous extends HDOpMode{
             case AUTO2:
                 HDAuto = new Auto2(delay,alliance, hardwareMap);
                 break;
-        }
+        }*/
+        HDAuto = new Auto1(delay, alliance, hardwareMap);
 
     }
 
