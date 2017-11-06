@@ -17,18 +17,15 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
     HardwareMap mHardwareMap;
     private static HDDashboard instance = null;
 
-    private static String[] ProgramSpecificDisplay = new String[20];
-    private static String[] LibrarySpecificDisplay = new String[20];
-    private static String[] DiagnosticSpecificDisplay = new String[20];
+    private String[] ProgramSpecificDisplay = new String[20];
+    private String[] LibrarySpecificDisplay = new String[20];
+    private String[] DiagnosticSpecificDisplay = new String[20];
     private int curLine;
 
     public HDDashboard(HDTelemetry DBInstance){
         instance = this;
         this.curDashboard = DBInstance;
         this.mHardwareMap = HDOpMode.getInstance().hardwareMap;
-        clearDiagnosticSpecificTelemetry();
-        clearLibrarySpecificTelemetry();
-        clearProgramSpecificTelemetry();
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.ContinuousRun);
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.InitializeLoop);
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.Start);

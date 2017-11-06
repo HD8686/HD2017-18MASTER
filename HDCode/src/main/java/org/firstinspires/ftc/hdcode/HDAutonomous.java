@@ -30,7 +30,7 @@ public class HDAutonomous extends HDOpMode{
 
     @Override
     public void initialize() {
-        /*HDNumberMenu delayMenu;
+        HDNumberMenu delayMenu;
         HDTextMenu strategyMenu;
         HDTextMenu allianceMenu;
 
@@ -40,7 +40,7 @@ public class HDAutonomous extends HDOpMode{
         strategyMenu.addChoice("Auto 1", Strategy.AUTO1);
         strategyMenu.addChoice("Auto 2", Strategy.AUTO2);
 
-        allianceMenu = new HDTextMenu("Allaince", strategyMenu);
+        allianceMenu = new HDTextMenu("Alliance", strategyMenu);
         allianceMenu.addChoice("Red Alliance", Alliance.RED_ALLIANCE);
         allianceMenu.addChoice("Blue Alliance", Alliance.BLUE_ALLIANCE);
 
@@ -60,8 +60,7 @@ public class HDAutonomous extends HDOpMode{
             case AUTO2:
                 HDAuto = new Auto2(delay,alliance, hardwareMap);
                 break;
-        }*/
-        HDAuto = new Auto1(delay, alliance, hardwareMap);
+        }
 
     }
 

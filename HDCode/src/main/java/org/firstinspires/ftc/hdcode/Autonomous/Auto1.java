@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.hdcode.Autonomous;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -10,7 +8,6 @@ import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
-import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 import org.firstinspires.ftc.hdlib.StateMachines.HDStateMachine;
 import org.firstinspires.ftc.hdlib.StateMachines.HDWaitTypes;
 
@@ -30,7 +27,7 @@ public class Auto1 implements HDAuto {
     private enum States{
         delay,
         lowerJewelArm,
-        hitJewel,
+        readJewel,
         turn,
         turnBack,
         driveOffBoard,
@@ -84,16 +81,16 @@ public class Auto1 implements HDAuto {
                     if(alliance == Alliance.RED_ALLIANCE){
                         robot.robotJewel.lowerRightServo();
                         if(robot.robotJewel.getRightColor() != HDJewel.jewelColor.INCONCLUSIVE){
-                            SM.setNextState(States.hitJewel, HDWaitTypes.Timer, 0.05);
+                            SM.setNextState(States.readJewel, HDWaitTypes.Timer, 0.05);
                         }
                     }else{
                         robot.robotJewel.lowerLeftServo();
                         if(robot.robotJewel.getLeftColor() != HDJewel.jewelColor.INCONCLUSIVE){
-                            SM.setNextState(States.hitJewel, HDWaitTypes.Timer, 0.05);
+                            SM.setNextState(States.readJewel, HDWaitTypes.Timer, 0.05);
                         }
                     }
                     break;
-                case hitJewel:
+                case readJewel:
                     if(alliance == Alliance.RED_ALLIANCE){
                         if(robot.robotJewel.getRightColor() == HDJewel.jewelColor.RED){
                             turnLeft = false;

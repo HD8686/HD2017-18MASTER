@@ -12,7 +12,7 @@ import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
 
 public abstract class HDOpMode extends LinearOpMode {
 
-    public HDTelemetry mDisplay;
+    private HDTelemetry mDisplay;
     public HDDashboard dashboard;
     public ElapsedTime elapsedTime = new ElapsedTime();
     private static HDOpMode instance = null;
@@ -35,6 +35,7 @@ public abstract class HDOpMode extends LinearOpMode {
         mDisplay = new HDTelemetry(telemetry);
         hdLoopInterface = new HDLoopInterface();
         dashboard = new HDDashboard(mDisplay);
+
         initialize();
         hdLoopInterface.runInitializeLoopInterface();
 

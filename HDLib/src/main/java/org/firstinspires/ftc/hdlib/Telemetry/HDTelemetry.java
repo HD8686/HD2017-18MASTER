@@ -15,7 +15,7 @@ public class HDTelemetry
 {
     TextPaint mPaint;
     public static final int SCREEN_WIDTH = 667;
-    public static final int MAX_NUM_TEXTLINES = 70;
+    public static final int MAX_NUM_TEXTLINES = 30;
     private static final String displayKeyFormat = "%02d";
     private static Telemetry telemetry = null;
     private static String[] display = new String[MAX_NUM_TEXTLINES];
