@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 
@@ -18,6 +19,7 @@ public class HDRobot {
     public DcMotor frontLeft, frontRight, backLeft, backRight;
     public AdafruitIMU IMU1;
     public HDJewel robotJewel;
+    public HDGlyph robotGlyph;
     public ColorSensor bottomLeftColor, bottomRightColor;
 
     public HDRobot(HardwareMap hardwareMap){
@@ -31,6 +33,7 @@ public class HDRobot {
         bottomRightColor = hardwareMap.get(ColorSensor.class, "Right_Bottom_Color");
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
+        robotGlyph = new HDGlyph(hardwareMap);
         robotJewel = new HDJewel(hardwareMap);
     }
 

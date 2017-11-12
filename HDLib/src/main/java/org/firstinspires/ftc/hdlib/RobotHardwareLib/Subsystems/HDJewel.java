@@ -23,8 +23,8 @@ public class HDJewel {
     private ColorSensor leftColor, rightColor;
     public DistanceSensor leftDistance, rightDistance;
 
-    private double leftJewelUp = 0.07;
-    private double rightJewelUp = 0.71;
+    private double leftJewelUp = 0.09;
+    private double rightJewelUp = 0.69;
     private double leftJewelDown = 0.69;
     private double rightJewelDown = 0.34;
 

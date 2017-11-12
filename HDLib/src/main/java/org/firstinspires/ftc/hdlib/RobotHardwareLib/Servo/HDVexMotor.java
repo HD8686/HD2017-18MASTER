@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo;
 
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.hdlib.General.HDGeneralLib;
@@ -18,12 +19,12 @@ public class HDVexMotor {
     private static final double scaledBackwardSpeedValue = -1.0;
     private static final double scaledForwardSpeedValue = 1.0;
 
-    public HDVexMotor(String servoName, Servo.Direction direction){
-        if(HDOpMode.getInstance().hardwareMap.servo.get(servoName) == null){
+    public HDVexMotor(HardwareMap hardwareMap, String servoName, Servo.Direction direction){
+        if(hardwareMap.servo.get(servoName) == null){
             throw new NullPointerException("Servo is null");
         }
         this.servoHMName = servoName;
-        this.mServo = HDOpMode.getInstance().hardwareMap.servo.get(servoName);
+        this.mServo = hardwareMap.servo.get(servoName);
         this.mServo.setDirection(direction);
         this.mServo.setPosition(.5);
     }
