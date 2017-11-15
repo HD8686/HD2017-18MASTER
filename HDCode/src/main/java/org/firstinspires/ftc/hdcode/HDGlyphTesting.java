@@ -80,9 +80,9 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
                     break;
                 case X:
                     if(pressed){
-                        robot.robotGlyph.bottomLeftIntake.setPower(.65);
+                        robot.robotGlyph.bottomLeftIntake.setPower(-.65);
                         robot.robotGlyph.bottomRightIntake.setPower(.65);
-                        robot.robotGlyph.topLeftIntake.setPower(.65);
+                        robot.robotGlyph.topLeftIntake.setPower(-.65);
                         robot.robotGlyph.topRightIntake.setPower(.65);
                     }else{
                         robot.robotGlyph.bottomLeftIntake.setPower(0.0);
@@ -98,6 +98,17 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
                     }
                     break;
                 case DPAD_LEFT:
+                    if(pressed){
+                        robot.robotGlyph.bottomLeftIntake.setPower(.65);
+                        robot.robotGlyph.bottomRightIntake.setPower(-.65);
+                        robot.robotGlyph.topLeftIntake.setPower(.65);
+                        robot.robotGlyph.topRightIntake.setPower(-.65);
+                    }else{
+                        robot.robotGlyph.bottomLeftIntake.setPower(0.0);
+                        robot.robotGlyph.bottomRightIntake.setPower(0.0);
+                        robot.robotGlyph.topLeftIntake.setPower(0.0);
+                        robot.robotGlyph.topRightIntake.setPower(0.0);
+                    }
                     break;
                 case DPAD_RIGHT:
                     break;
