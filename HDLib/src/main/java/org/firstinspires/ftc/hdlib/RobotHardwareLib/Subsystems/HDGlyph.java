@@ -16,7 +16,7 @@ public class HDGlyph {
     public DcMotor scotchYokeMotor, leftPinionMotor, rightPinionMotor;
     public HDVexMotor bottomLeftIntake, bottomRightIntake, topLeftIntake, topRightIntake;
     public Servo blockKicker;
-    //public Servo leftBlockGrabber, rightBlockGrabber;
+    public Servo leftBlockGrabber, rightBlockGrabber;
 
     public HDGlyph(HardwareMap hardwareMap){
 
@@ -30,8 +30,8 @@ public class HDGlyph {
         topRightIntake = new HDVexMotor(hardwareMap, "topRightIntake", Servo.Direction.FORWARD);
 
         blockKicker = hardwareMap.servo.get("blockKicker");
-        //leftBlockGrabber = hardwareMap.servo.get("leftBlockGrabber");
-        //rightBlockGrabber = hardwareMap.servo.get("rightBlockGrabber");
+        leftBlockGrabber = hardwareMap.servo.get("leftBlockGrabber");
+        rightBlockGrabber = hardwareMap.servo.get("rightBlockGrabber");
 
         rightPinionMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -41,7 +41,12 @@ public class HDGlyph {
         rightPinionMotor.setPower(1);
         leftPinionMotor.setTargetPosition(0);
         rightPinionMotor.setTargetPosition(0);
-        scotchYokeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        scotchYokeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        scotchYokeMotor.setPower(.75);
+        scotchYokeMotor.setTargetPosition(0);
+        leftBlockGrabber.setPosition(0.89);
+        rightBlockGrabber.setPosition(0.27);
+        blockKicker.setPosition(0.06);
     }
 
 }

@@ -19,7 +19,8 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
     private HDGamepad driverGamepad;
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
-
+    private double gripperCalibrator = 0;
+    private double kickerCalibrator = 0;
 
     @Override
     public void initialize() {
@@ -55,7 +56,8 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
             dashboard.addProgramSpecificTelemetry(2, "Left Distance: %s, Right Distance: %s", String.valueOf(robot.robotJewel.leftDistance.getDistance(DistanceUnit.CM)), String.valueOf(robot.robotJewel.rightDistance.getDistance(DistanceUnit.CM)));
             dashboard.addProgramSpecificTelemetry(3, "Left enc: %s, Right enc: %s", String.valueOf(robot.robotGlyph.leftPinionMotor.getCurrentPosition()), String.valueOf(robot.robotGlyph.rightPinionMotor.getCurrentPosition()));
             dashboard.addProgramSpecificTelemetry(4, "Scotch Enc: %s", String.valueOf(robot.robotGlyph.scotchYokeMotor.getCurrentPosition()));
-            //robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 0);
+            dashboard.addProgramSpecificTelemetry(5, "Value: %s", String.valueOf(kickerCalibrator));
+            robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 0);
         }else{
             robot.robotDrive.motorBreak();
         }
@@ -67,15 +69,13 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
             switch (button) {
                 case A:
                     if(pressed){
-                        robot.robotGlyph.scotchYokeMotor.setPower(.25);
-                    }else{
-                        robot.robotGlyph.scotchYokeMotor.setPower(0.0);
+                        robot.robotGlyph.scotchYokeMotor.setTargetPosition(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() + 1500);
                     }
                     break;
                 case B:
                     if(pressed){
-                        robot.robotGlyph.leftPinionMotor.setTargetPosition(5000);
-                        robot.robotGlyph.rightPinionMotor.setTargetPosition(5000);
+                        robot.robotGlyph.leftPinionMotor.setTargetPosition(10000);
+                        robot.robotGlyph.rightPinionMotor.setTargetPosition(10000);
                     }
                     break;
                 case X:
@@ -99,10 +99,10 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
                     break;
                 case DPAD_LEFT:
                     if(pressed){
-                        robot.robotGlyph.bottomLeftIntake.setPower(.65);
-                        robot.robotGlyph.bottomRightIntake.setPower(-.65);
-                        robot.robotGlyph.topLeftIntake.setPower(.65);
-                        robot.robotGlyph.topRightIntake.setPower(-.65);
+                        robot.robotGlyph.bottomLeftIntake.setPower(.75);
+                        robot.robotGlyph.bottomRightIntake.setPower(-.75);
+                        robot.robotGlyph.topLeftIntake.setPower(.75);
+                        robot.robotGlyph.topRightIntake.setPower(-.75);
                     }else{
                         robot.robotGlyph.bottomLeftIntake.setPower(0.0);
                         robot.robotGlyph.bottomRightIntake.setPower(0.0);
@@ -111,8 +111,20 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
                     }
                     break;
                 case DPAD_RIGHT:
+                    if(pressed){
+                        robot.robotGlyph.leftBlockGrabber.setPosition(0.80);
+                        robot.robotGlyph.rightBlockGrabber.setPosition(0.36);
+                    }else{
+                        robot.robotGlyph.leftBlockGrabber.setPosition(0.92);
+                        robot.robotGlyph.rightBlockGrabber.setPosition(0.27);
+                    }
                     break;
                 case DPAD_UP:
+                    if(pressed) {
+                        robot.robotGlyph.blockKicker.setPosition(0.12);
+                    }else{
+                        robot.robotGlyph.blockKicker.setPosition(0.06);
+                    }
                     break;
                 case DPAD_DOWN:
                     break;
