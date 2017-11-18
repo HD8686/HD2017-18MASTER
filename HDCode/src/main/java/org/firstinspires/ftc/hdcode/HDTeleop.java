@@ -84,16 +84,24 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void driveTrain(){
-        switch (curDriveMode) {
-            case FIELD_CENTRIC_DRIVE:
-                robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x*speed, gamepad1.left_stick_y*speed, gamepad1.right_stick_x*speed, robot.IMU1.getZheading());
-                break;
-            case HALO_DRIVE:
-                robot.robotDrive.haloDrive(gamepad1.left_stick_x*speed, gamepad1.left_stick_y*speed, gamepad1.right_stick_x*speed);
-                break;
-            case TANK_DRIVE:
-                robot.robotDrive.tankDrive(gamepad1.left_stick_y*speed, gamepad1.right_stick_y*speed);
-                break;
+        if(gamepad1.a){
+            robot.robotDrive.gyroTurn(90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+        }else if(gamepad1.b){
+            robot.robotDrive.gyroTurn(-90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+        }else if(gamepad1.y){
+            robot.robotDrive.gyroTurn(0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+        }else {
+            switch (curDriveMode) {
+                case FIELD_CENTRIC_DRIVE:
+                    robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed, robot.IMU1.getZheading());
+                    break;
+                case HALO_DRIVE:
+                    robot.robotDrive.haloDrive(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed);
+                    break;
+                case TANK_DRIVE:
+                    robot.robotDrive.tankDrive(gamepad1.left_stick_y * speed, gamepad1.right_stick_y * speed);
+                    break;
+            }
         }
     }
 
