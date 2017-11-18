@@ -47,9 +47,8 @@ public class HDGlyph {
         rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftPinionMotor.setPower(0);
         rightPinionMotor.setPower(0);
-        scotchYokeMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        scotchYokeMotor.setPower(.75);
-        scotchYokeMotor.setTargetPosition(0);
+        scotchYokeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        scotchYokeMotor.setPower(0);
         leftBlockGrabber.setPosition(0.89);
         rightBlockGrabber.setPosition(0.27);
         blockKicker.setPosition(0.06);
@@ -86,12 +85,8 @@ public class HDGlyph {
         blockKicker.setPosition(blockKickerIn);
     }
 
-    public void scotchYokeBottom(){
-        scotchYokeMotor.setTargetPosition(0);
-    }
-
-    public void scotchYokeTop(){
-        scotchYokeMotor.setTargetPosition(1600);
+    public void setScotchYokePower(double power){
+        scotchYokeMotor.setPower(power);
     }
 
 }

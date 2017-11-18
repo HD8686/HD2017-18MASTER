@@ -107,10 +107,10 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private void glyphSystem(){
     if(gamepad2.right_bumper){
-        robot.robotGlyph.setLiftPower(gamepad2.left_stick_y);
+        robot.robotGlyph.setLiftPower(-gamepad2.left_stick_y);
     }else if(gamepad2.start){
-        robot.robotGlyph.leftPinionMotor.setPower(gamepad2.left_stick_y);
-        robot.robotGlyph.rightPinionMotor.setPower(gamepad2.right_stick_y);
+        robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
+        robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }
     if(gamepad2.y){
         gripBlock = false;
@@ -167,6 +167,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case LEFT_TRIGGER:
                     break;
                 case START:
+                    if(pressed){
+                        robot.IMU1.zeroZheading();
+                    }
                     break;
             }
         }else if(instance == servoBoyGamepad){
@@ -188,14 +191,17 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     break;
                 case DPAD_UP:
                     if(pressed){
-                        robot.robotGlyph.scotchYokeTop();
+                        robot.robotGlyph.setScotchYokePower(.75);
+                    }else{
+                        robot.robotGlyph.setScotchYokePower(0.0);
                     }
                     break;
                 case DPAD_DOWN:
                     if(pressed){
-                        robot.robotGlyph.scotchYokeBottom();
+                        robot.robotGlyph.setScotchYokePower(-.75);
+                    }else{
+                        robot.robotGlyph.setScotchYokePower(0.0);
                     }
-                    break;
                 case LEFT_BUMPER:
                     if(pressed){
                         robot.robotGlyph.gripBlock();

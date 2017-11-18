@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.hdcode.Autonomous.Auto1;
 import org.firstinspires.ftc.hdcode.Autonomous.Auto2;
+import org.firstinspires.ftc.hdcode.Autonomous.Auto3;
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -23,7 +24,8 @@ public class HDAutonomous extends HDOpMode{
 
     private enum Strategy {
         AUTO1,
-        AUTO2
+        AUTO2,
+        AUTO3,
     }
 
     private HDAuto HDAuto;
@@ -47,6 +49,7 @@ public class HDAutonomous extends HDOpMode{
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
         strategyMenu.addChoice("Auto 1", Strategy.AUTO1);
         strategyMenu.addChoice("Auto 2", Strategy.AUTO2);
+        strategyMenu.addChoice("Auto 3", Strategy.AUTO3);
 
         allianceMenu = new HDTextMenu("Alliance", strategyMenu);
         allianceMenu.addChoice("Red Alliance", Alliance.RED_ALLIANCE);
@@ -70,6 +73,9 @@ public class HDAutonomous extends HDOpMode{
                 break;
             case AUTO2:
                 HDAuto = new Auto2(delay,alliance, hardwareMap);
+                break;
+            case AUTO3:
+                HDAuto = new Auto3(delay, alliance, hardwareMap);
                 break;
         }
 

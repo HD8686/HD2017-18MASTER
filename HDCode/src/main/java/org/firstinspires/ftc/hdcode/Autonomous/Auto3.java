@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by FIRSTMentor on 9/23/2017.
  */
 
-public class Auto1 implements HDAuto {
+public class Auto3 implements HDAuto {
 
     private HDRobot robot;
     private HDStateMachine SM;
@@ -51,7 +51,7 @@ public class Auto1 implements HDAuto {
         done
     }
 
-    public Auto1(double delay, Alliance alliance, HardwareMap hardwareMap){
+    public Auto3(double delay, Alliance alliance, HardwareMap hardwareMap){
 
         robot = new HDRobot(hardwareMap);
 
@@ -193,45 +193,8 @@ public class Auto1 implements HDAuto {
                     failsafeTimer.reset();
                     break;
                 case goToColumn:
-                    if(alliance == Alliance.RED_ALLIANCE) {
-                        switch (vuMark) {
-                            case RIGHT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            case LEFT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 1300.0, 1300.0, 1300.0, 1300.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            case CENTER:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 975.0, 975.0, 975.0, 975.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            default:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                        }
-                    }else{
-                        switch (vuMark) {
-                            case RIGHT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 1300.0, 1300.0, 1300.0, 1300.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            case LEFT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            case CENTER:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual,  975.0, 975.0, 975.0, 975.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                            default:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                                break;
-                        }
-                    }
+                    SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25);
+                    robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                     break;
                 case deposit:
                     SM.setNextState(States.backOut, HDWaitTypes.Timer, 2.0);
