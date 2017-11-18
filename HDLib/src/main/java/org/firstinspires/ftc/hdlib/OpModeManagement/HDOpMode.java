@@ -3,6 +3,7 @@ package org.firstinspires.ftc.hdlib.OpModeManagement;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.hdlib.Telemetry.HDFormatter;
 import org.firstinspires.ftc.hdlib.Telemetry.HDTelemetry;
 import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
 
@@ -14,9 +15,10 @@ public abstract class HDOpMode extends LinearOpMode {
 
     private HDTelemetry mDisplay;
     public HDDashboard dashboard;
+    public HDFormatter formatter;
     public ElapsedTime elapsedTime = new ElapsedTime();
     private static HDOpMode instance = null;
-    HDLoopInterface hdLoopInterface;
+    private HDLoopInterface hdLoopInterface;
 
     public HDOpMode(){
         super();
@@ -35,6 +37,7 @@ public abstract class HDOpMode extends LinearOpMode {
         mDisplay = new HDTelemetry(telemetry);
         hdLoopInterface = new HDLoopInterface();
         dashboard = new HDDashboard(mDisplay);
+        this.formatter = new HDFormatter();
 
         initialize();
         hdLoopInterface.runInitializeLoopInterface();

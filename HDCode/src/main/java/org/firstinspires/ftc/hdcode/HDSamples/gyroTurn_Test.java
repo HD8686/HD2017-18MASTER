@@ -12,7 +12,6 @@ import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
  * Created by Height Differential on 8/7/2017.
  */
 
-@Autonomous(name = "Gyro Turn Test")
 public class gyroTurn_Test extends HDOpMode{
 
     HDDriveHandler robotDrive;

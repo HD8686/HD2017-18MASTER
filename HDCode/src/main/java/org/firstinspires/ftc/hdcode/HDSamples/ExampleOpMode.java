@@ -21,7 +21,7 @@ import org.firstinspires.ftc.hdlib.StateMachines.HDWaitTypes;
  */
 
 
-@Autonomous(name = "ExampleOpMode", group = "HDSamples")
+//@Autonomous(name = "ExampleOpMode", group = "HDSamples")
 public class ExampleOpMode extends HDOpMode {
 
     HDRobot robot;

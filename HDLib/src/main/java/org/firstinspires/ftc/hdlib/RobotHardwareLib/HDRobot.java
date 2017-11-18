@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
@@ -23,8 +24,9 @@ public class HDRobot {
     public ColorSensor bottomLeftColor, bottomRightColor;
 
     public HDRobot(HardwareMap hardwareMap){
+        HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
         IMU1 = new AdafruitIMU("imu", 10);
-
+        HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro calibration complete!");
         frontLeft = hardwareMap.dcMotor.get("Front_Left");
         frontRight = hardwareMap.dcMotor.get("Front_Right");
         backLeft = hardwareMap.dcMotor.get("Back_Left");

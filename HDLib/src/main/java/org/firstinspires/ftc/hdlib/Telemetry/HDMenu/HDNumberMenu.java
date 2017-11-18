@@ -47,6 +47,7 @@ public class HDNumberMenu extends HDMenuManager {
                 currValue = maxValue;
             oldLeft = HDOpMode.getInstance().gamepad1.dpad_left;
             oldRight = HDOpMode.getInstance().gamepad1.dpad_right;
+            HDOpMode.getInstance().dashboard.InitializeLoopOp();
             HDOpMode.getInstance().idle();
         }
 

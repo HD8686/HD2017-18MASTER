@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.hdlib.Telemetry.HDMenu;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.Telemetry.HDTelemetry;
 
@@ -50,6 +52,7 @@ public class HDTextMenu extends HDMenuManager {
             }
             oldLeft = HDOpMode.getInstance().gamepad1.dpad_left;
             oldRight = HDOpMode.getInstance().gamepad1.dpad_right;
+            HDOpMode.getInstance().dashboard.InitializeLoopOp();
             HDOpMode.getInstance().idle();
         }
 

@@ -2,13 +2,12 @@ package org.firstinspires.ftc.hdcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
-import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Created by akash on 8/8/2017.
@@ -21,10 +20,23 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
 
+    private enum driveMode{
+        FIELD_CENTRIC_DRIVE,
+        HALO_DRIVE,
+        TANK_DRIVE;
+
+        public driveMode getNext() {
+            return this.ordinal() < driveMode.values().length - 1
+                    ? driveMode.values()[this.ordinal() + 1]
+                    : driveMode.values()[0];
+        }
+    }
+
+    private double speed = 0.75;
+    private driveMode curDriveMode = driveMode.HALO_DRIVE;
 
     @Override
     public void initialize() {
-
         robot = new HDRobot(hardwareMap);
 
         driverGamepad = new HDGamepad(gamepad1, this);
@@ -51,27 +63,52 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     @Override
     public void continuousRun(double elapsedTime) {
         if(robot.IMU1.isCalibrated()) {
-            dashboard.addProgramSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
-            dashboard.addProgramSpecificTelemetry(1, "Left Color: %s, Right Color: %s", String.valueOf(robot.bottomLeftColor.red()), String.valueOf(robot.bottomRightColor.red()));
-            dashboard.addProgramSpecificTelemetry(2, "Left Distance: %s, Right Distance: %s", String.valueOf(robot.robotJewel.leftDistance.getDistance(DistanceUnit.CM)), String.valueOf(robot.robotJewel.rightDistance.getDistance(DistanceUnit.CM)));
-            robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, 0);
+            telemetry();
+            driveTrain();
+            glyphSystem();
         }else{
             robot.robotDrive.motorBreak();
         }
     }
+
+    private void telemetry(){
+        dashboard.addProgramSpecificTelemetry(0, "Speed: " + String.valueOf(speed));
+        dashboard.addProgramSpecificTelemetry(1, "Drive Mode: %s", String.valueOf(curDriveMode));
+        dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
+        dashboard.addDiagnosticSpecificTelemetry(1, "Left Drive Color: %s, Right Drive Color: %s", String.valueOf(robot.bottomLeftColor.red()), String.valueOf(robot.bottomRightColor.red()));
+    }
+
+    private void driveTrain(){
+        switch (curDriveMode) {
+            case FIELD_CENTRIC_DRIVE:
+                robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x*speed, gamepad1.left_stick_y*speed, gamepad1.right_stick_x*speed, robot.IMU1.getZheading());
+                break;
+            case HALO_DRIVE:
+                robot.robotDrive.haloDrive(gamepad1.left_stick_x*speed, gamepad1.left_stick_y*speed, gamepad1.right_stick_x*speed);
+                break;
+            case TANK_DRIVE:
+                robot.robotDrive.tankDrive(gamepad1.left_stick_y*speed, gamepad1.right_stick_y*speed);
+                break;
+        }
+    }
+
+    private void glyphSystem(){
+
+    if(gamepad2.right_bumper){
+        robot.robotGlyph.setLiftPower(gamepad2.left_stick_y);
+    }else if(gamepad2.start){
+        robot.robotGlyph.leftPinionMotor.setPower(gamepad2.left_stick_y);
+        robot.robotGlyph.rightPinionMotor.setPower(gamepad2.right_stick_y);
+    }
+
+    }
+
 
     @Override
     public void buttonChange(HDGamepad instance, HDGamepad.gamepadButtonChange button, boolean pressed) {
         if(instance == driverGamepad){
             switch (button) {
                 case A:
-                    if(pressed){
-                        robot.robotJewel.lowerLeftServo();
-                        robot.robotJewel.lowerRightServo();
-                    }else{
-                        robot.robotJewel.raiseLeftServo();
-                        robot.robotJewel.raiseRightServo();
-                    }
                     break;
                 case B:
                     break;
@@ -80,12 +117,23 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case Y:
                     break;
                 case DPAD_LEFT:
+                    if(pressed){
+                        curDriveMode = curDriveMode.getNext();
+                    }
                     break;
                 case DPAD_RIGHT:
                     break;
                 case DPAD_UP:
+                    if(pressed) {
+                        speed += 0.25;
+                        speed = Range.clip(speed, 0.25, 1.0);
+                    }
                     break;
                 case DPAD_DOWN:
+                    if(pressed) {
+                        speed -= 0.25;
+                        speed = Range.clip(speed, 0.25, 1.0);
+                    }
                     break;
                 case LEFT_BUMPER:
                     break;
@@ -105,18 +153,46 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case B:
                     break;
                 case X:
+                    if(pressed){
+                        robot.robotGlyph.setIntakePower(.7);
+                    }else{
+                        robot.robotGlyph.setIntakePower(0.0);
+                    }
                     break;
                 case Y:
                     break;
                 case DPAD_LEFT:
+                    if(pressed){
+                        robot.robotGlyph.setIntakePower(-.7);
+                        robot.robotGlyph.blockKickerOut();
+                    }else{
+                        robot.robotGlyph.setIntakePower(0.0);
+                        robot.robotGlyph.blockKickerIn();
+                    }
                     break;
                 case DPAD_RIGHT:
+                    if(pressed){
+                        robot.robotGlyph.gripBlock();
+                    }else{
+                        robot.robotGlyph.unGripBlock();
+                    }
                     break;
                 case DPAD_UP:
+                    if(pressed){
+                        robot.robotGlyph.scotchYokeTop();
+                    }
                     break;
                 case DPAD_DOWN:
+                    if(pressed){
+                        robot.robotGlyph.scotchYokeBottom();
+                    }
                     break;
                 case LEFT_BUMPER:
+                    if(pressed){
+                        robot.robotGlyph.gripBlock();
+                    }else{
+                        robot.robotGlyph.unGripBlock();
+                    }
                     break;
                 case RIGHT_BUMPER:
                     break;
@@ -125,6 +201,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case LEFT_TRIGGER:
                     break;
                 case START:
+
                     break;
             }
         }

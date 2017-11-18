@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.hdlib.Telemetry;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDLoopInterface;
@@ -71,8 +73,10 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
     public void InitializeLoopOp() {
         DecimalFormat df = new DecimalFormat("#.##");
         curLine = 0;
-        displayCenteredText("HD Library Initialized");
-        displayCenteredText("--------------------Library Specific Telemetry--------------------");
+        displayCenteredText("HD Library Running");
+        if(!isEmptyStringArray(LibrarySpecificDisplay)) {
+            displayCenteredText("--------------------Library Specific Telemetry--------------------");
+        }
         boolean LibrarySpecificDisplayEmpty = true;
         for (int i = 0; i < LibrarySpecificDisplay.length; i++)
         {
@@ -81,10 +85,9 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
                 displayCenteredText(LibrarySpecificDisplay[i]);
             }
         }
-        if(LibrarySpecificDisplayEmpty){
-            displayCenteredText("No Library Specific Telemetry");
+        if(!isEmptyStringArray(ProgramSpecificDisplay)) {
+            displayCenteredText("--------------------Program Specific Telemetry--------------------");
         }
-        displayCenteredText("--------------------Program Specific Telemetry--------------------");
         boolean ProgramSpecificDisplayEmpty = true;
         for (int i = 0; i < ProgramSpecificDisplay.length; i++)
         {
@@ -93,8 +96,17 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
                 displayCenteredText(ProgramSpecificDisplay[i]);
             }
         }
-        if(ProgramSpecificDisplayEmpty){
-            displayCenteredText("No Program Specific Telemetry");
+        if(!isEmptyStringArray(DiagnosticSpecificDisplay)) {
+            displayCenteredText("--------------------------------Diagnostics--------------------------------");
+            displayCenteredText("Program Runtime: " + df.format(HDOpMode.getInstance().elapsedTime.seconds()));
+        }
+        boolean DiagnosticSpecificDisplayEmpty = true;
+        for (int i = 0; i < DiagnosticSpecificDisplay.length; i++)
+        {
+            if(DiagnosticSpecificDisplay[i] != null) {
+                DiagnosticSpecificDisplayEmpty = false;
+                displayCenteredText(DiagnosticSpecificDisplay[i]);
+            }
         }
         curDashboard.refreshDisplay();
     }
@@ -111,7 +123,9 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
         DecimalFormat df = new DecimalFormat("#.##");
         curLine = 0;
         displayCenteredText("HD Library Running");
-        displayCenteredText("--------------------Library Specific Telemetry--------------------");
+        if(!isEmptyStringArray(LibrarySpecificDisplay)) {
+            displayCenteredText("--------------------Library Specific Telemetry--------------------");
+        }
         boolean LibrarySpecificDisplayEmpty = true;
         for (int i = 0; i < LibrarySpecificDisplay.length; i++)
         {
@@ -120,10 +134,9 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
                 displayCenteredText(LibrarySpecificDisplay[i]);
             }
         }
-        if(LibrarySpecificDisplayEmpty){
-            displayCenteredText("No Library Specific Telemetry");
+        if(!isEmptyStringArray(ProgramSpecificDisplay)) {
+            displayCenteredText("--------------------Program Specific Telemetry--------------------");
         }
-        displayCenteredText("--------------------Program Specific Telemetry--------------------");
         boolean ProgramSpecificDisplayEmpty = true;
         for (int i = 0; i < ProgramSpecificDisplay.length; i++)
         {
@@ -132,11 +145,10 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
                 displayCenteredText(ProgramSpecificDisplay[i]);
             }
         }
-        if(ProgramSpecificDisplayEmpty){
-            displayCenteredText("No Program Specific Telemetry");
+        if(!isEmptyStringArray(DiagnosticSpecificDisplay)) {
+            displayCenteredText("--------------------------------Diagnostics--------------------------------");
+            displayCenteredText("Program Runtime: " + df.format(HDOpMode.getInstance().elapsedTime.seconds()));
         }
-        displayCenteredText("--------------------------------Diagnostics--------------------------------");
-        displayCenteredText("Program Runtime: " + df.format(HDOpMode.getInstance().elapsedTime.seconds()));
         boolean DiagnosticSpecificDisplayEmpty = true;
         for (int i = 0; i < DiagnosticSpecificDisplay.length; i++)
         {
@@ -145,13 +157,17 @@ public class HDDashboard implements HDLoopInterface.LoopTimer{
                 displayCenteredText(DiagnosticSpecificDisplay[i]);
             }
         }
-        if(DiagnosticSpecificDisplayEmpty){
-            displayCenteredText("No Diagnostic Specific Telemetry");
-        }
         curDashboard.refreshDisplay();
     }
 
-
+    private boolean isEmptyStringArray(String[] Array){
+        for(int i=0; i<Array.length; i++){
+            if(Array[i]!=null){
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 

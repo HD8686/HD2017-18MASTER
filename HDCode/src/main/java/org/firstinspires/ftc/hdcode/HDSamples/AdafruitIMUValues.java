@@ -10,7 +10,6 @@ import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
  * Created by akash on 8/4/2017.
  */
 
-@Autonomous(name = "Sensor: BNO055 IMU Telemetry", group = "Sensor")
 public class AdafruitIMUValues extends HDOpMode{
     AdafruitIMU IMU1;
 

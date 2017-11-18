@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.hdcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.hdcode.Autonomous.Auto1;
 import org.firstinspires.ftc.hdcode.Autonomous.Auto2;
 import org.firstinspires.ftc.hdlib.General.Alliance;
+import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.Telemetry.HDMenu.HDMenuManager;
@@ -33,8 +36,13 @@ public class HDAutonomous extends HDOpMode{
         HDNumberMenu delayMenu;
         HDTextMenu strategyMenu;
         HDTextMenu allianceMenu;
+        HDTextMenu autoTransitionToTeleop;
 
-        delayMenu = new HDNumberMenu("Delay", 0, 30, 1, 0, "Seconds", null);
+        autoTransitionToTeleop = new HDTextMenu("Auto Teleop Transition?", null);
+        autoTransitionToTeleop.addChoice("Yes!", true);
+        autoTransitionToTeleop.addChoice("No", false);
+
+        delayMenu = new HDNumberMenu("Delay", 0, 30, 1, 0, "Seconds", autoTransitionToTeleop);
 
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
         strategyMenu.addChoice("Auto 1", Strategy.AUTO1);
@@ -45,11 +53,14 @@ public class HDAutonomous extends HDOpMode{
         allianceMenu.addChoice("Blue Alliance", Alliance.BLUE_ALLIANCE);
 
         HDMenuManager.runMenus(allianceMenu);
-
         delay = delayMenu.getValue();
         alliance = (Alliance) allianceMenu.getChoice();
         strategy = (Strategy) strategyMenu.getChoice();
         Alliance.storeAlliance(hardwareMap.appContext, alliance);
+
+        if(((boolean) autoTransitionToTeleop.getChoice()) == true){
+            AutoTransitioner.transitionOnStop(this, "HDTeleop");
+        }
 
         HDMenuManager.displaySelections(allianceMenu, 1);
 

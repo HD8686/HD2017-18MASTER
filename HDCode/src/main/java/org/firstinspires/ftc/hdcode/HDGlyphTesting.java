@@ -69,61 +69,41 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
             switch (button) {
                 case A:
                     if(pressed){
-                        robot.robotGlyph.scotchYokeMotor.setTargetPosition(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() + 1500);
                     }
                     break;
                 case B:
                     if(pressed){
-                        robot.robotGlyph.leftPinionMotor.setTargetPosition(10000);
-                        robot.robotGlyph.rightPinionMotor.setTargetPosition(10000);
                     }
                     break;
                 case X:
                     if(pressed){
-                        robot.robotGlyph.bottomLeftIntake.setPower(-.65);
-                        robot.robotGlyph.bottomRightIntake.setPower(.65);
-                        robot.robotGlyph.topLeftIntake.setPower(-.65);
-                        robot.robotGlyph.topRightIntake.setPower(.65);
+                        robot.robotGlyph.setIntakePower(.7);
                     }else{
-                        robot.robotGlyph.bottomLeftIntake.setPower(0.0);
-                        robot.robotGlyph.bottomRightIntake.setPower(0.0);
-                        robot.robotGlyph.topLeftIntake.setPower(0.0);
-                        robot.robotGlyph.topRightIntake.setPower(0.0);
+                        robot.robotGlyph.setIntakePower(0.0);
                     }
                     break;
                 case Y:
                     if(pressed){
-                        robot.robotGlyph.leftPinionMotor.setTargetPosition(0);
-                        robot.robotGlyph.rightPinionMotor.setTargetPosition(0);
                     }
                     break;
                 case DPAD_LEFT:
                     if(pressed){
-                        robot.robotGlyph.bottomLeftIntake.setPower(.75);
-                        robot.robotGlyph.bottomRightIntake.setPower(-.75);
-                        robot.robotGlyph.topLeftIntake.setPower(.75);
-                        robot.robotGlyph.topRightIntake.setPower(-.75);
+                        robot.robotGlyph.setIntakePower(-.7);
                     }else{
-                        robot.robotGlyph.bottomLeftIntake.setPower(0.0);
-                        robot.robotGlyph.bottomRightIntake.setPower(0.0);
-                        robot.robotGlyph.topLeftIntake.setPower(0.0);
-                        robot.robotGlyph.topRightIntake.setPower(0.0);
+                        robot.robotGlyph.setIntakePower(0.0);
                     }
                     break;
                 case DPAD_RIGHT:
                     if(pressed){
-                        robot.robotGlyph.leftBlockGrabber.setPosition(0.80);
-                        robot.robotGlyph.rightBlockGrabber.setPosition(0.36);
+                        robot.robotGlyph.gripBlock();
                     }else{
-                        robot.robotGlyph.leftBlockGrabber.setPosition(0.92);
-                        robot.robotGlyph.rightBlockGrabber.setPosition(0.27);
+                        robot.robotGlyph.unGripBlock();
                     }
                     break;
                 case DPAD_UP:
-                    if(pressed) {
-                        robot.robotGlyph.blockKicker.setPosition(0.12);
-                    }else{
-                        robot.robotGlyph.blockKicker.setPosition(0.06);
+                    if(pressed){
+                        kickerCalibrator = kickerCalibrator + 0.01;
+                        robot.robotGlyph.blockKicker.setPosition(kickerCalibrator);
                     }
                     break;
                 case DPAD_DOWN:

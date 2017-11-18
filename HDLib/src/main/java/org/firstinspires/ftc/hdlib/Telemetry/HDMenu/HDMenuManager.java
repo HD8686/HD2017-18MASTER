@@ -31,6 +31,7 @@ public abstract class HDMenuManager {
         while(currMenu != null  && !HDOpMode.getInstance().isStopRequested()){
             HDOpMode.getInstance().dashboard.addLibrarySpecificTelemetry(lineToStart, currMenu.getSelectionDisplay());
             currMenu = currMenu.getNextMenu();
+            HDOpMode.getInstance().dashboard.InitializeLoopOp();
             HDOpMode.getInstance().idle();
             lineToStart++;
         }

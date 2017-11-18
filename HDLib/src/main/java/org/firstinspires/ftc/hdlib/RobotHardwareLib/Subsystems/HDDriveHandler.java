@@ -219,6 +219,11 @@ public class HDDriveHandler {
         setMotorSpeeds(Motors);
     }
 
+    public void haloDrive(double x, double y, double rotation){
+        mecanumDrive_Cartesian(x, y, rotation, 0);
+    }
+
+
     /**
      * Cartesian Mecanum Drive code meant to be used with Joysticks,
      * converted from C++ in FRC's WPILib into Java by us for use in FTC

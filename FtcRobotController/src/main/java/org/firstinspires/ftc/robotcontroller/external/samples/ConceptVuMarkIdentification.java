@@ -31,6 +31,7 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.CameraDevice;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -66,7 +67,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Concept: VuMark Id", group ="Concept")
-@Disabled
 public class ConceptVuMarkIdentification extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
@@ -103,7 +103,7 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code onthe next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = "ATsODcD/////AAAAAVw2lR...d45oGpdljdOh5LuFB9nDNfckoxb8COxKSFX";
+        parameters.vuforiaLicenseKey = "AZRKRX7/////AAAAGcjcJ3tvlkTjn8e4xEVqyXhl9BWco/Vc+Xkv2384x9sMZzG3BzUJLKDyqcaA0txYsQo00NqXurmoRHm90/OJcQYIkWWV9plQZ6nLVv07yFl8PqTGnRNVazOgi1IzxPWqGBznN5sGboRXvAUn+VQsdyN3e0KU6lB/Cl5vre2Wi7DtntufCGNcdqU0pdN9LlKpQr6byV4zYQ7p81g3cEHY5AkI3egvEy+thpk3NjyUMeFK9SeCfIKgDvHEx9G4bCBFmmj/+knydr5BM0bJ0Jh5GmNRLNErQewCvA+SET/K2jYRZvEcpvZTxSPQS4ho+JBxC4pk7i4KmPwrWHHnHSCqmwboLv301r2njWgHcs6UZK1+";
 
         /*
          * We also indicate which camera on the RC that we wish to use.
@@ -112,7 +112,7 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
          */
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
+        CameraDevice.getInstance().setFlashTorchMode(true);
         /**
          * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
          * in this data set: all three of the VuMarks in the game were created from this one template,
@@ -139,6 +139,7 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
              */
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
 
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending

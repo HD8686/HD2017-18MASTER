@@ -28,6 +28,7 @@ public class AdafruitIMU {
     private Acceleration gravity;
     private double lastChecked = 0;
     private int updateLatency;
+    private double zOffset = 0;
 
     public AdafruitIMU(String hardwareMapID, int updateLatency){
         this.updateLatency = updateLatency;
@@ -98,9 +99,20 @@ public class AdafruitIMU {
             lastChecked = System.currentTimeMillis();
             angles   = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             gravity  = imu.getGravity();
-            return -angles.firstAngle;
+            return -angles.firstAngle - zOffset;
         }else{
-            return -angles.firstAngle;
+            return -angles.firstAngle - zOffset;
+        }
+    }
+
+    public void zeroZheading(){
+        if((System.currentTimeMillis() - lastChecked > updateLatency) || (lastChecked == 0)){
+            lastChecked = System.currentTimeMillis();
+            angles   = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            gravity  = imu.getGravity();
+            zOffset = -angles.firstAngle;
+        }else{
+            zOffset = -angles.firstAngle;
         }
     }
 
