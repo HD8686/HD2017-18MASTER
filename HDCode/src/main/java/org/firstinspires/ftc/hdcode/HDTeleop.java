@@ -20,6 +20,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
 
+    private boolean collectorOn = false;
+    private boolean gripBlock = false;
+
     private enum driveMode{
         FIELD_CENTRIC_DRIVE,
         HALO_DRIVE,
@@ -69,13 +72,15 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         }else{
             robot.robotDrive.motorBreak();
         }
+
+
     }
 
     private void telemetry(){
         dashboard.addProgramSpecificTelemetry(0, "Speed: " + String.valueOf(speed));
         dashboard.addProgramSpecificTelemetry(1, "Drive Mode: %s", String.valueOf(curDriveMode));
+        dashboard.addProgramSpecificTelemetry(2, "Collector On?: %s", String.valueOf(collectorOn));
         dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
-        dashboard.addDiagnosticSpecificTelemetry(1, "Left Drive Color: %s, Right Drive Color: %s", String.valueOf(robot.bottomLeftColor.red()), String.valueOf(robot.bottomRightColor.red()));
     }
 
     private void driveTrain(){
@@ -93,14 +98,24 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void glyphSystem(){
-
     if(gamepad2.right_bumper){
         robot.robotGlyph.setLiftPower(gamepad2.left_stick_y);
     }else if(gamepad2.start){
         robot.robotGlyph.leftPinionMotor.setPower(gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(gamepad2.right_stick_y);
     }
-
+    if(gamepad2.y){
+        gripBlock = false;
+        robot.robotGlyph.setIntakePower(-.7);
+        robot.robotGlyph.blockKickerOut();
+        collectorOn = false;
+    }else if(collectorOn){
+        robot.robotGlyph.setIntakePower(.7);
+        robot.robotGlyph.blockKickerIn();
+    }else{
+        robot.robotGlyph.setIntakePower(0.0);
+        robot.robotGlyph.blockKickerIn();
+    }
     }
 
 
@@ -153,29 +168,15 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case B:
                     break;
                 case X:
-                    if(pressed){
-                        robot.robotGlyph.setIntakePower(.7);
-                    }else{
-                        robot.robotGlyph.setIntakePower(0.0);
+                    if(pressed) {
+                        collectorOn = !collectorOn;
                     }
                     break;
                 case Y:
                     break;
                 case DPAD_LEFT:
-                    if(pressed){
-                        robot.robotGlyph.setIntakePower(-.7);
-                        robot.robotGlyph.blockKickerOut();
-                    }else{
-                        robot.robotGlyph.setIntakePower(0.0);
-                        robot.robotGlyph.blockKickerIn();
-                    }
                     break;
                 case DPAD_RIGHT:
-                    if(pressed){
-                        robot.robotGlyph.gripBlock();
-                    }else{
-                        robot.robotGlyph.unGripBlock();
-                    }
                     break;
                 case DPAD_UP:
                     if(pressed){

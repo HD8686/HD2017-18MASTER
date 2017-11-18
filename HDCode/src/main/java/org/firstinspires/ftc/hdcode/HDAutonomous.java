@@ -58,7 +58,7 @@ public class HDAutonomous extends HDOpMode{
         strategy = (Strategy) strategyMenu.getChoice();
         Alliance.storeAlliance(hardwareMap.appContext, alliance);
 
-        if(((boolean) autoTransitionToTeleop.getChoice()) == true){
+        if(((boolean) autoTransitionToTeleop.getChoice())){
             AutoTransitioner.transitionOnStop(this, "HDTeleop");
         }
 

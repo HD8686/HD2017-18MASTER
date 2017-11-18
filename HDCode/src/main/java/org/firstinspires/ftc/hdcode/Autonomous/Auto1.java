@@ -40,7 +40,6 @@ public class Auto1 implements HDAuto {
         driveOffBoard,
         straightenUp,
         backIntoStone,
-        bringLiftDown,
         scanVuMark,
         driveForward,
         squareToWall,
@@ -151,9 +150,6 @@ public class Auto1 implements HDAuto {
                     SM.setNextState(States.backIntoStone, HDWaitTypes.driveHandlerTarget);
                     robot.robotDrive.gyroTurn(0, 0.025, 0.000004, 0.0006, 0.0, 1.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;
-                case bringLiftDown:
-                    SM.setNextState(States.backIntoStone, HDWaitTypes.Timer, 3.0);
-                    break;
                 case backIntoStone:
                     SM.setNextState(States.scanVuMark, HDWaitTypes.Timer, 1.0);
                     robot.robotDrive.tankDrive(-0.2, -0.2);
@@ -191,27 +187,48 @@ public class Auto1 implements HDAuto {
                     robot.robotDrive.mecanumDrive_Polar(.3, 90, 0, robot.IMU1.getZheading());
                     break;
                 case goToColumn:
-                    switch (vuMark) {
-                        case RIGHT:
-                            SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                            break;
-                        case LEFT:
-                            SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                            break;
-                        case CENTER:
-                            SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                            break;
-                        default:
-                            SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
-                            break;
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        switch (vuMark) {
+                            case RIGHT:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            case LEFT:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 950.0, 950.0, 950.0, 950.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            case CENTER:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 800.0, 800.0, 800.0, 800.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            default:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                        }
+                    }else{
+                        switch (vuMark) {
+                            case RIGHT:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 950.0, 950.0, 950.0, 950.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            case LEFT:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            case CENTER:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 800.0, 800.0, 800.0, 800.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            default:
+                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                        }
                     }
                     break;
                 case deposit:
-                    SM.setNextState(States.done, HDWaitTypes.Timer, 3.0);
+                    SM.setNextState(States.done, HDWaitTypes.Timer, 2.0);
                     robot.robotDrive.motorBreak();
                     robot.robotGlyph.setIntakePower(-.7);
                     robot.robotGlyph.blockKickerOut();
