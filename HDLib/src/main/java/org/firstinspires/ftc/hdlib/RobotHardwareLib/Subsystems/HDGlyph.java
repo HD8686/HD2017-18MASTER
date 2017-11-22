@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
@@ -17,6 +19,8 @@ public class HDGlyph {
     public DcMotor scotchYokeMotor, leftPinionMotor, rightPinionMotor;
     private HDVexMotor bottomLeftIntake, bottomRightIntake, topLeftIntake, topRightIntake;
     public Servo blockKicker, leftBlockGrabber, rightBlockGrabber;
+    public ColorSensor bottomGlyphColor;
+    public DistanceSensor bottomGlyphDistance;
 
     private double liftMaxEnc = 10000;
     private double leftBlockGrabberGrip = 0.80;
@@ -24,7 +28,7 @@ public class HDGlyph {
     private double rightBlockGrabberGrip = 0.36;
     private double rightBlockGrabberNoGrip = 0.27;
     private double blockKickerOut = 0.54;
-    private double blockKickerIn = 0.47;
+    private double blockKickerIn = 0.48;
 
     public HDGlyph(HardwareMap hardwareMap){
 
@@ -36,6 +40,9 @@ public class HDGlyph {
         bottomRightIntake = new HDVexMotor(hardwareMap, "bottomRightIntake", Servo.Direction.FORWARD);
         topLeftIntake = new HDVexMotor(hardwareMap, "topLeftIntake", Servo.Direction.FORWARD);
         topRightIntake = new HDVexMotor(hardwareMap, "topRightIntake", Servo.Direction.FORWARD);
+
+        bottomGlyphColor = hardwareMap.get(ColorSensor.class, "Bottom_Glyph_Color");
+        bottomGlyphDistance = hardwareMap.get(DistanceSensor.class, "Bottom_Glyph_Color");
 
         blockKicker = hardwareMap.servo.get("blockKicker");
         leftBlockGrabber = hardwareMap.servo.get("leftBlockGrabber");

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Created by akash on 8/8/2017.
@@ -22,6 +23,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private boolean collectorOn = false;
     private boolean gripBlock = false;
+
+    private enum liftHeight{
+        GROUND, //0
+        COLLECT2, //2100
+        DEPOSITHIGH,
+        BALANCINGSTONE,
+    }
 
     private enum driveMode{
         FIELD_CENTRIC_DRIVE,
@@ -81,6 +89,14 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         dashboard.addProgramSpecificTelemetry(1, "Drive Mode: %s", String.valueOf(curDriveMode));
         dashboard.addProgramSpecificTelemetry(2, "Collector On?: %s", String.valueOf(collectorOn));
         dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
+        dashboard.addDiagnosticSpecificTelemetry(1, "Lift Encoder Value: %d", (robot.robotGlyph.leftPinionMotor.getCurrentPosition()+robot.robotGlyph.rightPinionMotor.getCurrentPosition())/2);
+        dashboard.addDiagnosticSpecificTelemetry(2, "Color Sensor a: %d, r: %d, g: %d, b: %d, in: %.2f", robot.robotGlyph.bottomGlyphColor.alpha(), robot.robotGlyph.bottomGlyphColor.red(),
+                robot.robotGlyph.bottomGlyphColor.green(), robot.robotGlyph.bottomGlyphColor.blue(), robot.robotGlyph.bottomGlyphDistance.getDistance(DistanceUnit.INCH));
+        if(robot.robotGlyph.bottomGlyphDistance.getDistance(DistanceUnit.INCH) < 2.5){
+            dashboard.addDiagnosticSpecificTelemetry(3, "Block in bottom bay");
+        }else{
+            dashboard.addDiagnosticSpecificTelemetry(3, "No Block in bottom bay");
+        }
     }
 
     private void driveTrain(){
@@ -111,6 +127,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }else if(gamepad2.start){
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
+    }else{
+        robot.robotGlyph.setLiftPower(0.0);
     }
     if(gamepad2.y){
         gripBlock = false;
