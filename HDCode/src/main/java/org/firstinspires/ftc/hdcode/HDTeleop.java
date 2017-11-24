@@ -26,9 +26,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private enum liftHeight{
         GROUND, //0
-        COLLECT2, //2100
-        DEPOSITHIGH,
-        BALANCINGSTONE,
+        COLLECT2, //1000
+        DEPOSITHIGH, //9800
+        BALANCINGSTONE, //2000
     }
 
     private enum driveMode{
@@ -45,6 +45,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private double speed = 0.75;
     private driveMode curDriveMode = driveMode.HALO_DRIVE;
+    private liftHeight curLiftHeight = liftHeight.GROUND;
 
     @Override
     public void initialize() {
@@ -58,6 +59,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
         robot.robotJewel.raiseLeftServo();
         robot.robotJewel.raiseRightServo();
+
+        robot.robotGlyph.resetLiftEncoders();
     }
 
     @Override
@@ -80,8 +83,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         }else{
             robot.robotDrive.motorBreak();
         }
-
-
     }
 
     private void telemetry(){
@@ -128,8 +129,67 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }else{
-        robot.robotGlyph.setLiftPower(0.0);
+        switch (curLiftHeight) {
+            case GROUND:
+                if(robot.robotGlyph.getLiftHeight() > 2000){
+                    robot.robotGlyph.setLiftPower(-1);
+                }else if(robot.robotGlyph.getLiftHeight() > 1000){
+                    robot.robotGlyph.setLiftPower(-0.75);
+                }else if(robot.robotGlyph.getLiftHeight() > 500){
+                    robot.robotGlyph.setLiftPower(-0.5);
+                }else if(robot.robotGlyph.getLiftHeight() > 200){
+                    robot.robotGlyph.setLiftPower(-0.25);
+                }
+                else if(robot.robotGlyph.getLiftHeight() < 20){
+                    robot.robotGlyph.setLiftPower(0);
+                }
+                break;
+            case COLLECT2:
+                if(robot.robotGlyph.getLiftHeight() < 750){
+                    robot.robotGlyph.setLiftPower(0.5);
+                }else if(robot.robotGlyph.getLiftHeight() < 1000){
+                    robot.robotGlyph.setLiftPower(.15);
+                }else if(robot.robotGlyph.getLiftHeight() > 2000){
+                    robot.robotGlyph.setLiftPower(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight() > 1400){
+                    robot.robotGlyph.setLiftPower(-.75);
+                }else if(robot.robotGlyph.getLiftHeight() > 1200){
+                    robot.robotGlyph.setLiftPower(-0.15);
+                }else{
+                    robot.robotGlyph.setLiftPower(0.0);
+                }
+                break;
+            case DEPOSITHIGH:
+                if(robot.robotGlyph.getLiftHeight() < 8000){
+                    robot.robotGlyph.setLiftPower(1.0);
+                }else if(robot.robotGlyph.getLiftHeight() < 9000){
+                    robot.robotGlyph.setLiftPower(.5);
+                }else if(robot.robotGlyph.getLiftHeight() < 9700){
+                    robot.robotGlyph.setLiftPower(0.25);
+                }else if(robot.robotGlyph.getLiftHeight() > 9800){
+                    robot.robotGlyph.setLiftPower(-.15);
+                }else{
+                    robot.robotGlyph.setLiftPower(0.0);
+                }
+                break;
+            case BALANCINGSTONE:
+                if(robot.robotGlyph.getLiftHeight() < 1750){
+                    robot.robotGlyph.setLiftPower(0.75);
+                }else if(robot.robotGlyph.getLiftHeight() < 2000){
+                    robot.robotGlyph.setLiftPower(.15);
+                }else if(robot.robotGlyph.getLiftHeight() > 3000){
+                    robot.robotGlyph.setLiftPower(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight() > 2400){
+                    robot.robotGlyph.setLiftPower(-.75);
+                }else if(robot.robotGlyph.getLiftHeight() > 2200){
+                    robot.robotGlyph.setLiftPower(-0.15);
+                }else{
+                    robot.robotGlyph.setLiftPower(0.0);
+                }
+                break;
+        }
     }
+
     if(gamepad2.y){
         gripBlock = false;
         robot.robotGlyph.setIntakePower(-.7);
@@ -204,27 +264,35 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case Y:
                     break;
                 case DPAD_LEFT:
+                    if(pressed){
+                        curLiftHeight = liftHeight.COLLECT2;
+                    }
                     break;
                 case DPAD_RIGHT:
+                    if(pressed){
+                        curLiftHeight = liftHeight.BALANCINGSTONE;
+                    }else{
+
+                    }
                     break;
                 case DPAD_UP:
                     if(pressed){
-                        robot.robotGlyph.setScotchYokePower(.75);
+                        curLiftHeight = liftHeight.DEPOSITHIGH;
                     }else{
-                        robot.robotGlyph.setScotchYokePower(0.0);
+
                     }
                     break;
                 case DPAD_DOWN:
                     if(pressed){
-                        robot.robotGlyph.setScotchYokePower(-.75);
+                        curLiftHeight = liftHeight.GROUND;
                     }else{
-                        robot.robotGlyph.setScotchYokePower(0.0);
+
                     }
                 case LEFT_BUMPER:
                     if(pressed){
-                        robot.robotGlyph.gripBlock();
+
                     }else{
-                        robot.robotGlyph.unGripBlock();
+
                     }
                     break;
                 case RIGHT_BUMPER:

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo.HDVexMotor;
 
 /**
@@ -65,6 +66,18 @@ public class HDGlyph {
     public void setLiftPower(double power){
         leftPinionMotor.setPower(power);
         rightPinionMotor.setPower(power);
+    }
+
+    public int getLiftHeight(){
+        return ((leftPinionMotor.getCurrentPosition() + rightPinionMotor.getCurrentPosition())/2);
+    }
+
+    public void resetLiftEncoders(){
+        leftPinionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightPinionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        HDOpMode.getInstance().idle();
+        leftPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setIntakePower(double power){
