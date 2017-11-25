@@ -72,6 +72,12 @@ public class HDGlyph {
         return ((leftPinionMotor.getCurrentPosition() + rightPinionMotor.getCurrentPosition())/2);
     }
 
+    public void resetScotchYoke(){
+        scotchYokeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        HDOpMode.getInstance().idle();
+        scotchYokeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void resetLiftEncoders(){
         leftPinionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightPinionMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
