@@ -24,9 +24,9 @@ public class HDGlyph {
     public DistanceSensor bottomGlyphDistance;
 
     private double liftMaxEnc = 10000;
-    private double leftBlockGrabberGrip = 0.80;
+    private double leftBlockGrabberGrip = 0.74;
     private double leftBlockGrabberNoGrip = 0.92;
-    private double rightBlockGrabberGrip = 0.36;
+    private double rightBlockGrabberGrip = 0.42;
     private double rightBlockGrabberNoGrip = 0.27;
     private double blockKickerOut = 0.54;
     private double blockKickerIn = 0.48;
