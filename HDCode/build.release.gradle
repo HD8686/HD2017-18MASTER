@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':HDLib')
+    compile project(':FtcRobotController')
+    compile project(':RobotCore')
+    compile project(':Hardware')
+    compile project(':FtcCommon')
+    compile (name:'WirelessP2p-release', ext:'aar')
+}
