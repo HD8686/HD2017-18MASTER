@@ -31,10 +31,10 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private ElapsedTime loopTime;
 
     private enum liftHeight{
-        GROUND, //0
-        COLLECT2, //1000
-        DEPOSITHIGH, //9800
-        BALANCINGSTONE, //2000
+        GROUND, //0/2
+        COLLECT2, //1000/2
+        DEPOSITHIGH, //9800/2
+        BALANCINGSTONE, //2000/2
     }
 
     private enum scotchYokePosition{
@@ -109,7 +109,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         dashboard.addProgramSpecificTelemetry(0, "Speed: " + String.valueOf(speed));
         dashboard.addProgramSpecificTelemetry(1, "Drive Mode: %s", String.valueOf(curDriveMode));
         dashboard.addProgramSpecificTelemetry(2, "Collector On?: %s", String.valueOf(collectorOn));
-        dashboard.addDiagnosticSpecificTelemetry(1, "Lift Encoder Value: %d", (robot.robotGlyph.leftPinionMotor.getCurrentPosition()+robot.robotGlyph.rightPinionMotor.getCurrentPosition())/2);
+        dashboard.addDiagnosticSpecificTelemetry(1, "Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition());
         dashboard.addProgramSpecificTelemetry(3, "Scotch Mode: %s", String.valueOf(scotchPos));
         dashboard.addProgramSpecificTelemetry(4, "Lift Mode: %s", String.valueOf(curLiftHeight));
         /*if(robot.robotGlyph.bottomGlyphDistance.getDistance(DistanceUnit.INCH) < 2.5){
@@ -145,8 +145,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void glyphSystem(){
-
-
     switch (scotchPos) {
         case UP:
             if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() > 1900){
@@ -155,7 +153,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 robot.robotGlyph.scotchYokeMotor.setPower(-.25);
             }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1200){
                 robot.robotGlyph.scotchYokeMotor.setPower(1.0);
-            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1500){
+            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1400){
                 robot.robotGlyph.scotchYokeMotor.setPower(.25);
             }else{
                 robot.robotGlyph.scotchYokeMotor.setPower(0.0);
@@ -230,7 +228,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 robot.robotGlyph.unGripBlock();
                 robot.robotGlyph.scotchYokeMotor.setPower(0.25);
             }else{
-                if(((robot.robotGlyph.leftPinionMotor.getCurrentPosition()+robot.robotGlyph.rightPinionMotor.getCurrentPosition())/2) < 20) {
+                if(((robot.robotGlyph.leftPinionMotor.getCurrentPosition()+robot.robotGlyph.rightPinionMotor.getCurrentPosition())/2) < 10) {
                     robot.robotGlyph.gripBlock();
                 }
                 robot.robotGlyph.scotchYokeMotor.setPower(0.0);
@@ -244,59 +242,65 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }else{
+        if((Math.abs(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()) > 400) || robot.robotGlyph.getLiftHeight() > 10200){
+            robot.robotGlyph.leftPinionMotor.setPower(0);
+            robot.robotGlyph.rightPinionMotor.setPower(0);
+            Log.w("AUTO STOP",  String.format("Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition()));
+            stop();
+        }
         switch (curLiftHeight) {
             case GROUND:
-                if(robot.robotGlyph.getLiftHeight() > 2000){
+                if(robot.robotGlyph.getLiftHeight() > 2000/2){
                     robot.robotGlyph.setLiftPower(-1);
-                }else if(robot.robotGlyph.getLiftHeight() > 1000){
+                }else if(robot.robotGlyph.getLiftHeight() > 1000/2){
                     robot.robotGlyph.setLiftPower(-0.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 500){
+                }else if(robot.robotGlyph.getLiftHeight() > 500/2){
                     robot.robotGlyph.setLiftPower(-0.5);
-                }else if(robot.robotGlyph.getLiftHeight() > 200){
+                }else if(robot.robotGlyph.getLiftHeight() > 200/2){
                     robot.robotGlyph.setLiftPower(-0.25);
                 }
-                else if(robot.robotGlyph.getLiftHeight() < 20){
+                else if(robot.robotGlyph.getLiftHeight() < 40/2){
                     robot.robotGlyph.setLiftPower(0);
                 }
                 break;
             case COLLECT2:
-                if(robot.robotGlyph.getLiftHeight() < 750){
+                if(robot.robotGlyph.getLiftHeight() < 750/2){
                     robot.robotGlyph.setLiftPower(0.5);
-                }else if(robot.robotGlyph.getLiftHeight() < 1000){
+                }else if(robot.robotGlyph.getLiftHeight() < 1000/2){
                     robot.robotGlyph.setLiftPower(.15);
-                }else if(robot.robotGlyph.getLiftHeight() > 2000){
+                }else if(robot.robotGlyph.getLiftHeight() > 2000/2){
                     robot.robotGlyph.setLiftPower(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight() > 1400){
+                }else if(robot.robotGlyph.getLiftHeight() > 1400/2){
                     robot.robotGlyph.setLiftPower(-.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 1200){
+                }else if(robot.robotGlyph.getLiftHeight() > 1200/2){
                     robot.robotGlyph.setLiftPower(-0.15);
                 }else{
                     robot.robotGlyph.setLiftPower(0.0);
                 }
                 break;
             case DEPOSITHIGH:
-                if(robot.robotGlyph.getLiftHeight() < 8000){
+                if(robot.robotGlyph.getLiftHeight() < 8000/2){
                     robot.robotGlyph.setLiftPower(1.0);
-                }else if(robot.robotGlyph.getLiftHeight() < 9000){
-                    robot.robotGlyph.setLiftPower(.5);
-                }else if(robot.robotGlyph.getLiftHeight() < 9700){
-                    robot.robotGlyph.setLiftPower(0.25);
-                }else if(robot.robotGlyph.getLiftHeight() > 9800){
+                }else if(robot.robotGlyph.getLiftHeight() < 9000/2){
+                    robot.robotGlyph.setLiftPower(0.35);
+                }else if(robot.robotGlyph.getLiftHeight() < 9700/2){
+                    robot.robotGlyph.setLiftPower(0.35);
+                }else if(robot.robotGlyph.getLiftHeight() > 9800/2){
                     robot.robotGlyph.setLiftPower(-.15);
                 }else{
                     robot.robotGlyph.setLiftPower(0.0);
                 }
                 break;
             case BALANCINGSTONE:
-                if(robot.robotGlyph.getLiftHeight() < 1750){
+                if(robot.robotGlyph.getLiftHeight() < 1750/2){
                     robot.robotGlyph.setLiftPower(0.75);
-                }else if(robot.robotGlyph.getLiftHeight() < 2000){
+                }else if(robot.robotGlyph.getLiftHeight() < 2000/2){
                     robot.robotGlyph.setLiftPower(.15);
-                }else if(robot.robotGlyph.getLiftHeight() > 3000){
+                }else if(robot.robotGlyph.getLiftHeight() > 3000/2){
                     robot.robotGlyph.setLiftPower(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight() > 2400){
+                }else if(robot.robotGlyph.getLiftHeight() > 2400/2){
                     robot.robotGlyph.setLiftPower(-.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 2200){
+                }else if(robot.robotGlyph.getLiftHeight() > 2200/2){
                     robot.robotGlyph.setLiftPower(-0.15);
                 }else{
                     robot.robotGlyph.setLiftPower(0.0);
