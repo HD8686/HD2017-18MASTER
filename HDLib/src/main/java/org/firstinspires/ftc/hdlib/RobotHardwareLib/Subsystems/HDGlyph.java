@@ -23,7 +23,6 @@ public class HDGlyph {
     public ColorSensor bottomGlyphColor;
     public DistanceSensor bottomGlyphDistance;
 
-    private double liftMaxEnc = 10000;
     private double leftBlockGrabberGrip = 0.74;
     private double leftBlockGrabberNoGrip = 0.92;
     private double rightBlockGrabberGrip = 0.42;
@@ -87,10 +86,10 @@ public class HDGlyph {
     }
 
     public void setIntakePower(double power){
-        bottomLeftIntake.setPower(-power);
-        bottomRightIntake.setPower(power);
-        topLeftIntake.setPower(-power);
-        topRightIntake.setPower(power);
+        bottomLeftIntake.setPower(power);
+        bottomRightIntake.setPower(-power);
+        topLeftIntake.setPower(power);
+        topRightIntake.setPower(-power);
     }
 
     public void gripBlock(){
