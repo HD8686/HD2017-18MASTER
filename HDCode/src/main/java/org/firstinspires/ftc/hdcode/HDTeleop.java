@@ -124,13 +124,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(gamepad1.a){
             robot.robotDrive.gyroTurn(90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
         }else if(gamepad1.b){
-            robot.robotDrive.gyroTurn(-90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-        }else if(gamepad1.y){
-            robot.robotDrive.gyroTurn(0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-        }else {
-            switch (curDriveMode) {
-                case FIELD_CENTRIC_DRIVE:
-                    double gyroHeading = robot.IMU1.getZheading();
+                    robot.robotDrive.gyroTurn(-90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+            }else if(gamepad1.y){
+                robot.robotDrive.gyroTurn(0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+            }else {
+                switch (curDriveMode) {
+                    case FIELD_CENTRIC_DRIVE:
+                        double gyroHeading = robot.IMU1.getZheading();
                     dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f",gyroHeading);
                     robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed, gyroHeading);
                     break;
@@ -250,60 +250,119 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         }
         switch (curLiftHeight) {
             case GROUND:
-                if(robot.robotGlyph.getLiftHeight() > 2000/2){
-                    robot.robotGlyph.setLiftPower(-1);
-                }else if(robot.robotGlyph.getLiftHeight() > 1000/2){
-                    robot.robotGlyph.setLiftPower(-0.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 500/2){
-                    robot.robotGlyph.setLiftPower(-0.5);
-                }else if(robot.robotGlyph.getLiftHeight() > 200/2){
-                    robot.robotGlyph.setLiftPower(-0.25);
+                if(robot.robotGlyph.getLiftHeight1() > 2000/2){
+                    robot.robotGlyph.setLiftPower1(-1);
+                }else if(robot.robotGlyph.getLiftHeight1() > 1000/2){
+                    robot.robotGlyph.setLiftPower1(-0.75);
+                }else if(robot.robotGlyph.getLiftHeight1() > 500/2){
+                    robot.robotGlyph.setLiftPower1(-0.5);
+                }else if(robot.robotGlyph.getLiftHeight1() > 200/2){
+                    robot.robotGlyph.setLiftPower1(-0.25);
                 }
-                else if(robot.robotGlyph.getLiftHeight() < 40/2){
-                    robot.robotGlyph.setLiftPower(0);
+                else if(robot.robotGlyph.getLiftHeight1() < 40/2){
+                    robot.robotGlyph.setLiftPower1(0);
                 }
                 break;
             case COLLECT2:
-                if(robot.robotGlyph.getLiftHeight() < 750/2){
-                    robot.robotGlyph.setLiftPower(0.5);
-                }else if(robot.robotGlyph.getLiftHeight() < 1000/2){
-                    robot.robotGlyph.setLiftPower(.15);
-                }else if(robot.robotGlyph.getLiftHeight() > 2000/2){
-                    robot.robotGlyph.setLiftPower(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight() > 1400/2){
-                    robot.robotGlyph.setLiftPower(-.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 1200/2){
-                    robot.robotGlyph.setLiftPower(-0.15);
+                if(robot.robotGlyph.getLiftHeight1() < 750/2){
+                    robot.robotGlyph.setLiftPower1(0.5);
+                }else if(robot.robotGlyph.getLiftHeight1() < 1000/2){
+                    robot.robotGlyph.setLiftPower1(.15);
+                }else if(robot.robotGlyph.getLiftHeight1() > 2000/2){
+                    robot.robotGlyph.setLiftPower1(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight1() > 1400/2){
+                    robot.robotGlyph.setLiftPower1(-.75);
+                }else if(robot.robotGlyph.getLiftHeight1() > 1200/2){
+                    robot.robotGlyph.setLiftPower1(-0.15);
                 }else{
-                    robot.robotGlyph.setLiftPower(0.0);
+                    robot.robotGlyph.setLiftPower1(0.0);
                 }
                 break;
             case DEPOSITHIGH:
-                if(robot.robotGlyph.getLiftHeight() < 8000/2){
-                    robot.robotGlyph.setLiftPower(1.0);
-                }else if(robot.robotGlyph.getLiftHeight() < 9000/2){
-                    robot.robotGlyph.setLiftPower(0.35);
-                }else if(robot.robotGlyph.getLiftHeight() < 9700/2){
-                    robot.robotGlyph.setLiftPower(0.35);
-                }else if(robot.robotGlyph.getLiftHeight() > 9800/2){
-                    robot.robotGlyph.setLiftPower(-.15);
+                if(robot.robotGlyph.getLiftHeight1() < 8000/2){
+                    robot.robotGlyph.setLiftPower1(1.0);
+                }else if(robot.robotGlyph.getLiftHeight1() < 9000/2){
+                    robot.robotGlyph.setLiftPower1(0.35);
+                }else if(robot.robotGlyph.getLiftHeight1() < 9700/2){
+                    robot.robotGlyph.setLiftPower1(0.35);
+                }else if(robot.robotGlyph.getLiftHeight1() > 9800/2){
+                    robot.robotGlyph.setLiftPower1(-.15);
                 }else{
-                    robot.robotGlyph.setLiftPower(0.0);
+                    robot.robotGlyph.setLiftPower1(0.0);
                 }
                 break;
             case BALANCINGSTONE:
-                if(robot.robotGlyph.getLiftHeight() < 1750/2){
-                    robot.robotGlyph.setLiftPower(0.75);
-                }else if(robot.robotGlyph.getLiftHeight() < 2000/2){
-                    robot.robotGlyph.setLiftPower(.15);
-                }else if(robot.robotGlyph.getLiftHeight() > 3000/2){
-                    robot.robotGlyph.setLiftPower(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight() > 2400/2){
-                    robot.robotGlyph.setLiftPower(-.75);
-                }else if(robot.robotGlyph.getLiftHeight() > 2200/2){
-                    robot.robotGlyph.setLiftPower(-0.15);
+                if(robot.robotGlyph.getLiftHeight1() < 1750/2){
+                    robot.robotGlyph.setLiftPower1(0.75);
+                }else if(robot.robotGlyph.getLiftHeight1() < 2000/2){
+                    robot.robotGlyph.setLiftPower1(.15);
+                }else if(robot.robotGlyph.getLiftHeight1() > 3000/2){
+                    robot.robotGlyph.setLiftPower1(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight1() > 2400/2){
+                    robot.robotGlyph.setLiftPower1(-.75);
+                }else if(robot.robotGlyph.getLiftHeight1() > 2200/2){
+                    robot.robotGlyph.setLiftPower1(-0.15);
                 }else{
-                    robot.robotGlyph.setLiftPower(0.0);
+                    robot.robotGlyph.setLiftPower1(0.0);
+                }
+                break;
+        }
+        switch (curLiftHeight) {
+            case GROUND:
+                if(robot.robotGlyph.getLiftHeight2() > 2000/2){
+                    robot.robotGlyph.setLiftPower2(-1);
+                }else if(robot.robotGlyph.getLiftHeight2() > 1000/2){
+                    robot.robotGlyph.setLiftPower2(-0.75);
+                }else if(robot.robotGlyph.getLiftHeight2() > 500/2){
+                    robot.robotGlyph.setLiftPower2(-0.5);
+                }else if(robot.robotGlyph.getLiftHeight2() > 200/2){
+                    robot.robotGlyph.setLiftPower2(-0.25);
+                }
+                else if(robot.robotGlyph.getLiftHeight2() < 40/2){
+                    robot.robotGlyph.setLiftPower2(0);
+                }
+                break;
+            case COLLECT2:
+                if(robot.robotGlyph.getLiftHeight2() < 750/2){
+                    robot.robotGlyph.setLiftPower2(0.5);
+                }else if(robot.robotGlyph.getLiftHeight2() < 1000/2){
+                    robot.robotGlyph.setLiftPower2(.15);
+                }else if(robot.robotGlyph.getLiftHeight2() > 2000/2){
+                    robot.robotGlyph.setLiftPower2(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight2() > 1400/2){
+                    robot.robotGlyph.setLiftPower2(-.75);
+                }else if(robot.robotGlyph.getLiftHeight2() > 1200/2){
+                    robot.robotGlyph.setLiftPower2(-0.15);
+                }else{
+                    robot.robotGlyph.setLiftPower2(0.0);
+                }
+                break;
+            case DEPOSITHIGH:
+                if(robot.robotGlyph.getLiftHeight2() < 8000/2){
+                    robot.robotGlyph.setLiftPower2(1.0);
+                }else if(robot.robotGlyph.getLiftHeight2() < 9000/2){
+                    robot.robotGlyph.setLiftPower2(0.35);
+                }else if(robot.robotGlyph.getLiftHeight2() < 9700/2){
+                    robot.robotGlyph.setLiftPower2(0.35);
+                }else if(robot.robotGlyph.getLiftHeight2() > 9800/2){
+                    robot.robotGlyph.setLiftPower2(-.15);
+                }else{
+                    robot.robotGlyph.setLiftPower2(0.0);
+                }
+                break;
+            case BALANCINGSTONE:
+                if(robot.robotGlyph.getLiftHeight2() < 1750/2){
+                    robot.robotGlyph.setLiftPower2(0.75);
+                }else if(robot.robotGlyph.getLiftHeight2() < 2000/2){
+                    robot.robotGlyph.setLiftPower2(.15);
+                }else if(robot.robotGlyph.getLiftHeight2() > 3000/2){
+                    robot.robotGlyph.setLiftPower2(-1.0);
+                }else if(robot.robotGlyph.getLiftHeight2() > 2400/2){
+                    robot.robotGlyph.setLiftPower2(-.75);
+                }else if(robot.robotGlyph.getLiftHeight2() > 2200/2){
+                    robot.robotGlyph.setLiftPower2(-0.15);
+                }else{
+                    robot.robotGlyph.setLiftPower2(0.0);
                 }
                 break;
         }

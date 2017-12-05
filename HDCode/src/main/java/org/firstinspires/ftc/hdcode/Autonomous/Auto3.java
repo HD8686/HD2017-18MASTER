@@ -34,7 +34,6 @@ public class Auto3 implements HDAuto {
 
     private enum States{
         delay,
-        raiseLift,
         lowerJewelArm,
         readJewel,
         turn,
@@ -93,11 +92,7 @@ public class Auto3 implements HDAuto {
             States states = (States) SM.getState();
             switch(states){
                 case delay:
-                    SM.setNextState(States.raiseLift, HDWaitTypes.Timer, delay);
-                    break;
-                case raiseLift:
-                    SM.setNextState(States.lowerJewelArm, HDWaitTypes.Timer, 1.5);
-                    robot.robotGlyph.setLiftPower(1);
+                    SM.setNextState(States.lowerJewelArm, HDWaitTypes.Timer, delay);
                     break;
                 case lowerJewelArm:
                     robot.robotGlyph.setLiftPower(0);
@@ -183,17 +178,17 @@ public class Auto3 implements HDAuto {
                             vuforiaVuMarks.flash(false);
                         }
                     });
-                    SM.setNextState(States.squareToWall, HDWaitTypes.EncoderChangeBoth, 225.0);
+                    SM.setNextState(States.squareToWall, HDWaitTypes.EncoderChangeBoth, 230.0);
                     robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
                     Log.w("Test", String.valueOf(vuMark));
                     break;
                 case squareToWall:
-                    SM.setNextState(States.goToColumn, HDWaitTypes.Timer, 2.0);
+                    SM.setNextState(States.goToColumn, HDWaitTypes.Timer, 1.75);
                     robot.robotDrive.mecanumDrive_Polar(.3, 90, 0, robot.IMU1.getZheading());
                     failsafeTimer.reset();
                     break;
                 case goToColumn:
-                    SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25);
+                    SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.5); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
                     robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                     break;
                 case deposit:
