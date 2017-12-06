@@ -25,7 +25,7 @@ public class HDJewel {
 
     private double leftJewelUp = 0.09;
     private double rightJewelUp = 0.69;
-    private double leftJewelDown = 0.69;
+    private double leftJewelDown = 0.67;
     private double rightJewelDown = 0.34;
 
     public HDJewel(HardwareMap hardwareMap){

@@ -14,13 +14,14 @@ import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
 import org.firstinspires.ftc.hdlib.Sensors.HDVuforiaVuMarks;
 import org.firstinspires.ftc.hdlib.StateMachines.HDStateMachine;
 import org.firstinspires.ftc.hdlib.StateMachines.HDWaitTypes;
+import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
  * Created by FIRSTMentor on 9/23/2017.
  */
 
-public class Auto1 implements HDAuto {
+public class NonRelic_Glyph_Jewel implements HDAuto {
 
     private HDRobot robot;
     private HDStateMachine SM;
@@ -28,21 +29,23 @@ public class Auto1 implements HDAuto {
     RelicRecoveryVuMark vuMark;
     ElapsedTime failsafeTimer;
 
+    private HDDashboard dashboard;
     private double delay;
     private Alliance alliance;
     private boolean turnLeft;
 
     private enum States{
         delay,
-        raiseLift,
+        scanVuMark,
         lowerJewelArm,
         readJewel,
         turn,
         turnBack,
         driveOffBoard,
+        turnAround,
         straightenUp,
         backIntoStone,
-        scanVuMark,
+        wait1,
         driveForward,
         squareToWall,
         goToColumn,
@@ -51,13 +54,16 @@ public class Auto1 implements HDAuto {
         done
     }
 
-    public Auto1(double delay, Alliance alliance, HardwareMap hardwareMap){
+    public NonRelic_Glyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
+
+        this.dashboard = dashboard;
 
         robot = new HDRobot(hardwareMap);
 
         SM = new HDStateMachine(robot.robotDrive);
 
         vuforiaVuMarks = new HDVuforiaVuMarks(hardwareMap);
+        vuforiaVuMarks.activateTracking();
 
         robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robot.robotDrive.resetEncoders();
@@ -93,17 +99,37 @@ public class Auto1 implements HDAuto {
             States states = (States) SM.getState();
             switch(states){
                 case delay:
-                    SM.setNextState(States.raiseLift, HDWaitTypes.Timer, delay);
+                    SM.setNextState(States.scanVuMark, HDWaitTypes.Timer, delay);
                     break;
-                case raiseLift:
-                    SM.setNextState(States.lowerJewelArm, HDWaitTypes.Timer, 1.5);
-                    robot.robotGlyph.setLiftPower(1);
+                case scanVuMark:
+                    SM.setNextState(States.lowerJewelArm, HDWaitTypes.Timer, 6.0);
+                    vuMark = vuforiaVuMarks.scan();
+                    dashboard.addDiagnosticSpecificTelemetry(1, "Vumark Reading: %s", String.valueOf(vuMark));
+                    switch (vuMark) {
+                        case UNKNOWN:
+                            break;
+                        case LEFT:
+                            SM.resetValues();
+                            SM.setState(States.lowerJewelArm);
+                            break;
+                        case CENTER:
+                            SM.resetValues();
+                            SM.setState(States.lowerJewelArm);
+                            break;
+                        case RIGHT:
+                            SM.resetValues();
+                            SM.setState(States.lowerJewelArm);
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case lowerJewelArm:
+                    vuforiaVuMarks.deactivateTracking();
                     robot.robotGlyph.setLiftPower(0);
                     if(alliance == Alliance.RED_ALLIANCE){
-                        robot.robotJewel.lowerRightServo();
-                        if(robot.robotJewel.getRightColor() != HDJewel.jewelColor.INCONCLUSIVE){
+                        robot.robotJewel.lowerLeftServo();
+                        if(robot.robotJewel.getLeftColor() != HDJewel.jewelColor.INCONCLUSIVE){
                             SM.setNextState(States.readJewel, HDWaitTypes.Timer, 0.05);
                         }
                     }else{
@@ -115,11 +141,11 @@ public class Auto1 implements HDAuto {
                     break;
                 case readJewel:
                     if(alliance == Alliance.RED_ALLIANCE){
-                        if(robot.robotJewel.getRightColor() == HDJewel.jewelColor.RED){
-                            turnLeft = false;
-                            SM.setNextState(States.turn, HDWaitTypes.Timer, 0.05);
-                        }else if(robot.robotJewel.getRightColor() == HDJewel.jewelColor.BLUE){
+                        if(robot.robotJewel.getLeftColor() == HDJewel.jewelColor.RED){
                             turnLeft = true;
+                            SM.setNextState(States.turn, HDWaitTypes.Timer, 0.05);
+                        }else if(robot.robotJewel.getLeftColor() == HDJewel.jewelColor.BLUE){
+                            turnLeft = false;
                             SM.setNextState(States.turn, HDWaitTypes.Timer, 0.05);
                         }
                     }else{
@@ -145,89 +171,97 @@ public class Auto1 implements HDAuto {
                     SM.setNextState(States.driveOffBoard, HDWaitTypes.driveHandlerTarget);
                     robot.robotJewel.raiseRightServo();
                     robot.robotJewel.raiseLeftServo();
-                    robot.robotDrive.gyroTurn(0, 0.015, 0.000004, 0.0006, 0.0, 1.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    robot.robotDrive.gyroTurn(0, 0.015, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;
                 case driveOffBoard:
-                    SM.setNextState(States.straightenUp, HDWaitTypes.EncoderChangeBoth, 825.0);
-                    robot.robotDrive.tankDrive(.25, .25);
-                    break;
-                case straightenUp:
-                    SM.runOnce(new Runnable() {
-                        @Override
-                        public void run() {
-                            vuforiaVuMarks.activateTracking();
-                            vuforiaVuMarks.flash(true);
-                        }
-                    });
-                    SM.setNextState(States.backIntoStone, HDWaitTypes.driveHandlerTarget);
-                    robot.robotDrive.gyroTurn(0, 0.025, 0.000004, 0.0006, 0.0, 1.0, 1.0, -1.0, robot.IMU1.getZheading());
-                    break;
-                case backIntoStone:
-                    SM.setNextState(States.scanVuMark, HDWaitTypes.Timer, 1.0);
-                    robot.robotDrive.tankDrive(-0.2, -0.2);
-                    break;
-                case scanVuMark:
-                    SM.setNextState(States.driveForward, HDWaitTypes.Timer, 5.0);
-                    robot.robotDrive.motorBreak();
-                    vuMark = vuforiaVuMarks.scan();
-                    if(vuMark != RelicRecoveryVuMark.UNKNOWN){
-                        SM.resetValues();
-                        SM.setState(States.driveForward);
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        SM.setNextState(States.turnAround, HDWaitTypes.EncoderChangeBoth, 1000.0);
+                        robot.robotDrive.tankDrive(-.25, -.25);
+                    }else {
+                        SM.setNextState(States.straightenUp, HDWaitTypes.EncoderChangeBoth, 825.0);
+                        robot.robotDrive.tankDrive(.25, .25);
                     }
                     break;
+                case turnAround:
+                    SM.setNextState(States.backIntoStone, HDWaitTypes.driveHandlerTarget);
+                    robot.robotDrive.gyroTurn(180, 0.015, 0.000004, 0.0006, 0.0, 1.0, 0.35, -0.35, robot.IMU1.getZheading());
+                    break;
+                case straightenUp:
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        SM.setNextState(States.backIntoStone, HDWaitTypes.driveHandlerTarget);
+                        robot.robotDrive.gyroTurn(180, 0.025, 0.000004, 0.0006, 0.0, 1.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    }else{
+                        SM.setNextState(States.backIntoStone, HDWaitTypes.driveHandlerTarget);
+                        robot.robotDrive.gyroTurn(0, 0.025, 0.000004, 0.0006, 0.0, 1.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    }
+                    break;
+                case backIntoStone:
+                    SM.setNextState(States.wait1, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.tankDrive(-0.2, -0.2);
+                    break;
+                case wait1:
+                    SM.setNextState(States.driveForward, HDWaitTypes.Timer, 0.5);
+                    robot.robotDrive.motorBreak();
+                    break;
                 case driveForward:
-                    SM.runOnce(new Runnable() {
-                        @Override
-                        public void run() {
-                            vuforiaVuMarks.deactivateTracking();
-                            vuforiaVuMarks.flash(false);
-                        }
-                    });
-                    SM.setNextState(States.squareToWall, HDWaitTypes.EncoderChangeBoth, 225.0);
-                    robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
-                    Log.w("Test", String.valueOf(vuMark));
+                    SM.setNextState(States.squareToWall, HDWaitTypes.EncoderChangeBoth, 240.0);
+                    robot.robotDrive.tankDrive(0.25, 0.25);
                     break;
                 case squareToWall:
-                    SM.setNextState(States.goToColumn, HDWaitTypes.Timer, 2.0);
-                    robot.robotDrive.mecanumDrive_Polar(.3, 90, 0, robot.IMU1.getZheading());
-                    failsafeTimer.reset();
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        SM.setNextState(States.goToColumn, HDWaitTypes.Timer, 1.75);
+                        robot.robotDrive.mecanumDrive_Polar(.3, -90, 0, -180.0);
+                        failsafeTimer.reset();
+                    }else{
+                        SM.setNextState(States.goToColumn, HDWaitTypes.Timer, 1.75);
+                        robot.robotDrive.mecanumDrive_Polar(.3, 90, 0, 0);
+                        failsafeTimer.reset();
+                    }
                     break;
                 case goToColumn:
                     if(alliance == Alliance.RED_ALLIANCE) {
                         switch (vuMark) {
-                            case RIGHT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                            case UNKNOWN:
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 1300.0, 1300.0, 1300.0, 1300.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.5); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 975.0, 975.0, 975.0, 975.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.9); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                break;
+                            case RIGHT:
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                                 break;
                             default:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                                 break;
                         }
+
                     }else{
                         switch (vuMark) {
-                            case RIGHT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 1300.0, 1300.0, 1300.0, 1300.0);
+                            case UNKNOWN:
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
                                 robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
                                 robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                                 break;
-                            case CENTER:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual,  975.0, 975.0, 975.0, 975.0);
+                            case CENTER:SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.85); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                break;
+                            case RIGHT:
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.4); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
                                 robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                                 break;
                             default:
-                                SM.setNextState(States.deposit, HDWaitTypes.EncoderChangeIndividual, 650.0, 650.0, 650.0, 650.0);
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
                                 robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
                                 break;
                         }
@@ -240,7 +274,7 @@ public class Auto1 implements HDAuto {
                     robot.robotGlyph.blockKickerOut();
                     break;
                 case backOut:
-                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.5);
+                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.4);
                     robot.robotDrive.tankDrive(-.3, -.3);
                     break;
                 case done:
