@@ -46,15 +46,21 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//modified for turbo: removed blockly imports
+import com.google.blocks.ftcrobotcontroller.BlocksActivity;
+import com.google.blocks.ftcrobotcontroller.ProgrammingModeActivity;
+import com.google.blocks.ftcrobotcontroller.ProgrammingModeControllerImpl;
+import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
+import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
 import com.qualcomm.ftccommon.AboutActivity;
 import com.qualcomm.ftccommon.ClassManagerFactory;
 import com.qualcomm.ftccommon.FtcEventLoop;
@@ -64,6 +70,7 @@ import com.qualcomm.ftccommon.FtcRobotControllerService.FtcRobotControllerBinder
 import com.qualcomm.ftccommon.FtcRobotControllerSettingsActivity;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList;
 import com.qualcomm.ftccommon.LaunchActivityConstantsList.RequestCode;
+import com.qualcomm.ftccommon.ProgrammingModeController;
 import com.qualcomm.ftccommon.Restarter;
 import com.qualcomm.ftccommon.UpdateUI;
 import com.qualcomm.ftccommon.configuration.EditParameters;
@@ -72,6 +79,8 @@ import com.qualcomm.ftccommon.configuration.RobotConfigFile;
 import com.qualcomm.ftccommon.configuration.RobotConfigFileManager;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.hardware.HardwareFactory;
+import com.qualcomm.robotcore.eventloop.EventLoopManager;
+import com.qualcomm.robotcore.eventloop.opmode.FtcRobotControllerServiceState;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants;
 import com.qualcomm.robotcore.hardware.configuration.Utility;
@@ -84,7 +93,7 @@ import com.qualcomm.robotcore.wifi.WifiDirectAssistant;
 
 import org.firstinspires.ftc.ftccommon.external.SoundPlayingRobotMonitor;
 import org.firstinspires.ftc.ftccommon.internal.FtcRobotControllerWatchdogService;
-// modified for turbo: removed ProgramAndManageActivity import
+import org.firstinspires.ftc.ftccommon.internal.ProgramAndManageActivity;
 import org.firstinspires.ftc.robotcore.internal.hardware.DragonboardLynxDragonboardIsPresentPin;
 import org.firstinspires.ftc.robotcore.internal.network.DeviceNameManager;
 import org.firstinspires.ftc.robotcore.internal.network.PreferenceRemoterRC;
@@ -93,12 +102,12 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.Assert;
 import org.firstinspires.ftc.robotcore.internal.system.PreferencesHelper;
 import org.firstinspires.ftc.robotcore.internal.system.ServiceController;
+import org.firstinspires.ftc.robotcore.internal.ui.LocalByRefIntentExtraHolder;
 import org.firstinspires.ftc.robotcore.internal.ui.ThemedActivity;
 import org.firstinspires.ftc.robotcore.internal.ui.UILocation;
-//modified for turbo: removed 2 webserver imports
+import org.firstinspires.ftc.robotcore.internal.webserver.RobotControllerWebInfo;
+import org.firstinspires.ftc.robotcore.internal.webserver.WebServer;
 import org.firstinspires.inspection.RcInspectionActivity;
-import org.openftc.UiUtils;
-import org.openftc.Utils;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -115,7 +124,8 @@ public class FtcRobotControllerActivity extends Activity
   protected WifiManager.WifiLock wifiLock;
   protected RobotConfigFileManager cfgFileMgr;
 
-  //modified for turbo: removed variables related to "programming mode"
+  protected ProgrammingWebHandlers programmingWebHandlers;
+  protected ProgrammingModeController programmingModeController;
 
   protected UpdateUI.Callback callback;
   protected Context context;
@@ -133,8 +143,6 @@ public class FtcRobotControllerActivity extends Activity
   protected TextView textOpMode;
   protected TextView textErrorMessage;
   protected ImmersiveMode immersion;
-
-  protected TextView textOpenFTCVersion;
 
   protected UpdateUI updateUI;
   protected Dimmer dimmer;
@@ -210,18 +218,6 @@ public class FtcRobotControllerActivity extends Activity
     super.onCreate(savedInstanceState);
     RobotLog.onApplicationStart();  // robustify against onCreate() following onDestroy() but using the same app instance, which apparently does happen
     RobotLog.vv(TAG, "onCreate()");
-
-    /*
-     * Check to see if the DS app is also installed.
-     * If it is, then show the user a dialog explaining
-     * the situation and offer them the option to uninstall
-     * either the DS app or the RC app
-     */
-    if(Utils.isFtcDriverStationInstalled(getPackageManager()))
-    {
-      UiUtils.showDsAppInstalledDialog(this);
-    }
-
     ThemedActivity.appAppThemeToActivity(getTag(), this); // do this way instead of inherit to help AppInventor
 
     Assert.assertTrue(FtcRobotControllerWatchdogService.isFtcRobotControllerActivity(AppUtil.getInstance().getRootActivity()));
@@ -265,7 +261,7 @@ public class FtcRobotControllerActivity extends Activity
       }
     });
 
-    //modified for turbo: removed setup line for Blockly
+    BlocksOpMode.setActivityAndWebView(this, (WebView) findViewById(R.id.webViewBlocksRuntime));
 
     ClassManagerFactory.registerFilters();
     ClassManagerFactory.processAllClasses();
@@ -285,15 +281,13 @@ public class FtcRobotControllerActivity extends Activity
     textErrorMessage = (TextView) findViewById(R.id.textErrorMessage);
     textGamepad[0] = (TextView) findViewById(R.id.textGamepad1);
     textGamepad[1] = (TextView) findViewById(R.id.textGamepad2);
-
-    textOpenFTCVersion = (TextView) findViewById(R.id.openftc_version);
-    textOpenFTCVersion.setText(org.openftc.BuildConfig.VERSION_COMPLETE);
-
     immersion = new ImmersiveMode(getWindow().getDecorView());
     dimmer = new Dimmer(this);
     dimmer.longBright();
 
-    // modified for turbo: removed variable initialization for programming mode
+    programmingWebHandlers = new ProgrammingWebHandlers();
+    programmingModeController = new ProgrammingModeControllerImpl(
+            this, (TextView) findViewById(R.id.textRemoteProgrammingMode), programmingWebHandlers);
 
     updateUI = createUpdateUI();
     callback = createUICallback(updateUI);
@@ -359,7 +353,9 @@ public class FtcRobotControllerActivity extends Activity
   protected void onPause() {
     super.onPause();
     RobotLog.vv(TAG, "onPause()");
-    //modified for turbo: We don't need to stop the programming mode when the app is paused
+    if (programmingModeController.isActive()) {
+      programmingModeController.stopProgrammingMode();
+    }
   }
 
   @Override
@@ -404,16 +400,12 @@ public class FtcRobotControllerActivity extends Activity
   }
 
   protected void logPackageVersions() {
-    RobotLog.v("THIS APP WAS MADE FROM OpenFTC, A MODIFIED VERSION OF THE SDK.");
-    RobotLog.v("You can find more information at http://OpenFTC.org or the About screen.");
-    RobotLog.v("OpenFTC Version: " + org.openftc.BuildConfig.VERSION_COMPLETE);
     RobotLog.logBuildConfig(com.qualcomm.ftcrobotcontroller.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.robotcore.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.hardware.BuildConfig.class);
     RobotLog.logBuildConfig(com.qualcomm.ftccommon.BuildConfig.class);
-    // Modified for Turbo: don't log the blocks version
+    RobotLog.logBuildConfig(com.google.blocks.BuildConfig.class);
     RobotLog.logBuildConfig(org.firstinspires.inspection.BuildConfig.class);
-    RobotLog.logBuildConfig(org.openftc.BuildConfig.class);
   }
 
   protected void readNetworkType() {
@@ -459,14 +451,34 @@ public class FtcRobotControllerActivity extends Activity
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
-    // modified for turbo: removed handling options programming menu items
-
-    if (id == R.id.action_inspection_mode) {
+    if (id == R.id.action_programming_mode) {
+      if (cfgFileMgr.getActiveConfig().isNoConfig()) {
+        // Tell the user they must configure the robot before starting programming mode.
+        // TODO: as we are no longer truly 'modal' this warning should be adapted
+        AppUtil.getInstance().showToast(UILocation.BOTH, context, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
+      } else {
+        Intent programmingModeIntent = new Intent(AppUtil.getDefContext(), ProgrammingModeActivity.class);
+        programmingModeIntent.putExtra(
+            LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_PROGRAMMING_WEB_HANDLERS,
+            new LocalByRefIntentExtraHolder(programmingWebHandlers));
+        startActivity(programmingModeIntent);
+      }
+      return true;
+    } else if (id == R.id.action_program_and_manage) {
+      Intent programmingModeIntent = new Intent(AppUtil.getDefContext(), ProgramAndManageActivity.class);
+      RobotControllerWebInfo webInfo = programmingWebHandlers.getWebServer().getConnectionInformation();
+      programmingModeIntent.putExtra(LaunchActivityConstantsList.RC_WEB_INFO, webInfo.toJson());
+      startActivity(programmingModeIntent);
+    } else if (id == R.id.action_inspection_mode) {
       Intent inspectionModeIntent = new Intent(AppUtil.getDefContext(), RcInspectionActivity.class);
       startActivity(inspectionModeIntent);
       return true;
     }
-    // modified for turbo: Removed handling for blocks programming menu item
+    else if (id == R.id.action_blocks) {
+      Intent blocksIntent = new Intent(AppUtil.getDefContext(), BlocksActivity.class);
+      startActivity(blocksIntent);
+      return true;
+    }
     else if (id == R.id.action_restart_robot) {
       dimmer.handleDimTimer();
       AppUtil.getInstance().showToast(UILocation.BOTH, context, context.getString(R.string.toastRestartingRobot));
@@ -525,7 +537,18 @@ public class FtcRobotControllerActivity extends Activity
     updateUI.setControllerService(controllerService);
 
     updateUIAndRequestRobotSetup();
-    // modified for turbo: removed state update for "programmingWebHandlers"
+    programmingWebHandlers.setState(new FtcRobotControllerServiceState() {
+      @NonNull
+      @Override
+      public WebServer getWebServer() {
+        return service.getWebServer();
+      }
+
+      @Override
+      public EventLoopManager getEventLoopManager() {
+        return service.getRobot().eventLoopManager;
+      }
+    });
   }
 
   private void updateUIAndRequestRobotSetup() {
@@ -552,8 +575,8 @@ public class FtcRobotControllerActivity extends Activity
     factory = hardwareFactory;
 
     OpModeRegister userOpModeRegister = createOpModeRegister();
-    eventLoop = new FtcEventLoop(factory, userOpModeRegister, callback, this);
-    FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(factory, userOpModeRegister, callback, this);
+    eventLoop = new FtcEventLoop(factory, userOpModeRegister, callback, this, programmingModeController);
+    FtcEventLoopIdle idleLoop = new FtcEventLoopIdle(factory, userOpModeRegister, callback, this, programmingModeController);
 
     controllerService.setCallback(callback);
     controllerService.setupRobot(eventLoop, idleLoop);

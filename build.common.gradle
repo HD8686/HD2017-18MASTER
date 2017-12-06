@@ -22,7 +22,7 @@ apply plugin: 'com.android.application'
 android {
 
     compileSdkVersion 23
-    buildToolsVersion "25.0.3"
+    buildToolsVersion '25.0.3'
 
     signingConfigs {
         debug {
@@ -96,13 +96,16 @@ android {
 }
 
 repositories {
-    jcenter()
     flatDir {
         dirs rootProject.file('libs')
     }
+}
+apply from: 'build.release.gradle'
+
+repositories{
+    jcenter()
 }
 
 dependencies{
     compile 'org.apache.commons:commons-lang3:3.4'
 }
-apply from: 'build.release.gradle'

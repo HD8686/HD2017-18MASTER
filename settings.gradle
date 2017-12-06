@@ -1,1 +1,1 @@
-include ':FtcRobotController', ':RobotCore', ':FtcCommon', ':Hardware', ':Inspection', ':OpenFTC', ':HDLib', ':HDCode'
+include ':FtcRobotController', ':HDLib', ':HDCode'
