@@ -122,11 +122,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private void driveTrain(){
         if(gamepad1.a){
-            robot.robotDrive.gyroTurn(90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+            robot.robotDrive.gyroTurn(90.0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
         }else if(gamepad1.b){
-                    robot.robotDrive.gyroTurn(-90.0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    robot.robotDrive.gyroTurn(-90.0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
             }else if(gamepad1.y){
-                robot.robotDrive.gyroTurn(0, 0.018, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                robot.robotDrive.gyroTurn(0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
             }else {
                 switch (curDriveMode) {
                     case FIELD_CENTRIC_DRIVE:
@@ -149,11 +149,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         case UP:
             if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() > 1900){
                 robot.robotGlyph.scotchYokeMotor.setPower(-1.0);
-            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() > 1600){
+            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() > 1400){
                 robot.robotGlyph.scotchYokeMotor.setPower(-.25);
             }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1200){
                 robot.robotGlyph.scotchYokeMotor.setPower(1.0);
-            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1400){
+            }else if(robot.robotGlyph.scotchYokeMotor.getCurrentPosition() < 1300){
                 robot.robotGlyph.scotchYokeMotor.setPower(.25);
             }else{
                 robot.robotGlyph.scotchYokeMotor.setPower(0.0);
@@ -242,7 +242,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }else{
-        if((Math.abs(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()) > 400) || robot.robotGlyph.getLiftHeight() > 10200){
+        if((Math.abs(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()) > 650) || robot.robotGlyph.getLiftHeight() > 10200){
             robot.robotGlyph.leftPinionMotor.setPower(0);
             robot.robotGlyph.rightPinionMotor.setPower(0);
             Log.w("AUTO STOP",  String.format("Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition()));
@@ -264,15 +264,15 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 }
                 break;
             case COLLECT2:
-                if(robot.robotGlyph.getLiftHeight1() < 750/2){
+                if(robot.robotGlyph.getLiftHeight1() < 850/2){
                     robot.robotGlyph.setLiftPower1(0.5);
-                }else if(robot.robotGlyph.getLiftHeight1() < 1000/2){
-                    robot.robotGlyph.setLiftPower1(.15);
-                }else if(robot.robotGlyph.getLiftHeight1() > 2000/2){
+                }else if(robot.robotGlyph.getLiftHeight1() < 1100/2){
+                    robot.robotGlyph.setLiftPower1(.25);
+                }else if(robot.robotGlyph.getLiftHeight1() > 2100/2){
                     robot.robotGlyph.setLiftPower1(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight1() > 1400/2){
+                }else if(robot.robotGlyph.getLiftHeight1() > 1500/2){
                     robot.robotGlyph.setLiftPower1(-.75);
-                }else if(robot.robotGlyph.getLiftHeight1() > 1200/2){
+                }else if(robot.robotGlyph.getLiftHeight1() > 1300/2){
                     robot.robotGlyph.setLiftPower1(-0.15);
                 }else{
                     robot.robotGlyph.setLiftPower1(0.0);
@@ -295,7 +295,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 if(robot.robotGlyph.getLiftHeight1() < 1750/2){
                     robot.robotGlyph.setLiftPower1(0.75);
                 }else if(robot.robotGlyph.getLiftHeight1() < 2000/2){
-                    robot.robotGlyph.setLiftPower1(.15);
+                    robot.robotGlyph.setLiftPower1(.25);
                 }else if(robot.robotGlyph.getLiftHeight1() > 3000/2){
                     robot.robotGlyph.setLiftPower1(-1.0);
                 }else if(robot.robotGlyph.getLiftHeight1() > 2400/2){
@@ -323,15 +323,15 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 }
                 break;
             case COLLECT2:
-                if(robot.robotGlyph.getLiftHeight2() < 750/2){
+                if(robot.robotGlyph.getLiftHeight2() < 850/2){
                     robot.robotGlyph.setLiftPower2(0.5);
-                }else if(robot.robotGlyph.getLiftHeight2() < 1000/2){
-                    robot.robotGlyph.setLiftPower2(.15);
-                }else if(robot.robotGlyph.getLiftHeight2() > 2000/2){
+                }else if(robot.robotGlyph.getLiftHeight2() < 1100/2){
+                    robot.robotGlyph.setLiftPower2(.25);
+                }else if(robot.robotGlyph.getLiftHeight2() > 2100/2){
                     robot.robotGlyph.setLiftPower2(-1.0);
-                }else if(robot.robotGlyph.getLiftHeight2() > 1400/2){
+                }else if(robot.robotGlyph.getLiftHeight2() > 1500/2){
                     robot.robotGlyph.setLiftPower2(-.75);
-                }else if(robot.robotGlyph.getLiftHeight2() > 1200/2){
+                }else if(robot.robotGlyph.getLiftHeight2() > 1300/2){
                     robot.robotGlyph.setLiftPower2(-0.15);
                 }else{
                     robot.robotGlyph.setLiftPower2(0.0);
@@ -354,7 +354,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 if(robot.robotGlyph.getLiftHeight2() < 1750/2){
                     robot.robotGlyph.setLiftPower2(0.75);
                 }else if(robot.robotGlyph.getLiftHeight2() < 2000/2){
-                    robot.robotGlyph.setLiftPower2(.15);
+                    robot.robotGlyph.setLiftPower2(.25);
                 }else if(robot.robotGlyph.getLiftHeight2() > 3000/2){
                     robot.robotGlyph.setLiftPower2(-1.0);
                 }else if(robot.robotGlyph.getLiftHeight2() > 2400/2){

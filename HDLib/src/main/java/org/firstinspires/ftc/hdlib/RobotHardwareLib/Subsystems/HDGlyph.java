@@ -26,7 +26,7 @@ public class HDGlyph {
     private double leftBlockGrabberGrip = 0.74;
     private double leftBlockGrabberNoGrip = 0.92;
     private double rightBlockGrabberGrip = 0.42;
-    private double rightBlockGrabberNoGrip = 0.27;
+    private double rightBlockGrabberNoGrip = 0.25;//0.27
     private double blockKickerOut = 0.54;
     private double blockKickerIn = 0.48;
 
@@ -57,7 +57,7 @@ public class HDGlyph {
         scotchYokeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         scotchYokeMotor.setPower(0);
         leftBlockGrabber.setPosition(0.89);
-        rightBlockGrabber.setPosition(0.27);
+        rightBlockGrabber.setPosition(rightBlockGrabberNoGrip);
         blockKicker.setPosition(0.06);
     }
 
