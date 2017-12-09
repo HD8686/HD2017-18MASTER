@@ -242,7 +242,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }else{
-        if((Math.abs(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()) > 650) || robot.robotGlyph.getLiftHeight() > 10200){
+        if((Math.abs(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()) > 1850) || robot.robotGlyph.getLiftHeight() > 10200){
             robot.robotGlyph.leftPinionMotor.setPower(0);
             robot.robotGlyph.rightPinionMotor.setPower(0);
             Log.w("AUTO STOP",  String.format("Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition()));

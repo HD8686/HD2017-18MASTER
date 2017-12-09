@@ -36,7 +36,9 @@ public class HDGlyph {
         leftPinionMotor = hardwareMap.dcMotor.get("leftPinionMotor");
         rightPinionMotor = hardwareMap.dcMotor.get("rightPinionMotor");
 
-        bottomLeftIntake = new HDVexMotor(hardwareMap, "bottomLeftIntake", Servo.Direction.FORWARD);
+        bottomLeftIntake = new HDVexMotor(hardwareMap, "bottomLeftIntake",
+
+                Servo.Direction.FORWARD);
         bottomRightIntake = new HDVexMotor(hardwareMap, "bottomRightIntake", Servo.Direction.FORWARD);
         topLeftIntake = new HDVexMotor(hardwareMap, "topLeftIntake", Servo.Direction.FORWARD);
         topRightIntake = new HDVexMotor(hardwareMap, "topRightIntake", Servo.Direction.FORWARD);

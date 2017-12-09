@@ -51,6 +51,9 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
         goToColumn,
         deposit,
         backOut,
+        turnToPush,
+        pushIn,
+        driveAway,
         done
     }
 
@@ -223,23 +226,23 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
                         switch (vuMark) {
                             case UNKNOWN:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, 90, 0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.5); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, 90, 0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.9); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, 90, 0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, 90, 0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.25); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, 90, 0, robot.IMU1.getZheading());
                                 break;
                         }
 
@@ -247,22 +250,22 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
                         switch (vuMark) {
                             case UNKNOWN:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, -90, 0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, -90, 0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.85); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, -90, 0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT:
-                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.4); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                SM.setNextState(States.deposit, HDWaitTypes.Timer, 3.5); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
+                                robot.robotDrive.mecanumDrive_Polar(.275, -90, 0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.deposit, HDWaitTypes.Timer, 2.35); //2.25 for right, 3.5 for left, 2.9 FOR MIDDLE
-                                robot.robotDrive.mecanumDrive_Polar(.25, -90, 0, robot.IMU1.getZheading());
+                                robot.robotDrive.mecanumDrive_Polar(.275, -90, 0, robot.IMU1.getZheading());
                                 break;
                         }
                     }
@@ -274,8 +277,35 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
                     robot.robotGlyph.blockKickerOut();
                     break;
                 case backOut:
-                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.4);
+                    SM.setNextState(States.turnToPush, HDWaitTypes.Timer, 0.5);
                     robot.robotDrive.tankDrive(-.3, -.3);
+                    break;
+                case turnToPush:
+                    if(alliance == Alliance.RED_ALLIANCE){
+                        SM.setNextState(States.pushIn, HDWaitTypes.driveHandlerTarget);
+                        robot.robotDrive.gyroTurn(90, 0.015, 0.000004, 0.0006, 0.0, 1.0, 0.35, -0.35, robot.IMU1.getZheading());
+                    }else{
+                        SM.setNextState(States.pushIn, HDWaitTypes.driveHandlerTarget);
+                        robot.robotDrive.gyroTurn(-90, 0.015, 0.000004, 0.0006, 0.0, 1.0, 0.35, -0.35, robot.IMU1.getZheading());
+                    }
+                    break;
+                case pushIn:
+                    if(alliance == Alliance.RED_ALLIANCE){
+                        SM.setNextState(States.driveAway, HDWaitTypes.Timer, 1.25);
+                        robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
+                    }else{
+                        SM.setNextState(States.driveAway, HDWaitTypes.Timer, 1.25);
+                        robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
+                    }
+                    break;
+                case driveAway:
+                    if(alliance == Alliance.RED_ALLIANCE){
+                        SM.setNextState(States.done, HDWaitTypes.Timer, 1.5);
+                        robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
+                    }else{
+                        SM.setNextState(States.done, HDWaitTypes.Timer, 1.5);
+                        robot.robotDrive.mecanumDrive_Polar(.25, -180, 0, robot.IMU1.getZheading());
+                    }
                     break;
                 case done:
                     robot.robotGlyph.setIntakePower(0.0);
