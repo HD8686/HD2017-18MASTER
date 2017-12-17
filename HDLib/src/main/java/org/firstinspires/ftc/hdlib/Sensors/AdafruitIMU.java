@@ -64,6 +64,8 @@ public class AdafruitIMU {
         return imu.isGyroCalibrated() && imu.isAccelerometerCalibrated();
     }
 
+    public BNO055IMU getSensor(){return imu;}
+
     public String getCalibrationStatus(){
         return imu.getCalibrationStatus().toString();
     }
