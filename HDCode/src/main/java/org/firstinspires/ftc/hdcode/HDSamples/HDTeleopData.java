@@ -81,7 +81,6 @@ public class HDTeleopData extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.robotJewel.raiseLeftServo();
-        robot.robotJewel.raiseRightServo();
 
         robot.robotGlyph.resetLiftEncoders();
         robot.robotGlyph.resetScotchYoke();

@@ -73,7 +73,6 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.robotDrive.setAlliance(alliance);
 
-        robot.robotJewel.raiseRightServo();
         robot.robotJewel.raiseLeftServo();
 
         this.delay = delay;
@@ -172,7 +171,6 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
                     break;
                 case turnBack:
                     SM.setNextState(States.driveOffBoard, HDWaitTypes.driveHandlerTarget);
-                    robot.robotJewel.raiseRightServo();
                     robot.robotJewel.raiseLeftServo();
                     robot.robotDrive.gyroTurn(0, 0.015, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;

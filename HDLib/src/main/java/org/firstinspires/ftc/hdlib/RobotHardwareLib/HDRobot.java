@@ -9,6 +9,7 @@ import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
+import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 
 /**
  * Created by FIRSTMentor on 11/4/2017.
@@ -21,7 +22,7 @@ public class HDRobot {
     public AdafruitIMU IMU1;
     public HDJewel robotJewel;
     public HDGlyph robotGlyph;
-    public ColorSensor bottomLeftColor, bottomRightColor;
+    public HDMaxbotixUS leftUS, rightUS, backUS, frontUS;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
@@ -31,8 +32,11 @@ public class HDRobot {
         frontRight = hardwareMap.dcMotor.get("Front_Right");
         backLeft = hardwareMap.dcMotor.get("Back_Left");
         backRight = hardwareMap.dcMotor.get("Back_Right");
-        bottomLeftColor = hardwareMap.get(ColorSensor.class, "Left_Bottom_Color");
-        bottomRightColor = hardwareMap.get(ColorSensor.class, "Right_Bottom_Color");
+
+        leftUS = new HDMaxbotixUS(hardwareMap, "leftUS");
+        rightUS = new HDMaxbotixUS(hardwareMap, "rightUS");
+        backUS = new HDMaxbotixUS(hardwareMap, "backUS");
+        frontUS = new HDMaxbotixUS(hardwareMap, "frontUS");
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
         robotGlyph = new HDGlyph(hardwareMap);

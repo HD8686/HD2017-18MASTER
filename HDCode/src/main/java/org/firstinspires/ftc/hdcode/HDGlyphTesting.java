@@ -36,7 +36,6 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         robot.robotJewel.raiseLeftServo();
-        robot.robotJewel.raiseRightServo();
     }
 
     @Override
@@ -54,8 +53,6 @@ public class HDGlyphTesting extends HDOpMode implements HDGamepad.HDButtonMonito
     public void continuousRun(double elapsedTime) {
         if(robot.IMU1.isCalibrated()) {
             dashboard.addProgramSpecificTelemetry(0, "Gyro Z Heading: %f", robot.IMU1.getZheading());
-            dashboard.addProgramSpecificTelemetry(1, "Left Color: %s, Right Color: %s", String.valueOf(robot.bottomLeftColor.red()), String.valueOf(robot.bottomRightColor.red()));
-            dashboard.addProgramSpecificTelemetry(2, "Left Distance: %s, Right Distance: %s", String.valueOf(robot.robotJewel.leftDistance.getDistance(DistanceUnit.CM)), String.valueOf(robot.robotJewel.rightDistance.getDistance(DistanceUnit.CM)));
             dashboard.addProgramSpecificTelemetry(3, "Left enc: %s, Right enc: %s", String.valueOf(robot.robotGlyph.leftPinionMotor.getCurrentPosition()), String.valueOf(robot.robotGlyph.rightPinionMotor.getCurrentPosition()));
             dashboard.addProgramSpecificTelemetry(4, "Scotch Enc: %s", String.valueOf(robot.robotGlyph.scotchYokeMotor.getCurrentPosition()));
             dashboard.addProgramSpecificTelemetry(5, "Value: %s", String.valueOf(kickerCalibrator));
