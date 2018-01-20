@@ -106,6 +106,8 @@ public class HDTeleopData extends HDOpMode implements HDGamepad.HDButtonMonitor{
             driveTrain();
             glyphSystem();
             dashboard.addDiagnosticSpecificTelemetry(0, "Loop Time: %s MS", formatter.formatDecimals(loopTime.milliseconds(), 2));
+            dashboard.addDiagnosticSpecificTelemetry(1, "Left US : %s, Right US: %s, Front US: %s, Back US: %s", formatter.formatDecimals(robot.leftUS.getDistanceCM(), 1)
+            ,formatter.formatDecimals(robot.rightUS.getDistanceCM(), 1),formatter.formatDecimals(robot.frontUS.getDistanceCM(), 1),formatter.formatDecimals(robot.backUS.getDistanceCM(), 1));
             loopTime.reset();
         }else{
             robot.robotDrive.motorBreak();
