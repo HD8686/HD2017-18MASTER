@@ -20,6 +20,7 @@ public class HDAutonomous extends HDOpMode{
 
     private enum Strategy {
         NONRELICGLYPHJEWEL,
+        RELICGLYPHDOUBLEJEWEL,
     }
 
     private HDAuto HDAuto;
