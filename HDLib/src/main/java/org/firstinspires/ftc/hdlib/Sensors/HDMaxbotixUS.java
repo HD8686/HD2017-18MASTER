@@ -46,7 +46,7 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
     @Override
     public void InitializeLoopOp() {
-        if(timer.milliseconds() > 20 && active) {
+        if(timer.milliseconds() > 150 && active) {
             double reading = ultrasonic.getVoltage() / distanceConst;
 
 
@@ -71,7 +71,7 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
     @Override
     public void continuousCallOp() {
-        if(timer.milliseconds() > 20 && active) {
+        if(timer.milliseconds() > 150 && active) {
             double reading = ultrasonic.getVoltage() / distanceConst;
 
 
