@@ -184,8 +184,8 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                             //CHANGE NUMBER
                         }
                     }
-
                     break;
+                    
             }
         }
     }

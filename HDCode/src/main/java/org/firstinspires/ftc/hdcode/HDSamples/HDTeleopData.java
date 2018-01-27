@@ -11,6 +11,7 @@ import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
+import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -33,6 +34,8 @@ public class HDTeleopData extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private Velocity velocity;
     private Acceleration linearAcceleration;
     private Acceleration normalAcceleration, gravityAcceleration, overallAcceleration;
+    private HDMaxbotixUS US1;
+    private HDMaxbotixUS US2;
 
     private double lastSpeed = 0.0;
 
@@ -86,6 +89,8 @@ public class HDTeleopData extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotGlyph.resetScotchYoke();
 
         loopTime = new ElapsedTime();
+        US1 = new HDMaxbotixUS(hardwareMap, "US1");
+        US2 = new HDMaxbotixUS(hardwareMap, "US2");
     }
 
     @Override
