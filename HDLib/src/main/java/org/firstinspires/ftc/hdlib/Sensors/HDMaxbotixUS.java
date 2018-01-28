@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.hdlib.Sensors;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,9 +25,9 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
 
     double average = 0.0;
-    double distanceConst = 0.004883;
+    double distanceConst = .001889763779;
     AnalogInput ultrasonic;
-    List<Double> list = new ArrayList<>(Collections.nCopies(5,0.0));
+    List<Double> list = new ArrayList<>(Collections.nCopies(7,0.0));
 
     public HDMaxbotixUS(HardwareMap hardwareMap, String sensorName){
         ultrasonic = hardwareMap.analogInput.get(sensorName);
@@ -57,13 +59,7 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
             }
 
-            average = 0.0;
-
-            for(double i: list){
-                average += i;
-            }
-
-            average = average/list.size();
+            average = median(list);
 
             timer.reset();
         }
@@ -74,7 +70,6 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
         if(timer.milliseconds() > 150 && active) {
             double reading = ultrasonic.getVoltage() / distanceConst;
 
-
             if(reading < 200) {
                 list.remove(0);
                 list.add(reading);
@@ -82,13 +77,7 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
             }
 
-            average = 0.0;
-
-            for(double i: list){
-                average += i;
-            }
-
-            average = average/list.size();
+            average = median(list);
 
             timer.reset();
         }
@@ -97,5 +86,15 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
     @Override
     public void StartOp() {
 
+    }
+
+    public double median (List<Double> a){
+        int middle = a.size()/2;
+
+        if (a.size() % 2 == 1) {
+            return a.get(middle);
+        } else {
+            return (a.get(middle-1) + a.get(middle)) / 2.0;
+        }
     }
 }

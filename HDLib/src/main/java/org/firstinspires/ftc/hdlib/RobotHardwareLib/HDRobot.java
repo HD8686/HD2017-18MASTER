@@ -22,7 +22,7 @@ public class HDRobot {
     public AdafruitIMU IMU1;
     public HDJewel robotJewel;
     public HDGlyph robotGlyph;
-    public HDMaxbotixUS leftUS, rightUS, backUS, frontUS;
+    public HDMaxbotixUS backUS, frontUS;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
@@ -33,8 +33,8 @@ public class HDRobot {
         backLeft = hardwareMap.dcMotor.get("Back_Left");
         backRight = hardwareMap.dcMotor.get("Back_Right");
 
-        leftUS = new HDMaxbotixUS(hardwareMap, "leftUS");
-        rightUS = new HDMaxbotixUS(hardwareMap, "rightUS");
+        //leftUS = new HDMaxbotixUS(hardwareMap, "leftUS");
+        //rightUS = new HDMaxbotixUS(hardwareMap, "rightUS");
         backUS = new HDMaxbotixUS(hardwareMap, "backUS");
         frontUS = new HDMaxbotixUS(hardwareMap, "frontUS");
 
