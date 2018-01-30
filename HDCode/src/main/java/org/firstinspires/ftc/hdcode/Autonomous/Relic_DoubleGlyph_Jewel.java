@@ -38,6 +38,23 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
         turnToCryptobox,
         driveToCryptobox,
         ejectGlyphs,
+        backAway,
+        turnToGlyphs,
+        driveToGlyphs,
+        driveSlowToGlyphs,
+        waitToIntake,
+        turnBackToCryptobox,
+        driveBackToCryptobox,
+        ejectGlyphsAgain,
+        backAwayAgain,
+        turnToGlyphs2,
+        driveToGlyphs2,
+        driveSlowToGlyphs2,
+        waitToIntake2,
+        turnBackToCryptobox2,
+        driveBackToCryptobox2,
+        ejectGlyphsAgain2,
+        backAwayAgain2,
         done,
     }
 
@@ -190,7 +207,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     robot.robotDrive.gyroTurn(0, 0.015, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;
                 case readUltrasonic:
-                    SM.setNextState(States.driveToDistance, HDWaitTypes.Timer, 0.5);
+                    SM.setNextState(States.driveToDistance, HDWaitTypes.Timer, 0.25);
                     if(alliance == Alliance.RED_ALLIANCE)
                         ultrasonicValue = robot.frontUS.getDistanceCM();
                     else
@@ -198,7 +215,6 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     Log.w("Test", String.valueOf(ultrasonicValue));
                     break;
                 case driveToDistance:
-
                     if(alliance == Alliance.RED_ALLIANCE) {
                         switch (vuMark) {
                             case UNKNOWN:
@@ -210,7 +226,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case CENTER: //160
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case RIGHT: //140
@@ -233,7 +249,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 robot.robotDrive.tankDrive(0.25, 0.25);
                                 break;
                             case CENTER:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
                                 robot.robotDrive.tankDrive(0.25, 0.25);
                                 break;
                             case RIGHT:
@@ -260,7 +276,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case CENTER: //160
                                 SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-52, 0.01, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-52, 0.0085, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT: //140
                                 SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
@@ -297,14 +313,249 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     }
                     break;
                 case driveToCryptobox:
-                    SM.setNextState(States.ejectGlyphs, HDWaitTypes.Timer, 0.75);
+                    SM.setNextState(States.ejectGlyphs, HDWaitTypes.Timer, 0.65);
                     robot.robotDrive.tankDrive(.25, .25);
                     break;
                 case ejectGlyphs:
-                    SM.setNextState(States.done, HDWaitTypes.Timer, 2.0);
+                    SM.setNextState(States.backAway, HDWaitTypes.Timer, 1.0);
                     robot.robotDrive.motorBreak();
                     robot.robotGlyph.setIntakePower(-.7);
                     robot.robotGlyph.blockKickerOut();
+                    break;
+                case backAway:
+                    SM.setNextState(States.turnToGlyphs, HDWaitTypes.Timer, .5);
+                    robot.robotDrive.tankDrive(-.25, -.25);
+                    break;
+                case turnToGlyphs:
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                    switch (vuMark) {
+                        case UNKNOWN:
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
+                            break;
+                        case LEFT:
+
+                            break;
+                        case CENTER:
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
+                            break;
+                        case RIGHT:
+
+                             break;
+                        default:
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
+                            break;
+                    }
+                }else{
+                    switch (vuMark) {
+                        case UNKNOWN:
+
+                            break;
+                        case LEFT:
+
+                            break;
+                        case CENTER:
+
+                            break;
+                        case RIGHT:
+
+                            break;
+                        default:
+
+                            break;
+                    }
+                }
+                    break;
+                case driveToGlyphs:
+                    SM.setNextState(States.driveSlowToGlyphs, HDWaitTypes.Timer, 1.15);
+                    robot.robotDrive.tankDrive(.5, .5);
+                    robot.robotGlyph.setIntakePower(.7);
+                    break;
+                case driveSlowToGlyphs:
+                    SM.setNextState(States.waitToIntake, HDWaitTypes.Timer, 0.5);
+                    robot.robotDrive.tankDrive(.25, .25);
+                    break;
+                case waitToIntake:
+                    SM.setNextState(States.turnBackToCryptobox, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.motorBreak();
+                    break;
+                case turnBackToCryptobox:
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        switch (vuMark) {
+                            case UNKNOWN:
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-87, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-86, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-87, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+
+                                break;
+                        }
+                    }else{
+                        switch (vuMark) {
+                            case UNKNOWN:
+
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+
+                                break;
+                        }
+                    }
+                        break;
+                case driveBackToCryptobox:
+                    SM.setNextState(States.ejectGlyphsAgain, HDWaitTypes.Timer, 1.55);
+                    robot.robotDrive.tankDrive(.5, .5);
+                    break;
+                case ejectGlyphsAgain:
+                    SM.setNextState(States.backAwayAgain, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.motorBreak();
+                    robot.robotGlyph.setIntakePower(-.7);
+                    robot.robotGlyph.blockKickerOut();
+                    break;
+                case backAwayAgain:
+                    SM.setNextState(States.turnToGlyphs2, HDWaitTypes.Timer, 0.35);
+                    robot.robotDrive.tankDrive(-.5, -.5);
+                    break;
+                case turnToGlyphs2:
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        switch (vuMark) {
+                            case UNKNOWN:
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(70, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
+                                break;
+                        }
+                    }else{
+                        switch (vuMark) {
+                            case UNKNOWN:
+
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+
+                                break;
+                        }
+                    }
+                    break;
+                case driveToGlyphs2:
+                    SM.setNextState(States.driveSlowToGlyphs2, HDWaitTypes.Timer, 1.25);
+                    robot.robotDrive.tankDrive(.5, .5);
+                    robot.robotGlyph.setIntakePower(.7);
+                    break;
+                case driveSlowToGlyphs2:
+                    SM.setNextState(States.waitToIntake2, HDWaitTypes.Timer, 0.5);
+                    robot.robotDrive.tankDrive(.25, .25);
+                    break;
+                case waitToIntake2:
+                    SM.setNextState(States.turnBackToCryptobox2, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.motorBreak();
+                    break;
+                case turnBackToCryptobox2:
+                    if(alliance == Alliance.RED_ALLIANCE) {
+                        switch (vuMark) {
+                            case UNKNOWN:
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                break;
+                        }
+                    }else{
+                        switch (vuMark) {
+                            case UNKNOWN:
+
+                                break;
+                            case LEFT:
+
+                                break;
+                            case CENTER:
+
+                                break;
+                            case RIGHT:
+
+                                break;
+                            default:
+
+                                break;
+                        }
+                    }
+                    break;
+                case driveBackToCryptobox2:
+                    SM.setNextState(States.ejectGlyphsAgain2, HDWaitTypes.Timer, 1.6);
+                    robot.robotDrive.tankDrive(.5, .5);
+                    break;
+                case ejectGlyphsAgain2:
+                    SM.setNextState(States.backAwayAgain2, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.motorBreak();
+                    robot.robotGlyph.setIntakePower(-.7);
+                    robot.robotGlyph.blockKickerOut();
+                    break;
+                case backAwayAgain2:
+                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.5);
+                    robot.robotDrive.tankDrive(-.5, -.5);
                     break;
                 case done:
                     robot.robotGlyph.setIntakePower(0.0);
