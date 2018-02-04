@@ -222,7 +222,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case LEFT:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.25);
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case CENTER: //160
@@ -331,23 +331,27 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     switch (vuMark) {
                         case UNKNOWN:
                             SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
-                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                             robot.robotGlyph.blockKickerIn();
                             break;
                         case LEFT:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(90, 0.0065, 0.000004, 0.0006, 0.000, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                         case CENTER:
                             SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
-                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                             robot.robotGlyph.blockKickerIn();
                             break;
                         case RIGHT:
-
-                             break;
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
+                            break;
                         default:
                             SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
-                            robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                             robot.robotGlyph.blockKickerIn();
                             break;
                     }
@@ -389,23 +393,26 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                         switch (vuMark) {
                             case UNKNOWN:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-87, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
 
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-83.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-86, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-86.5, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
 
                                 break;
                             case RIGHT:
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-96.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
 
                                 break;
                             default:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-87, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
 
                                 break;
                         }
@@ -448,23 +455,27 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                         switch (vuMark) {
                             case UNKNOWN:
                                 SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 robot.robotGlyph.blockKickerIn();
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             case CENTER:
                                 SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(70, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(70, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 robot.robotGlyph.blockKickerIn();
                                 break;
                             case RIGHT:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(100, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             default:
                                 SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 robot.robotGlyph.blockKickerIn();
                                 break;
                         }
@@ -506,21 +517,23 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                         switch (vuMark) {
                             case UNKNOWN:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-80, 0.0065, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                         }
                     }else{

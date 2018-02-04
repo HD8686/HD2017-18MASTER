@@ -271,7 +271,7 @@ public class HDDriveHandler {
      * @param minSpeed Minimum Speed robot should work (counts negative)
      * @param gyroHeading Current Gyro Z axis heading
      */
-    public void gyroTurn(double targetAngle, double p, double i, double d, double ff, double tolerance, double maxSpeed, double minSpeed, double gyroHeading){
+    public void gyroTurn(double targetAngle, double p, double i, double d, double ff, double tolerance, double maxSpeed, double minSpeed, double gyroHeading, double minimumVelocity){
 
         if(alliance == Alliance.BLUE_ALLIANCE){
            targetAngle = -targetAngle;
@@ -331,12 +331,29 @@ public class HDDriveHandler {
         if((Math.abs(currentError) < tolerance)){
             motorBreak();
         }else {
+            if(Math.abs(result) < minimumVelocity){
+                result = Math.copySign(minimumVelocity, result);
+            }
             tankDrive(result, -result);
         }
 
     }
 
-
+    /**
+     * PID gyro Turn used to turn a tank drive robot to a specefied gyro angle.
+     * @param targetAngle Angle to turn to
+     * @param p Preportional value for PID controller
+     * @param i Integral value for PID controller
+     * @param d Derivative value for PID controller
+     * @param ff Feed forward value for PID controller
+     * @param tolerance Tolerance to end gyro turn
+     * @param maxSpeed Maximum Speed that robot should reach
+     * @param minSpeed Minimum Speed robot should work (counts negative)
+     * @param gyroHeading Current Gyro Z axis heading
+     */
+    public void gyroTurn(double targetAngle, double p, double i, double d, double ff, double tolerance, double maxSpeed, double minSpeed, double gyroHeading){
+        gyroTurn(targetAngle, p, i, d, ff, tolerance, maxSpeed, minSpeed, gyroHeading, 0.1);
+    }
 
 
 

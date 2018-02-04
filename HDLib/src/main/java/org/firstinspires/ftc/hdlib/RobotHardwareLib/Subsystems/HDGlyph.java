@@ -54,6 +54,8 @@ public class HDGlyph {
 
         leftPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftPinionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightPinionMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftPinionMotor.setPower(0);
         rightPinionMotor.setPower(0);
         scotchYokeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,8 +67,8 @@ public class HDGlyph {
 
 
     public void setLiftPower(double power){
-        leftPinionMotor.setPower(power);
         rightPinionMotor.setPower(power);
+        leftPinionMotor.setPower(power);
     }
 
     public int getLiftHeight(){
@@ -108,6 +110,13 @@ public class HDGlyph {
         bottomRightIntake.setPower(-power);
         topLeftIntake.setPower(power);
         topRightIntake.setPower(-power);
+    }
+
+    public void setIntakePowerIndividual(double bottomLeft, double bottomRight, double topLeft, double topRight){
+        bottomLeftIntake.setPower(bottomLeft);
+        bottomRightIntake.setPower(-bottomRight);
+        topLeftIntake.setPower(topLeft);
+        topRightIntake.setPower(-topRight);
     }
 
     public void gripBlock(){
