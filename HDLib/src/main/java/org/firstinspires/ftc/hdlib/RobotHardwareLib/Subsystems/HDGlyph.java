@@ -23,8 +23,8 @@ public class HDGlyph {
     public ColorSensor bottomGlyphColor;
     public DistanceSensor bottomGlyphDistance;
 
-    private double leftBlockGrabberGrip = 0.74;
-    private double leftBlockGrabberNoGrip = 0.92;
+    private double leftBlockGrabberGrip = 0.70;
+    private double leftBlockGrabberNoGrip = 1.0;
     private double rightBlockGrabberGrip = 0.42;
     private double rightBlockGrabberNoGrip = 0.25;//0.27
     private double blockKickerOut = 0.54;
