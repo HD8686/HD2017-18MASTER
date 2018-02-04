@@ -279,13 +279,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 }
                 break;
             case DEPOSITHIGH:
-                if(robot.robotGlyph.getLiftHeight1() < 7200/2){
+                if(robot.robotGlyph.getLiftHeight1() < 7500/2){
                     robot.robotGlyph.setLiftPower1(1.0);
-                }else if(robot.robotGlyph.getLiftHeight1() < 8200/2){
+                }else if(robot.robotGlyph.getLiftHeight1() < 8500/2){
                     robot.robotGlyph.setLiftPower1(0.35);
-                }else if(robot.robotGlyph.getLiftHeight1() < 8900/2){
+                }else if(robot.robotGlyph.getLiftHeight1() < 9200/2){
                     robot.robotGlyph.setLiftPower1(0.35);
-                }else if(robot.robotGlyph.getLiftHeight1() > 9000/2){
+                }else if(robot.robotGlyph.getLiftHeight1() > 9300/2){
                     robot.robotGlyph.setLiftPower1(-.15);
                 }else{
                     robot.robotGlyph.setLiftPower1(0.0);
@@ -340,16 +340,16 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 }
                 break;
             case DEPOSITHIGH:
-                if(robot.robotGlyph.getLiftHeight2() < 7200/2){
+                if(robot.robotGlyph.getLiftHeight2() < 7500/2){
                     robot.robotGlyph.rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.robotGlyph.setLiftPower2(1.0);
-                }else if(robot.robotGlyph.getLiftHeight2() < 8200/2){
+                }else if(robot.robotGlyph.getLiftHeight2() < 8500/2){
                     robot.robotGlyph.rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.robotGlyph.setLiftPower2(0.35);
-                }else if(robot.robotGlyph.getLiftHeight2() < 8900/2){
+                }else if(robot.robotGlyph.getLiftHeight2() < 9200/2){
                     robot.robotGlyph.rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.robotGlyph.setLiftPower2(0.35);
-                }else if(robot.robotGlyph.getLiftHeight2() > 9000/2){
+                }else if(robot.robotGlyph.getLiftHeight2() > 9300/2){
                     robot.robotGlyph.rightPinionMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     robot.robotGlyph.setLiftPower2(-.15);
                 }else{
