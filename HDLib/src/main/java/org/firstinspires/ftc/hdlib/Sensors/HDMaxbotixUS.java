@@ -16,8 +16,7 @@ import java.util.List;
  * Created by FIRSTMentor on 12/22/2017.
  */
 
-public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
-{
+public class HDMaxbotixUS implements HDLoopInterface.LoopTimer {
 
     private ElapsedTime timer;
 
@@ -27,9 +26,9 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
     double average = 0.0;
     double distanceConst = .001889763779;
     AnalogInput ultrasonic;
-    List<Double> list = new ArrayList<>(Collections.nCopies(7,0.0));
+    List<Double> list = new ArrayList<>(Collections.nCopies(7, 0.0));
 
-    public HDMaxbotixUS(HardwareMap hardwareMap, String sensorName){
+    public HDMaxbotixUS(HardwareMap hardwareMap, String sensorName) {
         ultrasonic = hardwareMap.analogInput.get(sensorName);
         timer = new ElapsedTime();
 
@@ -38,24 +37,24 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
         HDLoopInterface.getInstance().register(this, HDLoopInterface.registrationTypes.Start);
     }
 
-    public void setActive(boolean active){
+    public void setActive(boolean active) {
         this.active = active;
     }
 
-    public double getDistanceCM(){
+    public double getDistanceCM() {
         return average;
     }
 
     @Override
     public void InitializeLoopOp() {
-        if(timer.milliseconds() > 150 && active) {
+        if (timer.milliseconds() > 150 && active) {
             double reading = ultrasonic.getVoltage() / distanceConst;
 
 
-            if(reading < 200) {
+            if (reading < 200) {
                 list.remove(0);
                 list.add(reading);
-            }else{
+            } else {
 
             }
 
@@ -67,14 +66,12 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
     @Override
     public void continuousCallOp() {
-        if(timer.milliseconds() > 150 && active) {
+        if (timer.milliseconds() > 150 && active) {
             double reading = ultrasonic.getVoltage() / distanceConst;
 
-            if(reading < 200) {
+            if (reading < 200) {
                 list.remove(0);
                 list.add(reading);
-            }else{
-
             }
 
             average = median(list);
@@ -88,13 +85,13 @@ public class HDMaxbotixUS implements HDLoopInterface.LoopTimer
 
     }
 
-    public double median (List<Double> a){
-        int middle = a.size()/2;
+    public double median(List<Double> a) {
+        int middle = a.size() / 2;
 
         if (a.size() % 2 == 1) {
             return a.get(middle);
         } else {
-            return (a.get(middle-1) + a.get(middle)) / 2.0;
+            return (a.get(middle - 1) + a.get(middle)) / 2.0;
         }
     }
 }

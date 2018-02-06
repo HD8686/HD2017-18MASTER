@@ -37,7 +37,7 @@ public class HDVuforiaVuMarks {
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
         relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging, otherwise not necessary
     }
 
     public void activateTracking(){
