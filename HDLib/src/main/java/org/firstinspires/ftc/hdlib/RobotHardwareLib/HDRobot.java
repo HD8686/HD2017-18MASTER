@@ -8,6 +8,7 @@ import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDRelic;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 
@@ -23,6 +24,7 @@ public class HDRobot {
     public HDJewel robotJewel;
     public HDGlyph robotGlyph;
     public HDMaxbotixUS backUS, frontUS;
+    public HDRelic robotRelic;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
@@ -41,6 +43,7 @@ public class HDRobot {
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
         robotGlyph = new HDGlyph(hardwareMap);
         robotJewel = new HDJewel(hardwareMap);
+        robotRelic = new HDRelic(hardwareMap);
     }
 
 }

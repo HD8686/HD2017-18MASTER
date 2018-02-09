@@ -11,7 +11,6 @@ import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
  * Created by akash on 8/8/2017.
@@ -29,6 +28,17 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private double lastSpeed = 0.0;
 
     private ElapsedTime loopTime;
+
+    private enum ServoboyMode{
+        GLYPH,
+        RELIC
+    }
+
+    private enum RelicTiltMode{
+        STOWED,
+        RAISED,
+    }
+
 
     private enum liftHeight{
         GROUND, //0/2
@@ -61,9 +71,14 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private driveMode curDriveMode = driveMode.HALO_DRIVE;
     private liftHeight curLiftHeight = liftHeight.GROUND;
     private scotchYokePosition scotchPos = scotchYokePosition.UP;
+    private ServoboyMode servoboyMode = ServoboyMode.GLYPH;
+    private RelicTiltMode relicTiltMode = RelicTiltMode.STOWED;
 
     @Override
     public void initialize() {
+
+        telemetry.setMsTransmissionInterval(50);
+
         robot = new HDRobot(hardwareMap);
 
         driverGamepad = new HDGamepad(gamepad1, this);
@@ -91,12 +106,14 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         servoBoyGamepad.setGamepad(gamepad2);
     }
 
+
     @Override
     public void continuousRun(double elapsedTime) {
         if(robot.IMU1.isCalibrated()) {
             telemetry();
             driveTrain();
             glyphSystem();
+            relicSystem();
             dashboard.addDiagnosticSpecificTelemetry(0, "Loop Time: %s MS", formatter.formatDecimals(loopTime.milliseconds(), 2));
             loopTime.reset();
         }else{
@@ -105,18 +122,40 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void telemetry(){
-        dashboard.addProgramSpecificTelemetry(0, "Speed: " + String.valueOf(speed));
-        dashboard.addProgramSpecificTelemetry(1, "Drive Mode: %s", String.valueOf(curDriveMode));
-        dashboard.addProgramSpecificTelemetry(2, "Collector On?: %s", String.valueOf(collectorOn));
+        dashboard.addProgramSpecificTelemetry(0, "GAMEPAD 2 MODE: %s", String.valueOf(servoboyMode));
+        dashboard.addProgramSpecificTelemetry(1, "Speed: " + String.valueOf(speed));
+        dashboard.addProgramSpecificTelemetry(2, "Drive Mode: %s", String.valueOf(curDriveMode));
+        dashboard.addProgramSpecificTelemetry(3, "Collector On?: %s", String.valueOf(collectorOn));
         dashboard.addDiagnosticSpecificTelemetry(1, "Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition());
-        dashboard.addProgramSpecificTelemetry(3, "Scotch Mode: %s", String.valueOf(scotchPos));
-        dashboard.addProgramSpecificTelemetry(4, "Lift Mode: %s", String.valueOf(curLiftHeight));
-        /*if(robot.robotGlyph.bottomGlyphDistance.getDistance(DistanceUnit.INCH) < 2.5){
-            dashboard.addDiagnosticSpecificTelemetry(3, "Block in bottom bay");
-        }else{
-            dashboard.addDiagnosticSpecificTelemetry(3, "No Block in bottom bay");
-        }*/
+        dashboard.addProgramSpecificTelemetry(4, "Scotch Mode: %s", String.valueOf(scotchPos));
+        dashboard.addProgramSpecificTelemetry(5, "Lift Mode: %s", String.valueOf(curLiftHeight));
+        dashboard.addProgramSpecificTelemetry(6, "Lift Potentiometer: %s", String.valueOf(robot.robotRelic.getPotentiometerVoltage()));
+    }
 
+    private void relicSystem(){
+        /*double error;
+        switch (relicTiltMode) {
+            case STOWED:
+                error = robot.robotRelic.getPotentiometerVoltage() - 0.88;
+                robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
+                break;
+            case RAISED:
+                error = robot.robotRelic.getPotentiometerVoltage() - 1.7125;
+                if(error < 0.0){
+                    error = -.3;
+                }else if(error < -.1){
+                    error = -.35;
+                }else if(error < -.5){
+                    error = -.8;
+                }
+                if(error > .02){
+                    error = -.01;
+                }
+                error = gamepad2.left_stick_y;
+                Log.w("relicPower", String.valueOf(error));
+                robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
+                break;
+        }*/
     }
 
     private void driveTrain(){
@@ -235,10 +274,10 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
             break;
     }
 
-    if(gamepad2.right_bumper){
+    if(gamepad2.right_bumper && servoboyMode == ServoboyMode.GLYPH){
         Log.w("Delta", String.valueOf(robot.robotGlyph.leftPinionMotor.getCurrentPosition() - robot.robotGlyph.rightPinionMotor.getCurrentPosition()));
         robot.robotGlyph.setLiftPower(-gamepad2.left_stick_y);
-    }else if(gamepad2.start){
+    }else if(gamepad2.start && servoboyMode == ServoboyMode.GLYPH){
         robot.robotGlyph.leftPinionMotor.setPower(-gamepad2.left_stick_y);
         robot.robotGlyph.rightPinionMotor.setPower(-gamepad2.right_stick_y);
     }else{
@@ -376,7 +415,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         }
     }
 
-    if(gamepad2.left_trigger > .25 || gamepad1.left_trigger > .25){
+    if((gamepad2.left_trigger > .25 && servoboyMode == ServoboyMode.GLYPH) || gamepad1.left_trigger > .25){
         scotchPos = scotchYokePosition.NORMAL;
         robot.robotGlyph.setIntakePower(-.7);
         robot.robotGlyph.blockKickerOut();
@@ -453,7 +492,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         }else if(instance == servoBoyGamepad){
             switch (button) {
                 case A:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         scotchPos = scotchYokePosition.GRAB_BOTTOM_BLOCK;
                     }
                     break;
@@ -462,51 +501,49 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case X:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         scotchPos = scotchYokePosition.NORMAL;
                     }
                     break;
                 case Y:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         scotchPos = scotchYokePosition.BRING_BLOCK_UP;
                     }
                     break;
                 case DPAD_LEFT:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         curLiftHeight = liftHeight.COLLECT2;
                     }
                     break;
                 case DPAD_RIGHT:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         curLiftHeight = liftHeight.BALANCINGSTONE;
                     }else{
 
                     }
                     break;
                 case DPAD_UP:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         curLiftHeight = liftHeight.DEPOSITHIGH;
                     }else{
 
                     }
                     break;
                 case DPAD_DOWN:
-                    if(pressed){
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH){
                         curLiftHeight = liftHeight.GROUND;
                     }else{
 
                     }
                 case LEFT_BUMPER:
                     if(pressed){
-
-                    }else{
-
+                        relicTiltMode = RelicTiltMode.RAISED;
                     }
                     break;
                 case RIGHT_BUMPER:
                     break;
                 case RIGHT_TRIGGER:
-                    if(pressed) {
+                    if(pressed && servoboyMode == ServoboyMode.GLYPH) {
                         collectorOn = !collectorOn;
                     }
                     break;
