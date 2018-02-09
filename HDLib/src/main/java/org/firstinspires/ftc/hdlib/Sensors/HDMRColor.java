@@ -16,8 +16,6 @@ public class HDMRColor{
         this.colorHMKey = rangeHMkey;
     }
 
-
-
     public String getName(){
         return this.colorHMKey;
     }
@@ -25,7 +23,5 @@ public class HDMRColor{
     public ModernRoboticsI2cColorSensor getSensor(){
         return colorSensor;
     }
-
-
 
 }
