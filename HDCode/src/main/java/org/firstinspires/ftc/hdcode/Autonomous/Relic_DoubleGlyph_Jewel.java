@@ -208,13 +208,19 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     break;
                 case readUltrasonic:
                     SM.setNextState(States.driveToDistance, HDWaitTypes.Timer, 0.25);
-                    if(alliance == Alliance.RED_ALLIANCE)
+                    if(alliance == Alliance.RED_ALLIANCE) {
                         ultrasonicValue = robot.frontUS.getDistanceCM();
-                    else
+                        Log.w("frontUS Distance", String.valueOf(ultrasonicValue));
+                    }else {
                         ultrasonicValue = robot.backUS.getDistanceCM();
+                        Log.w("backUS Distance", String.valueOf(ultrasonicValue));
+                    }
                     Log.w("Test", String.valueOf(ultrasonicValue));
                     break;
                 case driveToDistance:
+                    if(ultrasonicValue > 110 || ultrasonicValue < 90){
+                        ultrasonicValue = 100;
+                    }
                     if(alliance == Alliance.RED_ALLIANCE) {
                         switch (vuMark) {
                             case UNKNOWN:
@@ -222,15 +228,15 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case LEFT:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.25);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.45);
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case CENTER: //160
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.2);
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             case RIGHT: //140
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-1.0/38.0)*(ultrasonicValue)+(70.0/19.0)+0.15);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-1.0/38.0)*(ultrasonicValue)+(70.0/19.0)+0.0);
                                 robot.robotDrive.tankDrive(-.25, -.25);
                                 break;
                             default:
@@ -241,24 +247,24 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     }else{
                         switch (vuMark) {
                             case UNKNOWN:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15);
-                                robot.robotDrive.tankDrive(0.25, 0.25);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15-3.5);
+                                robot.robotDrive.tankDrive(.25, .25);
                                 break;
                             case LEFT:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-1.0/38.0)*(ultrasonicValue)+(70.0/19.0)+0.15);
-                                robot.robotDrive.tankDrive(0.25, 0.25);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-1.0/38.0)*(ultrasonicValue)+(70.0/19.0)+0.0-3.5);
+                                robot.robotDrive.tankDrive(.25, .25);
                                 break;
-                            case CENTER:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
-                                robot.robotDrive.tankDrive(0.25, 0.25);
+                            case CENTER: //160
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.45-1.5);
+                                robot.robotDrive.tankDrive(.25, .25);
                                 break;
-                            case RIGHT:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0));
-                                robot.robotDrive.tankDrive(0.25, 0.25);
+                            case RIGHT: //140
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)-.45-.5);
+                                robot.robotDrive.tankDrive(.25, .25);
                                 break;
                             default:
-                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15);
-                                robot.robotDrive.tankDrive(0.25, 0.25);
+                                SM.setNextState(States.turnToCryptobox, HDWaitTypes.Timer, (-3.0/116.0)*(ultrasonicValue)+(120.0/29.0)+0.15-3.5);
+                                robot.robotDrive.tankDrive(.25, .25);
                                 break;
                         }
                     }
@@ -271,7 +277,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 robot.robotDrive.gyroTurn(-50, 0.01, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-                                SM.setNextState(States.ejectGlyphs, HDWaitTypes.driveHandlerTarget);
+                                SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
                                 robot.robotDrive.gyroTurn(-90, 0.0095, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER: //160
@@ -295,15 +301,15 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case LEFT:
                                 SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(50, 0.01, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(90, 0.01, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
-                            case CENTER:
+                            case CENTER: //160
                                 SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(52, 0.01, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(52, 0.0085, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
-                            case RIGHT:
-                                SM.setNextState(States.ejectGlyphs, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(90, 0.0095, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            case RIGHT: //140
+                                SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(50, 0.0095, 0.000004, 0.0006, 0.0, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.driveToCryptobox, HDWaitTypes.driveHandlerTarget);
@@ -313,8 +319,13 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     }
                     break;
                 case driveToCryptobox:
-                    SM.setNextState(States.ejectGlyphs, HDWaitTypes.Timer, 0.65);
-                    robot.robotDrive.tankDrive(.25, .25);
+                    if((alliance == Alliance.RED_ALLIANCE && vuMark == RelicRecoveryVuMark.LEFT) || (alliance == Alliance.BLUE_ALLIANCE && vuMark == RelicRecoveryVuMark.LEFT)){
+                        SM.setNextState(States.ejectGlyphs, HDWaitTypes.Timer, 0.3);
+                        robot.robotDrive.tankDrive(.35, .35);
+                    }else{
+                        SM.setNextState(States.ejectGlyphs, HDWaitTypes.Timer, 0.5);
+                        robot.robotDrive.tankDrive(.35, .35);
+                    }
                     break;
                 case ejectGlyphs:
                     SM.setNextState(States.backAway, HDWaitTypes.Timer, 1.0);
@@ -358,25 +369,35 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                 }else{
                     switch (vuMark) {
                         case UNKNOWN:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(-80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                         case LEFT:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.000, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                         case CENTER:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(-80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                         case RIGHT:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                         default:
-
+                            SM.setNextState(States.driveToGlyphs, HDWaitTypes.driveHandlerTarget);
+                            robot.robotDrive.gyroTurn(-80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                            robot.robotGlyph.blockKickerIn();
                             break;
                     }
                 }
                     break;
                 case driveToGlyphs:
-                    SM.setNextState(States.driveSlowToGlyphs, HDWaitTypes.Timer, 1.15);
+                    SM.setNextState(States.driveSlowToGlyphs, HDWaitTypes.Timer, 1.25);
                     robot.robotDrive.tankDrive(.5, .5);
                     robot.robotGlyph.setIntakePower(.7);
                     break;
@@ -394,44 +415,45 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                             case UNKNOWN:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
                                 robot.robotDrive.gyroTurn(-86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-
                                 break;
                             case LEFT:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-83.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-70.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
                                 robot.robotDrive.gyroTurn(-86.5, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-
                                 break;
                             case RIGHT:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-96.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-
+                                robot.robotDrive.gyroTurn(-92.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
                                 robot.robotDrive.gyroTurn(-86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-
                                 break;
                         }
                     }else{
                         switch (vuMark) {
                             case UNKNOWN:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(80.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(86.5, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(91.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
-
+                                SM.setNextState(States.driveBackToCryptobox, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(86.5, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                         }
                     }
@@ -460,7 +482,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case LEFT:
                                 SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(95, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 robot.robotGlyph.blockKickerIn();
                                 break;
                             case CENTER:
@@ -470,7 +492,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case RIGHT:
                                 SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(100, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 robot.robotGlyph.blockKickerIn();
                                 break;
                             default:
@@ -482,25 +504,35 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     }else{
                         switch (vuMark) {
                             case UNKNOWN:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             case CENTER:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-70, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             case RIGHT:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-95, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                             default:
-
+                                SM.setNextState(States.driveToGlyphs2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(-70, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotGlyph.blockKickerIn();
                                 break;
                         }
                     }
                     break;
                 case driveToGlyphs2:
-                    SM.setNextState(States.driveSlowToGlyphs2, HDWaitTypes.Timer, 1.25);
+                    SM.setNextState(States.driveSlowToGlyphs2, HDWaitTypes.Timer, 1.35);
                     robot.robotDrive.tankDrive(.5, .5);
                     robot.robotGlyph.setIntakePower(.7);
                     break;
@@ -521,7 +553,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case LEFT:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-95, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
@@ -529,7 +561,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                                 break;
                             case RIGHT:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
-                                robot.robotDrive.gyroTurn(-90, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                                robot.robotDrive.gyroTurn(-92, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
                                 SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
@@ -539,25 +571,30 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     }else{
                         switch (vuMark) {
                             case UNKNOWN:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case LEFT:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(83, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case CENTER:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(80, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             case RIGHT:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(86, 0.0065, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                             default:
-
+                                SM.setNextState(States.driveBackToCryptobox2, HDWaitTypes.driveHandlerTarget);
+                                robot.robotDrive.gyroTurn(80, 0.008, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                                 break;
                         }
                     }
                     break;
-                case driveBackToCryptobox2:
-                    SM.setNextState(States.ejectGlyphsAgain2, HDWaitTypes.Timer, 1.6);
+                case driveBackToCryptobox2: // CHANGE DRIVE FORWARD
+                    SM.setNextState(States.ejectGlyphsAgain2, HDWaitTypes.Timer, 1.8);
                     robot.robotDrive.tankDrive(.5, .5);
                     break;
                 case ejectGlyphsAgain2:
@@ -567,7 +604,7 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
                     robot.robotGlyph.blockKickerOut();
                     break;
                 case backAwayAgain2:
-                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.5);
+                    SM.setNextState(States.done, HDWaitTypes.Timer, 0.25);
                     robot.robotDrive.tankDrive(-.5, -.5);
                     break;
                 case done:

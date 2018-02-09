@@ -23,6 +23,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
 
+    private boolean tailHookUp = true;
+
     private boolean collectorOn = false;
 
     private double lastSpeed = 0.0;
@@ -129,7 +131,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         dashboard.addDiagnosticSpecificTelemetry(1, "Lift Enc.: T: %d L: %d R: %d", (robot.robotGlyph.getLiftHeight()), robot.robotGlyph.leftPinionMotor.getCurrentPosition(), robot.robotGlyph.rightPinionMotor.getCurrentPosition());
         dashboard.addProgramSpecificTelemetry(4, "Scotch Mode: %s", String.valueOf(scotchPos));
         dashboard.addProgramSpecificTelemetry(5, "Lift Mode: %s", String.valueOf(curLiftHeight));
-        dashboard.addProgramSpecificTelemetry(6, "Lift Potentiometer: %s", String.valueOf(robot.robotRelic.getPotentiometerVoltage()));
+        //dashboard.addProgramSpecificTelemetry(6, "Lift Potentiometer: %s", String.valueOf(robot.robotRelic.getPotentiometerVoltage()));
     }
 
     private void relicSystem(){
@@ -159,6 +161,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void driveTrain(){
+        if(tailHookUp){
+            robot.robotDrive.setTailHookUp();
+        }else{
+            robot.robotDrive.setTailHookDown();
+        }
         if(gamepad1.a){
             robot.robotDrive.gyroTurn(90.0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
         }else if(gamepad1.b){
@@ -498,6 +505,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     break;
                 case B:
                     if(pressed){
+                        tailHookUp = !tailHookUp;
                     }
                     break;
                 case X:
@@ -536,9 +544,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
                     }
                 case LEFT_BUMPER:
-                    if(pressed){
+                    /*if(pressed){
                         relicTiltMode = RelicTiltMode.RAISED;
-                    }
+                    }*/
                     break;
                 case RIGHT_BUMPER:
                     break;

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -31,16 +32,21 @@ public class HDDriveHandler {
 
     public DcMotor frontLeft, frontRight, backLeft, backRight;
 
+    public Servo tailHook;
+
     private DcMotor.RunMode currRunMode = DcMotor.RunMode.RUN_USING_ENCODER;
     private Alliance alliance = Alliance.BLUE_ALLIANCE;
 
 
-    public HDDriveHandler(DcMotor frontLeft, DcMotor backLeft, DcMotor frontRight, DcMotor backRight,boolean continuousGyro, int gyroRangeMin, int gyroRangeMax){
+    public HDDriveHandler(DcMotor frontLeft, DcMotor backLeft, DcMotor frontRight, DcMotor backRight, Servo tailHook,boolean continuousGyro, int gyroRangeMin, int gyroRangeMax){
         this.frontLeft = frontLeft;
         this.backLeft = backLeft;
         this.frontRight = frontRight;
         this.backRight = backRight;
         initMotors();
+
+        this.tailHook = tailHook;
+        setTailHookUp();
 
         this.continuousGyro = continuousGyro;
 
@@ -48,6 +54,15 @@ public class HDDriveHandler {
         this.gyroRangeMin = gyroRangeMin;
 
     }
+
+    public void setTailHookDown(){
+        tailHook.setPosition(0.85);
+    }
+
+    public void setTailHookUp(){
+        tailHook.setPosition(0.05);
+    }
+
 
     /**
      * Sets the alliance of the drive train, will reverse all angles if on red alliance, so we only need to program the blue version of a program.

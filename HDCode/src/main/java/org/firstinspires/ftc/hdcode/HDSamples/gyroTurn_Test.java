@@ -3,6 +3,7 @@ package org.firstinspires.ftc.hdcode.HDSamples;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
@@ -16,6 +17,7 @@ public class gyroTurn_Test extends HDOpMode{
 
     HDDriveHandler robotDrive;
     DcMotor frontLeft, frontRight, backLeft, backRight;
+    Servo tailHook;
     AdafruitIMU IMU1;
 
 
@@ -27,8 +29,8 @@ public class gyroTurn_Test extends HDOpMode{
         backRight = hardwareMap.dcMotor.get("backRight");
 
         IMU1 = new AdafruitIMU("imu", 10);
-
-        robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
+        tailHook = hardwareMap.servo.get("tailHook");
+        robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight,tailHook, true, -180, 180);
         robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robotDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robotDrive.setBrakeMode(DcMotor.ZeroPowerBehavior.BRAKE);

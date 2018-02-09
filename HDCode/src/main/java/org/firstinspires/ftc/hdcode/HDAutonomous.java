@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.hdcode.Autonomous.NonRelic_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Relic_DoubleGlyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Relic_Glyph_Jewel;
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -22,6 +23,7 @@ public class HDAutonomous extends HDOpMode{
     private enum Strategy {
         NONRELICGLYPHJEWEL,
         RELICGLYPHDOUBLEJEWEL,
+        RELICGLYPHJEWEL,
     }
 
     private HDAuto HDAuto;
@@ -45,6 +47,7 @@ public class HDAutonomous extends HDOpMode{
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
         strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
         strategyMenu.addChoice("Relic Double Glyph & Jewel", Strategy.RELICGLYPHDOUBLEJEWEL);
+        strategyMenu.addChoice("Relic Glyph & Jewel", Strategy.RELICGLYPHJEWEL);
 
         allianceMenu = new HDTextMenu("Alliance", strategyMenu);
         allianceMenu.addChoice("Red Alliance", Alliance.RED_ALLIANCE);
@@ -68,6 +71,9 @@ public class HDAutonomous extends HDOpMode{
                 break;
             case RELICGLYPHDOUBLEJEWEL:
                 HDAuto = new Relic_DoubleGlyph_Jewel(delay, alliance, hardwareMap, dashboard);
+                break;
+            case RELICGLYPHJEWEL:
+                HDAuto = new Relic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
                 break;
         }
 
