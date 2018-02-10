@@ -40,6 +40,10 @@ public class HDRelic {
         return  potentiometer.getVoltage();
     }
 
+    public void setRelicMotorPower(double power){
+        relicMotor.setPower(power);
+    }
+
     public void setRelicTiltPower(double power){
         liftTilt.setPower(power);
     }

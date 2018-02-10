@@ -74,7 +74,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private liftHeight curLiftHeight = liftHeight.GROUND;
     private scotchYokePosition scotchPos = scotchYokePosition.UP;
     private ServoboyMode servoboyMode = ServoboyMode.GLYPH;
-    private RelicTiltMode relicTiltMode = RelicTiltMode.STOWED;
+    private RelicTiltMode relicTiltMode = RelicTiltMode.RAISED;
 
     @Override
     public void initialize() {
@@ -136,28 +136,30 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void relicSystem(){
-        /*double error;
-        switch (relicTiltMode) {
-            case STOWED:
-                error = robot.robotRelic.getPotentiometerVoltage() - 0.88;
-                robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
-                break;
-            case RAISED:
-                error = robot.robotRelic.getPotentiometerVoltage() - 1.7125;
-                if(error < 0.0){
-                    error = -.3;
-                }else if(error < -.1){
-                    error = -.35;
-                }else if(error < -.5){
-                    error = -.8;
-                }
-                if(error > .02){
-                    error = -.01;
-                }
-                error = gamepad2.left_stick_y;
-                Log.w("relicPower", String.valueOf(error));
-                robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
-                break;
+        /*if(servoboyMode == ServoboyMode.RELIC) {
+            robot.robotRelic.setRelicMotorPower(gamepad2.left_stick_y);
+        }
+        double error;
+        if(robot.robotRelic.getPotentiometerVoltage()  < 1.0){
+            relicTiltMode = RelicTiltMode.STOWED;
+        }else if(robot.robotRelic.getPotentiometerVoltage() > 1.5){
+            relicTiltMode = RelicTiltMode.RAISED;
+        }
+        if((Math.abs(gamepad2.right_stick_y) < 0.1) && servoboyMode == ServoboyMode.RELIC){
+            switch (relicTiltMode) {
+                case STOWED:
+                    error = robot.robotRelic.getPotentiometerVoltage() - 0.88;
+                    robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
+                    break;
+                case RAISED:
+                    error = -.125;
+                    Log.w("Error: ", "Error: " + String.valueOf(error));
+                    Log.w("Error: ", "Pot: " + String.valueOf(robot.robotRelic.getPotentiometerVoltage()));
+                    robot.robotRelic.setRelicTiltPower(Range.clip(error, -1, 1));
+                    break;
+            }
+        }else if(servoboyMode == ServoboyMode.RELIC){
+            robot.robotRelic.setRelicTiltPower(gamepad2.right_stick_y);
         }*/
     }
 
@@ -546,7 +548,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                 case LEFT_BUMPER:
                     /*if(pressed){
-                        relicTiltMode = RelicTiltMode.RAISED;
+                        if(servoboyMode == ServoboyMode.GLYPH) {
+                            servoboyMode = ServoboyMode.RELIC;
+                        }else{
+                            servoboyMode = ServoboyMode.GLYPH;
+                        }
                     }*/
                     break;
                 case RIGHT_BUMPER:
