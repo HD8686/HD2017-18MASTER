@@ -89,8 +89,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        robot.robotJewel.raiseLeftServo();
-
         robot.robotGlyph.resetLiftEncoders();
         robot.robotGlyph.resetScotchYoke();
 
@@ -106,6 +104,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     public void Start() {
         driverGamepad.setGamepad(gamepad1);
         servoBoyGamepad.setGamepad(gamepad2);
+
+        robot.robotJewel.raiseLeftServo();
+        robot.robotGlyph.initializeServos();
     }
 
 

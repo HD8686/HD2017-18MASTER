@@ -60,6 +60,9 @@ public class HDGlyph {
         rightPinionMotor.setPower(0);
         scotchYokeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         scotchYokeMotor.setPower(0);
+    }
+
+    public void initializeServos(){
         leftBlockGrabber.setPosition(0.89);
         rightBlockGrabber.setPosition(rightBlockGrabberNoGrip);
         blockKicker.setPosition(0.06);

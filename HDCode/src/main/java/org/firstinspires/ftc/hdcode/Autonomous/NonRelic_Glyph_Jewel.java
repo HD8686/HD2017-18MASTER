@@ -75,6 +75,8 @@ public class NonRelic_Glyph_Jewel implements HDAuto {
 
         robot.robotJewel.raiseLeftServo();
 
+        robot.robotGlyph.initializeServos();
+
         this.delay = delay;
         this.alliance = alliance;
 

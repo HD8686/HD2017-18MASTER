@@ -86,6 +86,7 @@ public class Relic_Glyph_Jewel implements HDAuto{
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.robotDrive.setAlliance(alliance);
 
+        robot.robotGlyph.initializeServos();
         robot.robotJewel.raiseLeftServo();
 
         this.delay = delay;

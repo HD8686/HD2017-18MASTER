@@ -88,6 +88,8 @@ public class Relic_DoubleGlyph_Jewel implements HDAuto{
 
         robot.robotJewel.raiseLeftServo();
 
+        robot.robotGlyph.initializeServos();
+
         this.delay = delay;
         this.alliance = alliance;
 
