@@ -37,7 +37,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private double speed = 0.75;
-    private driveMode curDriveMode = driveMode.HALO_DRIVE;
+    private driveMode curDriveMode = driveMode.TANK_DRIVE;
 
     @Override
     public void initialize() {
@@ -49,7 +49,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         driverGamepad = new HDGamepad(gamepad1, this);
         servoBoyGamepad = new HDGamepad(gamepad2, this);
 
-        robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
+        robot.robotDrive.reverseSide(HDDriveHandler.Side.Left);
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -83,27 +83,19 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         dashboard.addProgramSpecificTelemetry(2, "Drive Mode: %s", String.valueOf(curDriveMode));
     }
 
-    private void driveTrain(){
-        if(gamepad1.a){
-            robot.robotDrive.gyroTurn(90.0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
-        }else if(gamepad1.b){
-                    robot.robotDrive.gyroTurn(-90.0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
-            }else if(gamepad1.y){
-                robot.robotDrive.gyroTurn(0, 0.025, 0.000004, 0.0006, 0.0, 2.0, 0.5, -0.5, robot.IMU1.getZheading());
-            }else {
-                switch (curDriveMode) {
-                    case FIELD_CENTRIC_DRIVE:
-                        double gyroHeading = robot.IMU1.getZheading();
-                    dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f",gyroHeading);
-                    robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed, gyroHeading);
-                    break;
-                case HALO_DRIVE:
-                    robot.robotDrive.haloDrive(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed);
-                    break;
-                case TANK_DRIVE:
-                    robot.robotDrive.tankDrive(gamepad1.left_stick_y * speed, gamepad1.right_stick_y * speed);
-                    break;
-            }
+    private void driveTrain() {
+        switch (curDriveMode) {
+            case FIELD_CENTRIC_DRIVE:
+                double gyroHeading = robot.IMU1.getZheading();
+                dashboard.addDiagnosticSpecificTelemetry(0, "Gyro Z Heading: %f", gyroHeading);
+                robot.robotDrive.mecanumDrive_Cartesian(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed, gyroHeading);
+                break;
+            case HALO_DRIVE:
+                robot.robotDrive.haloDrive(gamepad1.left_stick_x * speed, gamepad1.left_stick_y * speed, gamepad1.right_stick_x * speed);
+                break;
+            case TANK_DRIVE:
+                robot.robotDrive.tankDrive(gamepad1.left_stick_y * speed, gamepad1.right_stick_y * speed);
+                break;
         }
     }
 
