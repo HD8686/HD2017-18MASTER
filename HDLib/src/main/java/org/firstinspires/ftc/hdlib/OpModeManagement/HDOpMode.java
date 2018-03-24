@@ -48,6 +48,7 @@ public abstract class HDOpMode extends LinearOpMode {
         }
 
         waitForStart();
+
         elapsedTime.reset();
         hdLoopInterface.runStartInterface();
         Start();

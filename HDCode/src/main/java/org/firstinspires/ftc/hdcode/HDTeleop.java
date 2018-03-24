@@ -37,19 +37,17 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private double speed = 0.75;
-    private driveMode curDriveMode = driveMode.TANK_DRIVE;
+    private driveMode curDriveMode = driveMode.HALO_DRIVE;
 
     @Override
     public void initialize() {
-
-        telemetry.setMsTransmissionInterval(50);
 
         robot = new HDRobot(hardwareMap);
 
         driverGamepad = new HDGamepad(gamepad1, this);
         servoBoyGamepad = new HDGamepad(gamepad2, this);
 
-        robot.robotDrive.reverseSide(HDDriveHandler.Side.Left);
+        robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
         robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -81,6 +79,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private void telemetry(){
         dashboard.addProgramSpecificTelemetry(1, "Speed: " + String.valueOf(speed));
         dashboard.addProgramSpecificTelemetry(2, "Drive Mode: %s", String.valueOf(curDriveMode));
+        dashboard.addProgramSpecificTelemetry(3, "LF: %s, RF: %s, LB: %s, RB: %s", String.valueOf(robot.frontLeft.getCurrentPosition())
+        , String.valueOf(robot.frontRight.getCurrentPosition()), String.valueOf(robot.backLeft.getCurrentPosition()), String.valueOf(robot.backRight.getCurrentPosition()));
     }
 
     private void driveTrain() {
