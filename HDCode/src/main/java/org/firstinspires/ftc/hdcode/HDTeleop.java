@@ -134,6 +134,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case LEFT_BUMPER:
                     break;
                 case RIGHT_BUMPER:
+                    if(pressed){
+                        robot.robotGlyph.setIntakePower(1.0);
+                    }else{
+                        robot.robotGlyph.setIntakePower(0.0);
+                    }
                     break;
                 case RIGHT_TRIGGER:
                     if(pressed){

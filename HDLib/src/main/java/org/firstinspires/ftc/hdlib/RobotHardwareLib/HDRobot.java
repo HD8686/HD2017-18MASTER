@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 
@@ -16,7 +17,8 @@ import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 public class HDRobot {
 
     public HDDriveHandler robotDrive;
-    public DcMotor frontLeft, frontRight, backLeft, backRight;
+    public HDGlyph robotGlyph;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake;
     public AdafruitIMU IMU1;
     public HDMaxbotixUS backUS, frontUS;
 
@@ -29,7 +31,12 @@ public class HDRobot {
         backLeft = hardwareMap.dcMotor.get("Back_Left");
         backRight = hardwareMap.dcMotor.get("Back_Right");
 
+        leftIntake = hardwareMap.dcMotor.get("leftIntake");
+        rightIntake = hardwareMap.dcMotor.get("rightIntake");
+
+
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
+        robotGlyph = new HDGlyph(leftIntake, rightIntake);
     }
 
 }
