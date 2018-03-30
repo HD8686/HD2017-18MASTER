@@ -11,6 +11,7 @@ import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.MecanumPathPlanner;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.StandardPathPlanner;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 
 import java.util.Arrays;
@@ -25,16 +26,17 @@ public class PathPlanTest extends HDOpMode{
     private HDRobot robot;
 
     double[][] waypoints = new double[][]{
-            {0, 1, 0},
-            {0, 2, 0},
+            {0, 0},
+            {.1, .1},
+            {0, .5}
     };
-    double totalTime = 2; //seconds
+    double totalTime = 5.5; //seconds
     double timeStep = 0.1; //period of control loop on Rio, seconds
     int stepTrack = 0;
 
     ElapsedTime timeTrack = new ElapsedTime();
 
-    MecanumPathPlanner path;
+    StandardPathPlanner path;
 
     @Override
     public void initialize() {
@@ -49,10 +51,10 @@ public class PathPlanTest extends HDOpMode{
         double robotTrackWidth = 1.2816667; //distance between left and right wheels, feet (was 2)
         double robotTrackLength = 1.058333; //distance between front and rear wheels, feet was 2.5
 
-        path = new MecanumPathPlanner(waypoints);
+        path = new StandardPathPlanner(waypoints);
         path.setPathAlpha(0.9);
         path.setPathBeta(0.5);
-        path.calculate(totalTime, timeStep, robotTrackWidth, robotTrackLength);
+        path.calculate(totalTime, timeStep, robotTrackWidth);
 
     }
 
@@ -75,14 +77,21 @@ public class PathPlanTest extends HDOpMode{
                 timeTrack.reset();
             }
             try{
-                robot.robotDrive.setMotorSpeeds((new double[]{path.smoothLeftFrontVelocity[stepTrack][1], path.smoothRightFrontVelocity[stepTrack][1],
-                        path.smoothLeftRearVelocity[stepTrack][1], path.smoothRightRearVelocity[stepTrack][1]}));
+                double gyroAdjust = updateHeadingController();
+                robot.robotDrive.setMotorSpeeds((new double[]{path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust,
+                        path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust}));
+                Log.w("Heading", String.valueOf(path.heading[stepTrack][1]));
             }catch(Exception e){
                 robot.robotDrive.setMotorSpeeds((new double[]{0, 0, 0, 0}));
             }
         }else{
             robot.robotDrive.motorBreak();
         }
+    }
+
+    double updateHeadingController() {
+        //return ((path.heading[stepTrack][1] - robot.IMU1.getZheading()) * .005);
+        return 0;
     }
 
 }
