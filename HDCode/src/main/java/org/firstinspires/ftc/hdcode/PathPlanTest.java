@@ -71,22 +71,24 @@ public class PathPlanTest extends HDOpMode{
 
     @Override
     public void continuousRun(double elapsedTime) {
-        if(robot.IMU1.isCalibrated()) {
+        //if(robot.IMU1.isCalibrated()) {
             if(timeTrack.milliseconds() > 100){
                 stepTrack = stepTrack + 1;
                 timeTrack.reset();
             }
             try{
                 double gyroAdjust = updateHeadingController();
-                robot.robotDrive.setMotorSpeeds((new double[]{path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust,
-                        path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust}));
+                Log.w("leftVelocity", String.valueOf(path.smoothLeftVelocity[stepTrack][1]));
+                Log.w("rightVelocity", String.valueOf(path.smoothRightVelocity[stepTrack][1]));
+                //rob   ot.robotDrive.setMotorSpeeds((new double[]{path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust,
+                //        path.smoothLeftVelocity[stepTrack][1] + gyroAdjust, path.smoothRightVelocity[stepTrack][1] - gyroAdjust}));
                 Log.w("Heading", String.valueOf(path.heading[stepTrack][1]));
             }catch(Exception e){
                 robot.robotDrive.setMotorSpeeds((new double[]{0, 0, 0, 0}));
             }
-        }else{
-            robot.robotDrive.motorBreak();
-        }
+        //}else{
+         //   robot.robotDrive.motorBreak();
+        //}
     }
 
     double updateHeadingController() {

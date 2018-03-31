@@ -24,7 +24,7 @@ public class HDRobot {
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
-        IMU1 = new AdafruitIMU("imu", 50);
+        //IMU1 = new AdafruitIMU("imu", 50);
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro calibration complete!");
         frontLeft = hardwareMap.dcMotor.get("Front_Left");
         frontRight = hardwareMap.dcMotor.get("Front_Right");
