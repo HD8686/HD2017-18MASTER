@@ -14,8 +14,6 @@ import org.firstinspires.ftc.hdlib.RobotHardwareLib.MecanumPathPlanner;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.StandardPathPlanner;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 
-import java.util.Arrays;
-
 /**
  * Created by akash on 8/8/2017.
  */
@@ -26,9 +24,9 @@ public class PathPlanTest extends HDOpMode{
     private HDRobot robot;
 
     double[][] waypoints = new double[][]{
-            {0, 0},
-            {.1, .1},
-            {0, .5}
+            {1/5.0, 1/5.0},
+            {5/5.0, 1/5.0},
+            {9/5.0, 12/5.0},
     };
     double totalTime = 5.5; //seconds
     double timeStep = 0.1; //period of control loop on Rio, seconds
