@@ -23,7 +23,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
     private double lastSpeed = 0.0;
-    private double servoTest = 0.0;
 
     private enum driveMode{
         FIELD_CENTRIC_DRIVE,
@@ -106,12 +105,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(instance == driverGamepad){
             switch (button) {
                 case A:
-                    if(pressed){
-                        servoTest = servoTest + 0.01;
-                        Log.w("Servo Test", String.valueOf(servoTest));
-                        robot.robotJewel.jewelHitServo.setPosition(servoTest);
-                        robot.robotJewel.lowerArm();
-                    }
                     break;
                 case B:
                     break;
