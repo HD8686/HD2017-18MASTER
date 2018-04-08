@@ -5,6 +5,8 @@ package org.firstinspires.ftc.hdlib.OpModeManagement;
  */
 public interface HDAuto {
 
+    public void initializeLoop();
+
     public void runLoop(double elapsedTime); //elapsedTime is the amount of time since Autonomous has started.
 
     public void start();

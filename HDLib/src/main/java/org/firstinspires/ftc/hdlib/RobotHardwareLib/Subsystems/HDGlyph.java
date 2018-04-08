@@ -16,6 +16,9 @@ public class HDGlyph {
         this.leftIntake = leftIntake;
         this.rightIntake = rightIntake;
 
+        this.leftIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         this.rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
         this.leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 

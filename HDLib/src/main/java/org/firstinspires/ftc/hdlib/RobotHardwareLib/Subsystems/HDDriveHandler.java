@@ -67,6 +67,10 @@ public class HDDriveHandler {
         return (frontRight.getCurrentPosition() + frontRight.getCurrentPosition())/2;
     }
 
+    public int getEncoderAverage(){
+        return(getLeftEncoderAverage() + getRightEncoderAverage())/2;
+    }
+
     private void initMotors(){
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -192,10 +196,6 @@ public class HDDriveHandler {
      * @param gyroAngle The current yaw angle of the robot
      */
     public void mecanumDrive_Polar(double magnitude, double direction, double rotation, double gyroAngle){
-        if(alliance == Alliance.BLUE_ALLIANCE){
-            direction = -direction;
-            rotation = -rotation;
-        }
 
         magnitude = magnitude * Math.sqrt(2.0);
         direction = direction - gyroAngle;
@@ -260,6 +260,45 @@ public class HDDriveHandler {
         setMotorSpeeds(Motors);
     }
 
+    public void VLF(double speed, double targetAngle, double p, double tolerance, double gyroHeading){
+
+        currentError = targetAngle - gyroHeading;
+
+        if (continuousGyro) {
+            double range = gyroRangeMax - gyroRangeMin;
+            if (Math.abs(currentError) > (range / 2))  {
+                if (currentError > 0)
+                    currentError -= range;
+                else
+                    currentError += range;
+            }
+        }
+
+        result = p*currentError;
+
+        if((Math.abs(currentError) < tolerance)){
+            result = 0.0;
+        }
+
+        double Motors[] = new double[4];
+        Motors[0] = (speed + result); //kFrontLeft Motor
+        Motors[1] = (speed - result); //kFrontRight Motor
+        Motors[2] = (speed + result); //kRearLeft Motor
+        Motors[3] = (speed - result); //kRearRight Motor
+
+        double maxMagnitude = Math.abs(NumberUtils.max(Motors));
+
+        if (maxMagnitude > 1.0) {
+            for (int i=0; i < Motors.length ; i++) {
+                Motors[i] = Motors[i] / maxMagnitude;
+            }
+        }
+
+        setMotorSpeeds(Motors);
+    }
+
+
+
 
     /**
      * PID gyro Turn used to turn a tank drive robot to a specefied gyro angle.
@@ -274,10 +313,6 @@ public class HDDriveHandler {
      * @param gyroHeading Current Gyro Z axis heading
      */
     public void gyroTurn(double targetAngle, double p, double i, double d, double ff, double tolerance, double maxSpeed, double minSpeed, double gyroHeading, double minimumVelocity){
-
-        if(alliance == Alliance.BLUE_ALLIANCE){
-           targetAngle = -targetAngle;
-        }
 
         if(maxSpeed < minSpeed){
             throw new IllegalArgumentException("gyroTurn: max speed lower than min speed!");

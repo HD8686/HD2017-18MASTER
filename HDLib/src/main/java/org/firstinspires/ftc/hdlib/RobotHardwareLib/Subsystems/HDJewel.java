@@ -46,6 +46,11 @@ public class HDJewel {
         jewelColorSensor.enableLed(true);
     }
 
+    public void resetJewel(){
+        raiseArm();
+        stowPerpendicular();
+    }
+
     public void hitFront(){
         jewelHitServo.setPosition(hitFront);
     }

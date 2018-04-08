@@ -2,7 +2,8 @@ package org.firstinspires.ftc.hdcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.hdcode.Autonomous.Relic_Glyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Blue_Relic_Glyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Red_Relic_Glyph_Jewel;
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -71,15 +72,17 @@ public class HDAutonomous extends HDOpMode{
 
                 break;
             case RELICGLYPHJEWEL:
-                HDAuto = new Relic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
+                if(alliance == Alliance.RED_ALLIANCE)
+                    HDAuto = new Red_Relic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
+                else
+                    HDAuto = new Blue_Relic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
                 break;
         }
 
     }
 
     @Override
-    public void initializeLoop() {
-    }
+    public void initializeLoop() {HDAuto.initializeLoop();}
 
     @Override
     public void Start() {
