@@ -177,7 +177,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case CENTER:
-                            targetEncoder = -1500;
+                            targetEncoder = -1495;
                             error = Math.abs(targetEncoder - robot.robotDrive.getEncoderAverage());
                             percentCompleted = Math.abs(((double) error)/((double) targetEncoder));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
@@ -191,7 +191,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         default:
-                            targetEncoder = -1500;
+                            targetEncoder = -1495;
                             error = Math.abs(targetEncoder - robot.robotDrive.getEncoderAverage());
                             percentCompleted = Math.abs(((double) error)/((double) targetEncoder));
                             if(percentCompleted > .75){percentCompleted = 0.75;}
