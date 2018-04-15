@@ -24,6 +24,11 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDRobot robot;
     private double lastSpeed = 0.0;
 
+    private enum liftHeight{
+        GROUND,
+        HIGH,
+    }
+
     private enum driveMode{
         FIELD_CENTRIC_DRIVE,
         HALO_DRIVE,
@@ -38,6 +43,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
 
     private double speed = 0.75;
     private driveMode curDriveMode = driveMode.HALO_DRIVE;
+    private liftHeight curLiftHeight = liftHeight.GROUND;
 
     @Override
     public void initialize() {
@@ -48,8 +54,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         servoBoyGamepad = new HDGamepad(gamepad2, this);
 
         robot.robotDrive.reverseSide(HDDriveHandler.Side.Right);
-        robot.robotDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        robot.robotDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -62,7 +67,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     public void Start() {
         driverGamepad.setGamepad(gamepad1);
         servoBoyGamepad.setGamepad(gamepad2);
-
     }
 
 
@@ -71,8 +75,32 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(robot.IMU1.isCalibrated()) {
             telemetry();
             driveTrain();
+            lift();
         }else{
             robot.robotDrive.motorBreak();
+        }
+    }
+
+    private void lift(){
+        switch (curLiftHeight) {
+            case GROUND:
+                if(robot.liftMotor.getCurrentPosition() > 500){
+                    robot.robotGlyph.setLiftPower(-1.0);
+                }else if(robot.liftMotor.getCurrentPosition() > 300){
+                    robot.robotGlyph.setLiftPower(-0.25);
+                }else if(robot.liftMotor.getCurrentPosition() > 10){
+                    robot.robotGlyph.setLiftPower(-0.15);
+                }else{
+                    robot.robotGlyph.setLiftPower(0.0);
+                }
+                break;
+            case HIGH:
+                if(robot.liftTouch.getState()){
+                    robot.robotGlyph.setLiftPower(1.0);
+                }else{
+                    robot.robotGlyph.setLiftPower(0.0);
+                }
+                break;
         }
     }
 
@@ -81,6 +109,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         dashboard.addProgramSpecificTelemetry(2, "Drive Mode: %s", String.valueOf(curDriveMode));
         dashboard.addProgramSpecificTelemetry(3, "LF: %s, RF: %s, LB: %s, RB: %s", String.valueOf(robot.frontLeft.getCurrentPosition())
         , String.valueOf(robot.frontRight.getCurrentPosition()), String.valueOf(robot.backLeft.getCurrentPosition()), String.valueOf(robot.backRight.getCurrentPosition()));
+        dashboard.addProgramSpecificTelemetry(4, "Lift Encoder: %s", String.valueOf(robot.liftMotor.getCurrentPosition()));
+        dashboard.addProgramSpecificTelemetry(5, "Touch Sensor: %s", String.valueOf(robot.liftTouch.getState()));
     }
 
     private void driveTrain() {
@@ -105,12 +135,18 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(instance == driverGamepad){
             switch (button) {
                 case A:
+                    if(pressed){
+                        curLiftHeight = liftHeight.GROUND;
+                    }
                     break;
                 case B:
                     break;
                 case X:
                     break;
                 case Y:
+                    if(pressed){
+                        curLiftHeight = liftHeight.HIGH;
+                    }
                     break;
                 case DPAD_LEFT:
                     if(pressed){
@@ -132,15 +168,10 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case LEFT_BUMPER:
-                    if(pressed){
-                        robot.robotGlyph.setIntakePower(0.85);
-                    }else{
-                        robot.robotGlyph.setIntakePower(0.0);
-                    }
                     break;
                 case RIGHT_BUMPER:
                     if(pressed){
-                        robot.robotGlyph.setIntakePower(0.5);
+                        robot.robotGlyph.setIntakePower(0.85);
                     }else{
                         robot.robotGlyph.setIntakePower(0.0);
                     }
