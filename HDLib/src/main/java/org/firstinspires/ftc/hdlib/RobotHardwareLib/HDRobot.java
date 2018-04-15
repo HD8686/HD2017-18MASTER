@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.hdlib.RobotHardwareLib;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,6 +23,7 @@ public class HDRobot {
     public HDGlyph robotGlyph;
     public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake;
     public AdafruitIMU IMU1;
+    ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
@@ -35,6 +37,7 @@ public class HDRobot {
         leftIntake = hardwareMap.dcMotor.get("leftIntake");
         rightIntake = hardwareMap.dcMotor.get("rightIntake");
 
+        backUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US1");
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
         robotGlyph = new HDGlyph(leftIntake, rightIntake);
