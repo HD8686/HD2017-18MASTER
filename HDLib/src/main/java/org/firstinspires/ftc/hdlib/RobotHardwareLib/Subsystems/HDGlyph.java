@@ -47,11 +47,19 @@ public class HDGlyph {
     }
 
     public void stowBox(){
-        leftBoxServo.setPosition(.5);
-        rightBoxServo.setPosition(.5);
+        leftBoxServo.setPosition(.87);
+        rightBoxServo.setPosition(.13);
     }
 
+    public void extendBox(){
+        leftBoxServo.setPosition(.27);
+        rightBoxServo.setPosition(.73);
+    }
 
+    public void flatBox(){
+        leftBoxServo.setPosition(.72);
+        rightBoxServo.setPosition(.28);
+    }
 
 
 }

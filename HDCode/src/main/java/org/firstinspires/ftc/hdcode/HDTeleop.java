@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.hdlib.Controls.HDGamepad;
+import org.firstinspires.ftc.hdlib.General.TeleopEnum;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.HDRobot;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
@@ -23,27 +24,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
     private double lastSpeed = 0.0;
+    private double test = 0.0;
 
-    private enum liftHeight{
-        GROUND,
-        HIGH,
-    }
-
-    private enum driveMode{
-        FIELD_CENTRIC_DRIVE,
-        HALO_DRIVE,
-        TANK_DRIVE;
-
-        public driveMode getNext() {
-            return this.ordinal() < driveMode.values().length - 1
-                    ? driveMode.values()[this.ordinal() + 1]
-                    : driveMode.values()[0];
-        }
-    }
+    private TeleopEnum.boxPosition curBoxPosition = TeleopEnum.boxPosition.STOWED;
 
     private double speed = 0.75;
-    private driveMode curDriveMode = driveMode.HALO_DRIVE;
-    private liftHeight curLiftHeight = liftHeight.GROUND;
+    private TeleopEnum.driveMode curDriveMode = TeleopEnum.driveMode.HALO_DRIVE;
+    private TeleopEnum.liftHeight curLiftHeight = TeleopEnum.liftHeight.GROUND;
 
     @Override
     public void initialize() {
@@ -75,13 +62,25 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
         if(robot.IMU1.isCalibrated()) {
             telemetry();
             driveTrain();
-            lift();
+            glyph();
         }else{
             robot.robotDrive.motorBreak();
         }
     }
 
-    private void lift(){
+    private void glyph(){
+        switch (curBoxPosition) {
+            case STOWED:
+                robot.robotGlyph.stowBox();
+                break;
+            case FLAT:
+                robot.robotGlyph.flatBox();
+                break;
+            case OUT:
+                robot.robotGlyph.extendBox();
+                break;
+        }
+
         switch (curLiftHeight) {
             case GROUND:
                 if(robot.liftMotor.getCurrentPosition() > 500){
@@ -95,7 +94,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 }
                 break;
             case HIGH:
-                if(robot.liftTouch.getState()){
+                if(robot.liftMotor.getCurrentPosition() > 1900){
+                    robot.robotGlyph.setLiftPower(0.0);
+                }else if(robot.liftTouch.getState()){
                     robot.robotGlyph.setLiftPower(1.0);
                 }else{
                     robot.robotGlyph.setLiftPower(0.0);
@@ -136,7 +137,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
             switch (button) {
                 case A:
                     if(pressed){
-                        curLiftHeight = liftHeight.GROUND;
+                        curLiftHeight = TeleopEnum.liftHeight.GROUND;
+                        curBoxPosition  = TeleopEnum.boxPosition.STOWED;
                     }
                     break;
                 case B:
@@ -145,7 +147,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     break;
                 case Y:
                     if(pressed){
-                        curLiftHeight = liftHeight.HIGH;
+                        curLiftHeight = TeleopEnum.liftHeight.HIGH;
+                        curBoxPosition = TeleopEnum.boxPosition.FLAT;
                     }
                     break;
                 case DPAD_LEFT:
@@ -168,10 +171,23 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case LEFT_BUMPER:
+                    if(pressed){
+                        switch (curBoxPosition) {
+                            case STOWED:
+                                curBoxPosition = TeleopEnum.boxPosition.OUT;
+                                break;
+                            case FLAT:
+                                curBoxPosition = TeleopEnum.boxPosition.OUT;
+                                break;
+                            case OUT:
+                                curBoxPosition = TeleopEnum.boxPosition.STOWED;
+                                break;
+                        }
+                    }
                     break;
                 case RIGHT_BUMPER:
                     if(pressed){
-                        robot.robotGlyph.setIntakePower(0.85);
+                        robot.robotGlyph.setIntakePower(1.0);
                     }else{
                         robot.robotGlyph.setIntakePower(0.0);
                     }
@@ -179,7 +195,7 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case RIGHT_TRIGGER:
                     if(pressed){
                         lastSpeed = speed;
-                        speed = .5;
+                        speed = .25;
                     }else{
                         speed = lastSpeed;
                     }
