@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDOpMode;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo.HDVexMotor;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
@@ -24,33 +25,38 @@ public class HDRobot {
     public HDGlyph robotGlyph;
     public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake, liftMotor;
     public AdafruitIMU IMU1;
+    public HDVexMotor glyphConveyor;
     ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
-    public Servo leftBoxServo, rightBoxServo;
+    public Servo leftBoxServo, rightBoxServo, glyphStopper, glyphGripper;
     public DigitalChannel liftTouch;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
         IMU1 = new AdafruitIMU("imu", 50);
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro calibration complete!");
+
         frontLeft = hardwareMap.dcMotor.get("Front_Left");
         frontRight = hardwareMap.dcMotor.get("Front_Right");
         backLeft = hardwareMap.dcMotor.get("Back_Left");
         backRight = hardwareMap.dcMotor.get("Back_Right");
-
         leftIntake = hardwareMap.dcMotor.get("leftIntake");
         rightIntake = hardwareMap.dcMotor.get("rightIntake");
-
         liftMotor = hardwareMap.dcMotor.get("liftMotor");
 
+        glyphConveyor = new HDVexMotor(hardwareMap, "glyphConveyer", Servo.Direction.FORWARD);
+        glyphGripper = hardwareMap.servo.get("glyphGripper");
+        glyphStopper = hardwareMap.servo.get("glyphStopper");
         leftBoxServo = hardwareMap.servo.get("leftBoxTilt");
         rightBoxServo = hardwareMap.servo.get("rightBoxTilt");
+
         liftTouch = hardwareMap.get(DigitalChannel.class, "liftTouch");
         liftTouch.setMode(DigitalChannel.Mode.INPUT);
 
         backUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US1");
+        frontUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US2");
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
-        robotGlyph = new HDGlyph(leftIntake, rightIntake, liftMotor, leftBoxServo, rightBoxServo);
+        robotGlyph = new HDGlyph(leftIntake, rightIntake, liftMotor, glyphConveyor, leftBoxServo, rightBoxServo, glyphGripper, glyphStopper);
         robotJewel = new HDJewel(hardwareMap);
     }
 

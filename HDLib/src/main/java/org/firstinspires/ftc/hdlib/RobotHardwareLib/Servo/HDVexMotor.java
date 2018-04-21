@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo;
 
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -34,6 +36,7 @@ public class HDVexMotor {
     }
 
     public void setPower(double Power){
+        Log.w("power", String.valueOf(Power));
         if(HDGeneralLib.isDifferenceWithin(Power, 0, 1)){
             this.mServo.setPosition((((forwardSpeedValue - backwardSpeedValue)*(Power - scaledBackwardSpeedValue))/(scaledForwardSpeedValue - scaledBackwardSpeedValue)) + backwardSpeedValue);
             currPower = Power;

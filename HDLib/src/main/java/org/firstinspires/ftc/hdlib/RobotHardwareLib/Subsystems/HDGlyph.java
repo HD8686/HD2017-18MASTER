@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo.HDVexMotor;
+
 /**
  * Created by FIRSTMentor on 3/24/2018.
  */
@@ -12,14 +14,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class HDGlyph {
 
     private DcMotor leftIntake, rightIntake, liftMotor;
-    private Servo leftBoxServo, rightBoxServo;
+    private Servo leftBoxServo, rightBoxServo, glyphGripper, glyphStopper;
+    private HDVexMotor glyphConveyor;
 
-    public HDGlyph(DcMotor leftIntake, DcMotor rightIntake, DcMotor liftMotor, Servo leftBoxServo, Servo rightBoxServo){
+    public HDGlyph(DcMotor leftIntake, DcMotor rightIntake, DcMotor liftMotor, HDVexMotor glyphConveyor, Servo leftBoxServo, Servo rightBoxServo, Servo glyphGripper, Servo glyphStopper){
         this.leftIntake = leftIntake;
         this.rightIntake = rightIntake;
 
         this.leftBoxServo = leftBoxServo;
         this.rightBoxServo = rightBoxServo;
+
+        this.glyphConveyor = glyphConveyor;
+        this.glyphGripper = glyphGripper;
+        this.glyphStopper = glyphStopper;
 
         this.liftMotor = liftMotor;
 
@@ -35,6 +42,16 @@ public class HDGlyph {
         this.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         stowBox();
+        lowerGlyphGate();
+        openBox();
+    }
+
+    public void lowerGlyphGate(){
+        glyphStopper.setPosition(1);
+    }
+
+    public void raiseLiftGate(){
+        glyphStopper.setPosition(0);
     }
 
     public void setIntakePower(double power){
@@ -44,6 +61,14 @@ public class HDGlyph {
 
     public void setLiftPower(double power){
         liftMotor.setPower(power);
+    }
+
+    public void startConveyor(){
+        glyphConveyor.setPower(-0.45);
+    }
+
+    public void stopConveyor(){
+        glyphConveyor.setPower(0.0);
     }
 
     public void stowBox(){
@@ -59,6 +84,14 @@ public class HDGlyph {
     public void flatBox(){
         leftBoxServo.setPosition(.72);
         rightBoxServo.setPosition(.28);
+    }
+
+    public void gripBox(){
+        glyphGripper.setPosition(.89);
+    }
+
+    public void openBox(){
+        glyphGripper.setPosition(.57);
     }
 
 

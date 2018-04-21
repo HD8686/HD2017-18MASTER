@@ -24,9 +24,10 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private HDGamepad servoBoyGamepad;
     private HDRobot robot;
     private double lastSpeed = 0.0;
-    private double test = 0.0;
 
+    private TeleopEnum.grabberPosition curGrabberPosition = TeleopEnum.grabberPosition.OPEN;
     private TeleopEnum.boxPosition curBoxPosition = TeleopEnum.boxPosition.STOWED;
+    private TeleopEnum.glyphGate curGlyphGate = TeleopEnum.glyphGate.LOWERED;
 
     private double speed = 0.75;
     private TeleopEnum.driveMode curDriveMode = TeleopEnum.driveMode.HALO_DRIVE;
@@ -36,7 +37,6 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     public void initialize() {
 
         robot = new HDRobot(hardwareMap);
-
         driverGamepad = new HDGamepad(gamepad1, this);
         servoBoyGamepad = new HDGamepad(gamepad2, this);
 
@@ -78,6 +78,24 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 break;
             case OUT:
                 robot.robotGlyph.extendBox();
+                break;
+        }
+
+        switch (curGrabberPosition) {
+            case OPEN:
+                robot.robotGlyph.openBox();
+                break;
+            case CLOSED:
+                robot.robotGlyph.gripBox();
+                break;
+        }
+
+        switch (curGlyphGate) {
+            case RAISED:
+                robot.robotGlyph.raiseLiftGate();
+                break;
+            case LOWERED:
+                robot.robotGlyph.lowerGlyphGate();
                 break;
         }
 
@@ -142,6 +160,16 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case B:
+                    if(pressed){
+                        switch (curGlyphGate) {
+                            case RAISED:
+                                curGlyphGate = TeleopEnum.glyphGate.LOWERED;
+                                break;
+                            case LOWERED:
+                                curGlyphGate = TeleopEnum.glyphGate.RAISED;
+                                break;
+                        }
+                    }
                     break;
                 case X:
                     break;
@@ -186,10 +214,12 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case RIGHT_BUMPER:
-                    if(pressed){
+                    if(pressed && curGrabberPosition == TeleopEnum.grabberPosition.OPEN){
                         robot.robotGlyph.setIntakePower(1.0);
+                        robot.robotGlyph.startConveyor();
                     }else{
                         robot.robotGlyph.setIntakePower(0.0);
+                        robot.robotGlyph.stopConveyor();
                     }
                     break;
                 case RIGHT_TRIGGER:
@@ -201,6 +231,16 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case LEFT_TRIGGER:
+                    if(pressed){
+                        switch (curGrabberPosition) {
+                            case OPEN:
+                                curGrabberPosition = TeleopEnum.grabberPosition.CLOSED;
+                                break;
+                            case CLOSED:
+                                curGrabberPosition = TeleopEnum.grabberPosition.OPEN;
+                                break;
+                        }
+                    }
                     break;
                 case START:
                     if(pressed){

@@ -6,6 +6,16 @@ package org.firstinspires.ftc.hdlib.General;
 
 public class TeleopEnum {
 
+    public enum glyphGate{
+        RAISED,
+        LOWERED,
+    }
+
+    public enum grabberPosition{
+        OPEN,
+        CLOSED,
+    }
+
     public enum boxPosition{
         STOWED,
         FLAT,
