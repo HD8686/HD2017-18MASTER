@@ -47,7 +47,7 @@ public class HDGlyph {
     }
 
     public void lowerGlyphGate(){
-        glyphStopper.setPosition(1);
+        glyphStopper.setPosition(.8);
     }
 
     public void raiseLiftGate(){
@@ -61,6 +61,10 @@ public class HDGlyph {
 
     public void setLiftPower(double power){
         liftMotor.setPower(power);
+    }
+
+    public void backwardsConveyor(){
+        glyphConveyor.setPower(0.45);
     }
 
     public void startConveyor(){
@@ -87,7 +91,7 @@ public class HDGlyph {
     }
 
     public void gripBox(){
-        glyphGripper.setPosition(.89);
+        glyphGripper.setPosition(.95);
     }
 
     public void openBox(){

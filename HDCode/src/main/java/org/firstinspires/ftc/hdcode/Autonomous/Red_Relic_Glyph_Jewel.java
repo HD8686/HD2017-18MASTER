@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -33,6 +32,11 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
         driveToCryptobox,
         turnToCryptobox,
         driveForward,
+        openBox,
+        lowerBox,
+        driveAwayToPush,
+        pushInGlyph,
+        backAway,
         done,
     }
 
@@ -101,6 +105,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     break;
                 case scanVuMark:
                     SM.setNextState(States.lowerJewelArm, HDWaitTypes.Timer, 6.0);
+                    robot.robotGlyph.gripBox();
                     vuMark = vuforiaVuMarks.scan();
                     dashboard.addDiagnosticSpecificTelemetry(1, "Vumark Reading: %s", String.valueOf(vuMark));
                     switch (vuMark) {
@@ -130,6 +135,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     }
                     break;
                 case readJewel:
+                    Log.w("Jewel Color", String.valueOf(robot.robotJewel.getLeftColor()));
                     if(alliance == Alliance.RED_ALLIANCE){
                         if(robot.robotJewel.getLeftColor() == HDJewel.jewelColor.RED){
                             turnLeft = true;
@@ -149,16 +155,22 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     }
                     break;
                 case hitJewel:
+                    Log.w("turnLeft", String.valueOf(turnLeft));
                     if(turnLeft){
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
-                        robot.robotJewel.hitFront();
                     }else{
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
-                        robot.robotJewel.hitBack();
+                        robot.robotJewel.hitFront();
                     }
                     break;
                 case driveToCryptobox:
-                    robot.robotJewel.resetJewel();
+                    if(turnLeft){
+                        if(robot.robotDrive.getEncoderAverage() < -50){
+                            robot.robotJewel.resetJewel();
+                        }
+                    }else{
+                        robot.robotJewel.resetJewel();
+                    }
                     int targetEncoder, error;
                     double percentCompleted;
                     switch (vuMark) {
@@ -170,18 +182,18 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case LEFT:
-                            targetEncoder = -1855;
+                            targetEncoder = -1840;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case CENTER:
-                            targetEncoder = -1495;
-                            error = Math.abs(targetEncoder - robot.robotDrive.getEncoderAverage());
-                            percentCompleted = Math.abs(((double) error)/((double) targetEncoder));
+                            targetEncoder = -1500;
+                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
+                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.2) ? percentCompleted : 0.2), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case RIGHT:
                             targetEncoder = -1135;
@@ -191,13 +203,14 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         default:
-                            targetEncoder = -1495;
-                            error = Math.abs(targetEncoder - robot.robotDrive.getEncoderAverage());
-                            percentCompleted = Math.abs(((double) error)/((double) targetEncoder));
-                            if(percentCompleted > .75){percentCompleted = 0.75;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.2) ? percentCompleted : 0.2), 0, 0.01, 2,robot.IMU1.getZheading());
+                            targetEncoder = -1500;
+                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
+                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
+                            if(percentCompleted > .75){percentCompleted = 0.65;}
+                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                     }
+                    Log.w("error", String.valueOf(error));
                     if(error > -10){
                         robot.robotDrive.motorBreak();
                         waitBeforeNextState(0.3, States.turnToCryptobox);
@@ -207,14 +220,38 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     if(robot.robotDrive.isOnTarget()){
                         waitBeforeNextState(0.3, States.driveForward);
                     }
+                    robot.robotGlyph.raiseLiftGate();
                     robot.robotDrive.gyroTurn(90, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;
                 case driveForward:
-                    SM.setNextState(States.done, HDWaitTypes.EncoderChangeBoth, 300.0);
-                    robot.robotDrive.VLF(-.15, 90, 0.01, 2, robot.IMU1.getZheading());
+                    SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);
+                    robot.robotGlyph.extendBox();
+                    robot.robotDrive.VLF(-.25, 90, 0.01, 2, robot.IMU1.getZheading());
+                    break;
+                case openBox:
+                    SM.setNextState(States.lowerBox, HDWaitTypes.Timer, 1.5);
+                    robot.robotDrive.motorBreak();
+                    robot.robotGlyph.openBox();
+                    break;
+                case lowerBox:
+                    SM.setNextState(States.driveAwayToPush, HDWaitTypes.Timer, .25);
+                    robot.robotGlyph.stowBox();
+                    break;
+                case driveAwayToPush:
+                    SM.setNextState(States.pushInGlyph, HDWaitTypes.EncoderChangeBoth, 100.0);
+                    robot.robotDrive.VLF(.25, 90, 0.01, 2, robot.IMU1.getZheading());
+                    break;
+                case pushInGlyph:
+                    SM.setNextState(States.backAway, HDWaitTypes.EncoderChangeBoth, 215.0);
+                    robot.robotDrive.tankDrive(-.25, -.25);
+                    break;
+                case backAway:
+                    SM.setNextState(States.done, HDWaitTypes.EncoderChangeBoth, 250.0);
+                    robot.robotDrive.VLF(.25, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case done:
                     robot.robotGlyph.setIntakePower(0.0);
+                    robot.robotGlyph.lowerGlyphGate();
                     robot.robotDrive.motorBreak();
                     break;
             }

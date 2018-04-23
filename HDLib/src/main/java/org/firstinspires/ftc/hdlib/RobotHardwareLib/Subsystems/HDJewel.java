@@ -25,11 +25,11 @@ public class HDJewel {
     private DistanceSensor jewelDistance;
 
     private double jewelTiltStowed = 0.39;
-    private double jewelTiltHit = 0.775;
+    private double jewelTiltHit = 0.785;
 
-    private double hitFront = 0.44;
-    private double hitBack = .58;
-    private double perpendicularStowed = 0.51;
+    private double hitFront = 0.56;
+    private double hitBack = .32;
+    private double perpendicularStowed = 0.42; //.51
 
     public HDJewel(HardwareMap hardwareMap){
 
@@ -43,6 +43,7 @@ public class HDJewel {
         raiseArm();
         stowPerpendicular();
 
+
         jewelColorSensor.enableLed(true);
     }
 
@@ -51,11 +52,11 @@ public class HDJewel {
         stowPerpendicular();
     }
 
-    public void hitFront(){
+    public void hitBack(){
         jewelHitServo.setPosition(hitFront);
     }
 
-    public void hitBack(){
+    public void hitFront(){
         jewelHitServo.setPosition(hitBack);
     }
 
@@ -89,8 +90,4 @@ public class HDJewel {
             return jewelColor.INCONCLUSIVE;
         }
     }
-
-
-
-
 }

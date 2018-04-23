@@ -11,6 +11,7 @@ import org.firstinspires.ftc.hdlib.RobotHardwareLib.Servo.HDVexMotor;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDDriveHandler;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDGlyph;
 import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDJewel;
+import org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems.HDRelic;
 import org.firstinspires.ftc.hdlib.Sensors.AdafruitIMU;
 import org.firstinspires.ftc.hdlib.Sensors.HDMaxbotixUS;
 
@@ -23,11 +24,12 @@ public class HDRobot {
     public HDDriveHandler robotDrive;
     public HDJewel robotJewel;
     public HDGlyph robotGlyph;
-    public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake, liftMotor;
+    public HDRelic robotRelic;
+    public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake, liftMotor, relicLiftMotor;
     public AdafruitIMU IMU1;
     public HDVexMotor glyphConveyor;
     ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
-    public Servo leftBoxServo, rightBoxServo, glyphStopper, glyphGripper;
+    public Servo leftBoxServo, rightBoxServo, glyphStopper, glyphGripper, relicBeak, relicArm;
     public DigitalChannel liftTouch;
 
     public HDRobot(HardwareMap hardwareMap){
@@ -42,12 +44,15 @@ public class HDRobot {
         leftIntake = hardwareMap.dcMotor.get("leftIntake");
         rightIntake = hardwareMap.dcMotor.get("rightIntake");
         liftMotor = hardwareMap.dcMotor.get("liftMotor");
+        relicLiftMotor = hardwareMap.dcMotor.get("relicLiftMotor");
 
         glyphConveyor = new HDVexMotor(hardwareMap, "glyphConveyer", Servo.Direction.FORWARD);
         glyphGripper = hardwareMap.servo.get("glyphGripper");
         glyphStopper = hardwareMap.servo.get("glyphStopper");
         leftBoxServo = hardwareMap.servo.get("leftBoxTilt");
         rightBoxServo = hardwareMap.servo.get("rightBoxTilt");
+        relicBeak = hardwareMap.servo.get("relicBeak");
+        relicArm = hardwareMap.servo.get("relicArm");
 
         liftTouch = hardwareMap.get(DigitalChannel.class, "liftTouch");
         liftTouch.setMode(DigitalChannel.Mode.INPUT);
@@ -57,6 +62,7 @@ public class HDRobot {
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
         robotGlyph = new HDGlyph(leftIntake, rightIntake, liftMotor, glyphConveyor, leftBoxServo, rightBoxServo, glyphGripper, glyphStopper);
+        robotRelic = new HDRelic(relicLiftMotor,relicBeak, relicArm);
         robotJewel = new HDJewel(hardwareMap);
     }
 

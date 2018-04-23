@@ -44,8 +44,8 @@ public class HDAutonomous extends HDOpMode{
         delayMenu = new HDNumberMenu("Delay", 0, 30, 1, 0, "Seconds", autoTransitionToTeleop);
 
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
-        strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
-        strategyMenu.addChoice("Relic Double Glyph & Jewel", Strategy.RELICGLYPHDOUBLEJEWEL);
+        //strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
+        //strategyMenu.addChoice("Relic Double Glyph & Jewel", Strategy.RELICGLYPHDOUBLEJEWEL);
         strategyMenu.addChoice("Relic Glyph & Jewel", Strategy.RELICGLYPHJEWEL);
 
         allianceMenu = new HDTextMenu("Alliance", strategyMenu);
