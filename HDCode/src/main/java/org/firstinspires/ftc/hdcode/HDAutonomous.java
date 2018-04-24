@@ -2,7 +2,9 @@ package org.firstinspires.ftc.hdcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.hdcode.Autonomous.Blue_NonRelic_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Blue_Relic_Glyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Red_NonRelic_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Red_Relic_Glyph_Jewel;
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
@@ -44,7 +46,7 @@ public class HDAutonomous extends HDOpMode{
         delayMenu = new HDNumberMenu("Delay", 0, 30, 1, 0, "Seconds", autoTransitionToTeleop);
 
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
-        //strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
+        strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
         //strategyMenu.addChoice("Relic Double Glyph & Jewel", Strategy.RELICGLYPHDOUBLEJEWEL);
         strategyMenu.addChoice("Relic Glyph & Jewel", Strategy.RELICGLYPHJEWEL);
 
@@ -66,7 +68,10 @@ public class HDAutonomous extends HDOpMode{
 
         switch(strategy){
             case NONRELICGLYPHJEWEL:
-
+                if(alliance == Alliance.RED_ALLIANCE)
+                    HDAuto = new Red_NonRelic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
+                else
+                    HDAuto = new Blue_NonRelic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
                 break;
             case RELICGLYPHDOUBLEJEWEL:
 

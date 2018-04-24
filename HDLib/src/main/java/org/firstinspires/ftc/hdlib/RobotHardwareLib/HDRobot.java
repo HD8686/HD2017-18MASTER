@@ -28,7 +28,7 @@ public class HDRobot {
     public DcMotor frontLeft, frontRight, backLeft, backRight, leftIntake, rightIntake, liftMotor, relicLiftMotor;
     public AdafruitIMU IMU1;
     public HDVexMotor glyphConveyor;
-    ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
+    public ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
     public Servo leftBoxServo, rightBoxServo, glyphStopper, glyphGripper, relicBeak, relicArm;
     public DigitalChannel liftTouch;
 

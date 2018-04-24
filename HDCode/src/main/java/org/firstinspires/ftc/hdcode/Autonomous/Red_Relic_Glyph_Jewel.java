@@ -157,7 +157,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                 case hitJewel:
                     Log.w("turnLeft", String.valueOf(turnLeft));
                     if(turnLeft){
-                        SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
+                        SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.05);
                     }else{
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
                         robot.robotJewel.hitFront();
