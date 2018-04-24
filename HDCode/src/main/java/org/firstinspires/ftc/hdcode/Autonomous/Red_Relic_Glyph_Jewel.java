@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -14,7 +15,11 @@ import org.firstinspires.ftc.hdlib.Sensors.HDVuforiaVuMarks;
 import org.firstinspires.ftc.hdlib.StateMachines.HDStateMachine;
 import org.firstinspires.ftc.hdlib.StateMachines.HDWaitTypes;
 import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by FIRSTMentor on 1/13/2018.
@@ -31,6 +36,8 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
         hitJewel,
         driveToCryptobox,
         turnToCryptobox,
+        readUltrasonic,
+        correctStrafe,
         driveForward,
         openBox,
         lowerBox,
@@ -46,12 +53,13 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
     private RelicRecoveryVuMark vuMark;
 
     private HDDashboard dashboard;
-    private double delay, waitTime;
+    private double delay, waitTime, average;
     private boolean turnLeft;
     private Alliance alliance;
-
+    private ElapsedTime timer;
+    private final double ENCODERS_PER_CM = 45.115;
     private States nextState;
-
+    List<Double> list = new ArrayList<>();
     public Red_Relic_Glyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
 
         this.dashboard = dashboard;
@@ -218,10 +226,30 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     break;
                 case turnToCryptobox:
                     if(robot.robotDrive.isOnTarget()){
-                        waitBeforeNextState(0.3, States.driveForward);
+                        waitBeforeNextState(0.3, States.readUltrasonic);
                     }
                     robot.robotGlyph.raiseLiftGate();
                     robot.robotDrive.gyroTurn(90, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    break;
+                case readUltrasonic:
+                    SM.setNextState(States.driveForward, HDWaitTypes.Timer, 0.5);
+                    if (timer.milliseconds() > 90 ) {
+                        double reading = robot.leftUS.getDistance(DistanceUnit.CM);
+
+                        if (reading < 150) {
+                            list.add(reading);
+                        } else {
+
+                        }
+
+                        average = median(list);
+
+                        timer.reset();
+                    }
+                    robot.robotDrive.motorBreak();
+                    break;
+                case correctStrafe:
+
                     break;
                 case driveForward:
                     SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);
@@ -272,5 +300,13 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
         }
         return ready;
     }
+    public double median(List<Double> a) {
+        int middle = a.size() / 2;
 
+        if (a.size() % 2 == 1) {
+            return a.get(middle);
+        } else {
+            return (a.get(middle - 1) + a.get(middle)) / 2.0;
+        }
+    }
 }
