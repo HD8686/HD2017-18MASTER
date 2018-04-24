@@ -19,14 +19,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by baseball0206 on 4/24/2018.
  */
 
-public class Red_NonRelic_Glyph_Jewel implements HDAuto{
+public class Red_NonRelic_DoubleGlyph_Jewel implements HDAuto{
 
     private enum States{
         delay,
@@ -68,10 +67,10 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto{
     private Alliance alliance;
     private ElapsedTime timer;
     private final double ENCODERS_PER_CM = 45.115;
-    private Red_NonRelic_Glyph_Jewel.States nextState;
+    private Red_NonRelic_DoubleGlyph_Jewel.States nextState;
 
     List<Double> list = new ArrayList<>();
-    public Red_NonRelic_Glyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
+    public Red_NonRelic_DoubleGlyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
 
         this.dashboard = dashboard;
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -14,13 +15,17 @@ import org.firstinspires.ftc.hdlib.Sensors.HDVuforiaVuMarks;
 import org.firstinspires.ftc.hdlib.StateMachines.HDStateMachine;
 import org.firstinspires.ftc.hdlib.StateMachines.HDWaitTypes;
 import org.firstinspires.ftc.hdlib.Telemetry.HDDashboard;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by baseball0206 on 4/24/2018.
  */
 
-public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
+public class Blue_NonRelic_DoubleGlyph_Jewel implements HDAuto{
 
     private enum States{
         delay,
@@ -29,8 +34,19 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
         lowerJewelArm,
         readJewel,
         hitJewel,
-        driveToCryptobox,
+        strafeOffStone,
+        wait2,
+        turnToGlyphs,
+        readUltrasonic,
+        driveToGlyphs,
+        adjustGlyphs1,
+        driveBack,
         turnToCryptobox,
+        readUltrasonic2,
+        driveToCryptobox,
+        readUltrasonic3,
+        strafeToColumn,
+        wait3,
         driveForward,
         openBox,
         lowerBox,
@@ -46,18 +62,20 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
     private RelicRecoveryVuMark vuMark;
 
     private HDDashboard dashboard;
-    private double delay, waitTime;
+    private double delay, waitTime, average;
     private boolean turnLeft;
     private Alliance alliance;
+    private ElapsedTime timer;
+    private final double ENCODERS_PER_CM = 45.115;
+    private Blue_NonRelic_DoubleGlyph_Jewel.States nextState;
 
-    private Blue_NonRelic_Glyph_Jewel.States nextState;
-
-    public Blue_NonRelic_Glyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
+    List<Double> list = new ArrayList<>();
+    public Blue_NonRelic_DoubleGlyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
 
         this.dashboard = dashboard;
 
         robot = new HDRobot(hardwareMap);
-
+        timer = new ElapsedTime();
         SM = new HDStateMachine(robot.robotDrive);
 
         vuforiaVuMarks = new HDVuforiaVuMarks(hardwareMap);
@@ -95,7 +113,7 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
     public void runLoop(double elapsedTime){
         if(ready()){
             States states = (States) SM.getState();
-            switch(states){
+            switch (states) {
                 case delay:
                     SM.setNextState(States.scanVuMark, HDWaitTypes.Timer, delay);
                     break;
@@ -158,70 +176,133 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
                     Log.w("turnLeft", String.valueOf(turnLeft));
                     if(turnLeft){
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
+                        robot.robotJewel.hitBack();
                     }else{
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
                         robot.robotJewel.hitFront();
                     }
                     break;
-                case driveToCryptobox:
-                    if(turnLeft){
-                        if(robot.robotDrive.getEncoderAverage() < -50){
-                            robot.robotJewel.resetJewel();
+                case strafeOffStone:
+                    SM.setNextState(States.wait2, HDWaitTypes.Timer, 1.0);
+                    robot.robotDrive.mecanumDrive_Polar(0.5,90, 0, robot.IMU1.getZheading());
+                    break;
+                case wait2:
+                    SM.setNextState(States.turnToGlyphs, HDWaitTypes.Timer, .25);
+                    robot.robotDrive.motorBreak();
+                    break;
+                case turnToGlyphs:
+                    SM.setNextState(States.readUltrasonic, HDWaitTypes.driveHandlerTarget);
+                    robot.robotDrive.gyroTurn(45, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());;
+                    timer.reset();
+                    break;
+                case readUltrasonic:
+                    SM.setNextState(States.driveToGlyphs, HDWaitTypes.Timer, 0.5);
+                    if (timer.milliseconds() > 90 ) {
+                        double reading = robot.frontUS.getDistance(DistanceUnit.CM);
+
+                        if (reading < 150) {
+                            list.add(reading);
+                        } else {
+
                         }
-                    }else{
-                        robot.robotJewel.resetJewel();
+
+                        average = median(list);
+
+                        timer.reset();
                     }
-                    int targetEncoder, error;
-                    double percentCompleted;
-                    switch (vuMark) {
-                        case UNKNOWN:
-                            targetEncoder = -1495;
-                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
-                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
-                            if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
-                            break;
-                        case LEFT:
-                            targetEncoder = -1840;
-                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
-                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
-                            if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
-                            break;
-                        case CENTER:
-                            targetEncoder = -1500;
-                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
-                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
-                            if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
-                            break;
-                        case RIGHT:
-                            targetEncoder = -1135;
-                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
-                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
-                            if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
-                            break;
-                        default:
-                            targetEncoder = -1500;
-                            error = targetEncoder - robot.robotDrive.getEncoderAverage();
-                            percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
-                            if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
-                            break;
-                    }
-                    Log.w("error", String.valueOf(error));
-                    if(error > -10){
-                        robot.robotDrive.motorBreak();
-                        waitBeforeNextState(0.3, States.turnToCryptobox);
-                    }
+                    robot.robotDrive.motorBreak();
+                    break;
+                case driveToGlyphs:
+                    SM.setNextState(States.adjustGlyphs1,HDWaitTypes.EncoderChangeBoth, (average<150 && average>20)?(average*ENCODERS_PER_CM):61*ENCODERS_PER_CM);
+                    robot.robotDrive.VLF(0.5, 45.0, .01, 2, robot.IMU1.getZheading());
+                    robot.robotGlyph.openBox();
+                    robot.robotGlyph.setIntakePower(1.0);
+                    robot.robotGlyph.startConveyor();
+                    break;
+                case adjustGlyphs1:
+                    SM.setNextState(States.driveBack, HDWaitTypes.Timer, .25);
+                    robot.robotGlyph.setIntakePower(-1.0);
+                    robot.robotGlyph.backwardsConveyor();
+                    robot.robotDrive.motorBreak();
+                    break;
+                case driveBack:
+                    SM.setNextState(States.turnToCryptobox, HDWaitTypes.EncoderChangeBoth, (average<150 && average>20)?(average*ENCODERS_PER_CM):61*ENCODERS_PER_CM);
+                    robot.robotDrive.VLF(-0.5, 45.0, .01, 2, robot.IMU1.getZheading());
+                    robot.robotGlyph.setIntakePower(1.0);
+                    robot.robotGlyph.startConveyor();
                     break;
                 case turnToCryptobox:
                     if(robot.robotDrive.isOnTarget()){
                         waitBeforeNextState(0.3, States.driveForward);
                     }
+                    robot.robotGlyph.setIntakePower(0.0);
+                    robot.robotGlyph.stopConveyor();
+                    robot.robotDrive.gyroTurn(0, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    timer.reset();
+                    list.clear();
+                    break;
+                case readUltrasonic2:
+                    SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.5);
+                    if (timer.milliseconds() > 90 ) {
+                        double reading = robot.backUS.getDistance(DistanceUnit.CM);
+
+                        if (reading < 200) {
+                            list.add(reading);
+                        } else {
+
+                        }
+
+                        average = median(list);
+
+                        timer.reset();
+                    }
+                    robot.robotDrive.motorBreak();
+                    break;
+                case driveToCryptobox:
+                    SM.setNextState(States.turnToCryptobox, HDWaitTypes.EncoderChangeBoth, (average<200 && average>20)?((average-25)*ENCODERS_PER_CM):92*ENCODERS_PER_CM);
+                    robot.robotDrive.VLF(-0.5, 45.0, .01, 2, robot.IMU1.getZheading());
+                    list.clear();
+                    timer.reset();
+                    break;
+                case readUltrasonic3:
+                    SM.setNextState(States.strafeToColumn, HDWaitTypes.Timer, 0.5);
+                    if (timer.milliseconds() > 90 ) {
+                        double reading = robot.leftUS.getDistance(DistanceUnit.CM);
+
+                        if (reading < 150) {
+                            list.add(reading);
+                        } else {
+
+                        }
+
+                        average = median(list);
+
+                        timer.reset();
+                    }
+                    robot.robotDrive.motorBreak();
+                    break;
+                case strafeToColumn:
+                    robot.robotGlyph.gripBox();
+                    robot.robotDrive.mecanumDrive_Polar(.5, -90, 0.0, robot.IMU1.getZheading());
+                    switch (vuMark) {
+                        case UNKNOWN:
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividual, (average<200 && average>20)?((average-92)*ENCODERS_PER_CM):31*ENCODERS_PER_CM);
+                            break;
+                        case LEFT:
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividual, (average<200 && average>20)?((average-107)*ENCODERS_PER_CM):16*ENCODERS_PER_CM);
+                            break;
+                        case CENTER:
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividual, (average<200 && average>20)?((average-92)*ENCODERS_PER_CM):31*ENCODERS_PER_CM);
+                            break;
+                        case RIGHT:
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividual, (average<200 && average>20)?((average-77)*ENCODERS_PER_CM):61*ENCODERS_PER_CM);
+                            break;
+                    }
+                    break;
+                case wait3:
+                    SM.setNextState(States.driveForward, HDWaitTypes.Timer, .5);
                     robot.robotGlyph.raiseLiftGate();
-                    robot.robotDrive.gyroTurn(90, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
+                    robot.robotDrive.motorBreak();
                     break;
                 case driveForward:
                     SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);
@@ -255,6 +336,8 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
                     robot.robotDrive.motorBreak();
                     break;
             }
+
+
         }
     }
 
@@ -271,5 +354,14 @@ public class Blue_NonRelic_Glyph_Jewel implements HDAuto{
             ready = false;
         }
         return ready;
+    }
+    public double median(List<Double> a) {
+        int middle = a.size() / 2;
+
+        if (a.size() % 2 == 1) {
+            return a.get(middle);
+        } else {
+            return (a.get(middle - 1) + a.get(middle)) / 2.0;
+        }
     }
 }
