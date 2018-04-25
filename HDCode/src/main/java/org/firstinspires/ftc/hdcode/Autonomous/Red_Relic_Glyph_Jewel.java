@@ -204,7 +204,7 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                             robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case RIGHT:
-                            targetEncoder = -1135;
+                            targetEncoder = -1115;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
@@ -226,30 +226,10 @@ public class Red_Relic_Glyph_Jewel implements HDAuto {
                     break;
                 case turnToCryptobox:
                     if(robot.robotDrive.isOnTarget()){
-                        waitBeforeNextState(0.3, States.readUltrasonic);
+                        waitBeforeNextState(0.3, States.driveForward);
                     }
                     robot.robotGlyph.raiseLiftGate();
                     robot.robotDrive.gyroTurn(90, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
-                    break;
-                case readUltrasonic:
-                    SM.setNextState(States.driveForward, HDWaitTypes.Timer, 0.5);
-                    if (timer.milliseconds() > 90 ) {
-                        double reading = robot.leftUS.getDistance(DistanceUnit.CM);
-
-                        if (reading < 150) {
-                            list.add(reading);
-                        } else {
-
-                        }
-
-                        average = median(list);
-
-                        timer.reset();
-                    }
-                    robot.robotDrive.motorBreak();
-                    break;
-                case correctStrafe:
-
                     break;
                 case driveForward:
                     SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);

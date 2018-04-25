@@ -128,6 +128,14 @@ public class HDStateMachine {
                     changeEncoder2 = ((double) Argument3);
                     changeEncoder3 = ((double) Argument4);
                     break;
+                case EncoderChangeIndividualAvg:
+                    waitingActive = true;
+                    prevEncoder0 = rDrive.frontLeft.getCurrentPosition();
+                    prevEncoder1 = rDrive.frontRight.getCurrentPosition();
+                    prevEncoder2 = rDrive.backLeft.getCurrentPosition();
+                    prevEncoder3 = rDrive.backRight.getCurrentPosition();
+                    changeEncoder0 = ((double) Argument);
+                    break;
                 case driveHandlerTarget:
                     waitingActive = true;
                     break;
@@ -254,6 +262,14 @@ public class HDStateMachine {
                     break;
                 case EncoderChangeIndividual:
                     if(((Math.abs(rDrive.frontLeft.getCurrentPosition() - prevEncoder0)) > changeEncoder0) && ((Math.abs(rDrive.frontRight.getCurrentPosition() - prevEncoder1)) > changeEncoder1) && ((Math.abs(rDrive.backLeft.getCurrentPosition() - prevEncoder2)) > changeEncoder2) && ((Math.abs(rDrive.backRight.getCurrentPosition() - prevEncoder3)) > changeEncoder3)){
+                        this.resetValues();
+                        State = nextState;
+                    }else{
+                        HDDashboard.getInstance().addLibrarySpecificTelemetry(1,"LF Enc. Chg: %s, LB Enc. Chg: %s, RF Enc. Cng: %s, RB Enc. Chg: %s,", (String.valueOf(df.format((Math.abs(rDrive.frontLeft.getCurrentPosition() - prevEncoder0))))), String.valueOf(df.format((Math.abs(rDrive.backLeft.getCurrentPosition() - prevEncoder2)))), String.valueOf(df.format((Math.abs(rDrive.frontRight.getCurrentPosition() - prevEncoder1)))), String.valueOf(df.format((Math.abs(rDrive.backRight.getCurrentPosition() - prevEncoder3)))));
+                    }
+                    break;
+                case EncoderChangeIndividualAvg:
+                    if((Math.abs(rDrive.frontLeft.getCurrentPosition() - prevEncoder0) + Math.abs(rDrive.frontRight.getCurrentPosition() - prevEncoder1) + Math.abs(rDrive.backLeft.getCurrentPosition() - prevEncoder2) + Math.abs(rDrive.backRight.getCurrentPosition() - prevEncoder3))/4 > changeEncoder0){
                         this.resetValues();
                         State = nextState;
                     }else{
