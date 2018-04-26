@@ -5,9 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.hdcode.Autonomous.Blue_NonRelic_DoubleGlyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Blue_NonRelic_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Blue_Relic_Glyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Blue_Relic_Multi_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Red_NonRelic_DoubleGlyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Red_NonRelic_Glyph_Jewel;
 import org.firstinspires.ftc.hdcode.Autonomous.Red_Relic_Glyph_Jewel;
+import org.firstinspires.ftc.hdcode.Autonomous.Red_Relic_Multi_Glyph_Jewel;
 import org.firstinspires.ftc.hdlib.General.Alliance;
 import org.firstinspires.ftc.hdlib.OpModeManagement.AutoTransitioner;
 import org.firstinspires.ftc.hdlib.OpModeManagement.HDAuto;
@@ -27,6 +29,7 @@ public class HDAutonomous extends HDOpMode{
         NONRELICGLYPHJEWEL,
         RELICGLYPHDOUBLEJEWEL,
         RELICGLYPHJEWEL,
+        RELICMULTIGLYPHJEWEL,
     }
 
     private HDAuto HDAuto;
@@ -49,7 +52,7 @@ public class HDAutonomous extends HDOpMode{
 
         strategyMenu = new HDTextMenu("Strategy", delayMenu);
         strategyMenu.addChoice("Non Relic Glyph & Jewel", Strategy.NONRELICGLYPHJEWEL);
-        //strategyMenu.addChoice("Relic Double Glyph & Jewel", Strategy.RELICGLYPHDOUBLEJEWEL);
+        strategyMenu.addChoice("Relic Multi Glyph & Jewel", Strategy.RELICMULTIGLYPHJEWEL);
         strategyMenu.addChoice("Relic Glyph & Jewel", Strategy.RELICGLYPHJEWEL);
 
         allianceMenu = new HDTextMenu("Alliance", strategyMenu);
@@ -75,8 +78,11 @@ public class HDAutonomous extends HDOpMode{
                 else
                     HDAuto = new Blue_NonRelic_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
                 break;
-            case RELICGLYPHDOUBLEJEWEL:
-
+            case RELICMULTIGLYPHJEWEL:
+                if(alliance == Alliance.RED_ALLIANCE)
+                    HDAuto = new Red_Relic_Multi_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
+                else
+                    HDAuto = new Blue_Relic_Multi_Glyph_Jewel(delay, alliance, hardwareMap, dashboard);
                 break;
             case RELICGLYPHJEWEL:
                 if(alliance == Alliance.RED_ALLIANCE)

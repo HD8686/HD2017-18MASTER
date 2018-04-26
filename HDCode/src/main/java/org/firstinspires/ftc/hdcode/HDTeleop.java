@@ -26,13 +26,13 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     private double lastSpeed = 0.0;
     private ElapsedTime gateTimer;
     private ElapsedTime gripTimer;
-    private double test = 0.0;
+    private boolean relicArmDown = false;
 
     private TeleopEnum.grabberPosition curGrabberPosition = TeleopEnum.grabberPosition.OPEN;
     private TeleopEnum.boxPosition curBoxPosition = TeleopEnum.boxPosition.STOWED;
     private TeleopEnum.glyphGate curGlyphGate = TeleopEnum.glyphGate.LOWERED;
 
-    private boolean relicBeakClosed = false;
+    private boolean relicBeakClosed = true;
     private double speed = 0.75;
     private double glyphStopperWait = 500;
     private TeleopEnum.driveMode curDriveMode = TeleopEnum.driveMode.HALO_DRIVE;
@@ -77,13 +77,15 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     }
 
     private void relic(){
-
+        if(relicArmDown){
+            robot.robotRelic.setRelicArmDown(gamepad2.left_stick_y/30);
+        }
         if(relicBeakClosed){
             robot.robotRelic.setRelicBeakClosed();
         }else{
             robot.robotRelic.setRelicBeakOpen();
         }
-        robot.robotRelic.setLiftMotorPower(gamepad2.right_stick_y);
+        robot.robotRelic.setLiftMotorPower(-gamepad2.right_stick_y);
     }
 
     private void glyph(){
@@ -313,8 +315,17 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                 case DPAD_RIGHT:
                     break;
                 case DPAD_UP:
+                    if(pressed){
+                        relicArmDown = !relicArmDown;
+                        if(relicArmDown){
+                            robot.robotRelic.setRelicArmDown(0.0);
+                        }else{
+                            robot.robotRelic.setRelicArmUp();
+                        }
+                    }
                     break;
                 case DPAD_DOWN:
+                    break;
                 case LEFT_BUMPER:
                     if(pressed){
                         switch (curBoxPosition) {
@@ -345,6 +356,9 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
                     }
                     break;
                 case RIGHT_TRIGGER:
+                    if(pressed && relicArmDown){
+                        relicBeakClosed = !relicBeakClosed;
+                    }
                     break;
                 case LEFT_TRIGGER:
                     if(pressed){

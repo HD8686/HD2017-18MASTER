@@ -29,7 +29,7 @@ public class HDJewel {
 
     private double hitFront = 0.56;
     private double hitBack = .32;
-    private double perpendicularStowed = 0.42; //.51
+    private double perpendicularStowed = 0.45; //.51
 
     public HDJewel(HardwareMap hardwareMap){
 
@@ -65,6 +65,7 @@ public class HDJewel {
     }
 
     public void lowerArm(){
+        jewelHitServo.setPosition(.42);
         jewelTiltServo.setPosition(jewelTiltHit);
     }
 

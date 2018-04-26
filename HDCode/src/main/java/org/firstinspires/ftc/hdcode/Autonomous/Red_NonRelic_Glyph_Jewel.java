@@ -59,6 +59,7 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
     private final double ENCODERS_PER_CM = 45.115;
     private States nextState;
     List<Double> list = new ArrayList<>();
+    double ultrasonicReading;
     public Red_NonRelic_Glyph_Jewel(double delay, Alliance alliance, HardwareMap hardwareMap, HDDashboard dashboard){
 
         this.dashboard = dashboard;
@@ -164,8 +165,7 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
                 case hitJewel:
                     Log.w("turnLeft", String.valueOf(turnLeft));
                     if(turnLeft){
-                        SM.setNextState(States.driveOffStone, HDWaitTypes.Timer, 0.35);
-                        robot.robotJewel.hitBack();
+                        SM.setNextState(States.driveOffStone, HDWaitTypes.Timer, 0.05);
                     }else{
                         SM.setNextState(States.driveOffStone, HDWaitTypes.Timer, 0.35);
                         robot.robotJewel.hitFront();
@@ -173,30 +173,43 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
                     break;
                 case driveOffStone:
                     SM.setNextState(States.wait2, HDWaitTypes.EncoderChangeBoth, 850.0);
-                    robot.robotJewel.resetJewel();
+                    if(turnLeft){
+                        if(robot.robotDrive.getEncoderAverage() < -50){
+                            robot.robotJewel.resetJewel();
+                        }
+                    }else{
+                        robot.robotJewel.resetJewel();
+                    }
                     robot.robotDrive.VLF(-0.25, 0.0, 0.01, 2.0, robot.IMU1.getZheading());
                     break;
                 case wait2:
-                    SM.setNextState(States.strafeToCryptobox, HDWaitTypes.Timer, .25);
+                    SM.setNextState(States.strafeToCryptobox, HDWaitTypes.Timer, 1.5);
+                    int ultrasonic = robot.leftUS.rawUltrasonic();
+                    if(ultrasonic < 200){
+                        list.add(((double) robot.leftUS.rawUltrasonic()));
+                    }
                     robot.robotDrive.motorBreak();
                     break;
                 case strafeToCryptobox:
                     robot.robotGlyph.raiseLiftGate();
+                    ultrasonicReading = median(list);
+                    Log.w("ultrasonicReading", String.valueOf(ultrasonicReading));
+                    Log.w("enc Calc", String.valueOf(Math.round(0.01963*ultrasonicReading*ultrasonicReading - 24*(ultrasonicReading) + 1412.1094)));
                     switch (vuMark) {
                         case UNKNOWN:
-                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividualAvg, 800.0);
-                            robot.robotDrive.mecanumDrive_Polar(.5, 90, 0, robot.IMU1.getZheading());
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividualAvg, 0.01963*ultrasonicReading*ultrasonicReading - 24*(ultrasonicReading) + 1412.1094);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                             break;
                         case LEFT:
-                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividualAvg, 635.0);
-                            robot.robotDrive.mecanumDrive_Polar(.5, 90, 0, robot.IMU1.getZheading());
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeDiag, 0.02956*ultrasonicReading*ultrasonicReading - 24.23*(ultrasonicReading) + 1724.508);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                             break;
                         case CENTER:
-                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividualAvg, 365.0);
-                            robot.robotDrive.mecanumDrive_Polar(.5, 90, 0, robot.IMU1.getZheading());
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeDiag, 0.01963*ultrasonicReading*ultrasonicReading - 24*(ultrasonicReading) + 1412.1094);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                             break;
                         case RIGHT:
-                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeIndividualAvg, 35.0);
+                            SM.setNextState(States.wait3, HDWaitTypes.EncoderChangeDiag, -0.01098*ultrasonicReading*ultrasonicReading - 20*(ultrasonicReading) + 935.64);
                             robot.robotDrive.mecanumDrive_Polar(.25, 90, 0, robot.IMU1.getZheading());
                             break;
                     }

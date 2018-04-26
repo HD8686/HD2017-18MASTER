@@ -2,6 +2,7 @@ package org.firstinspires.ftc.hdlib.RobotHardwareLib.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by baseball0206 on 4/22/2018.
@@ -23,6 +24,8 @@ public class HDRelic {
 
         this.relicArm = relicArm;
 
+        setRelicBeakClosed();
+
     }
 
     public void setLiftMotorPower(double power){
@@ -30,19 +33,19 @@ public class HDRelic {
     }
 
     public void setRelicArmUp(){
-
+        relicArm.setPosition(0.8);
     }
 
-    public void setRelicArmDown(double position){
-        //relicArm.setPosition(position);
+    public void setRelicArmDown(double adjustment){
+        relicArm.setPosition(Range.clip(0.025 + adjustment, 0, 1));
     }
 
     public void setRelicBeakClosed(){
-        //relicBeak.setPosition(.5);
+        relicBeak.setPosition(1.0);
     }
 
     public void setRelicBeakOpen(){
-       // relicBeak.setPosition(0.0);
+       relicBeak.setPosition(0.0);
     }
 
 }

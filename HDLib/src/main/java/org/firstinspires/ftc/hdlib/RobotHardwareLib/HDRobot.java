@@ -57,8 +57,10 @@ public class HDRobot {
         liftTouch = hardwareMap.get(DigitalChannel.class, "liftTouch");
         liftTouch.setMode(DigitalChannel.Mode.INPUT);
 
-        frontUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US2");
-        backUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US1");
+        frontUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US1");
+        backUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US2");
+        rightUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US3");
+        leftUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US4");
 
         robotDrive = new HDDriveHandler(frontLeft, backLeft, frontRight, backRight, true, -180, 180);
         robotGlyph = new HDGlyph(leftIntake, rightIntake, liftMotor, glyphConveyor, leftBoxServo, rightBoxServo, glyphGripper, glyphStopper);

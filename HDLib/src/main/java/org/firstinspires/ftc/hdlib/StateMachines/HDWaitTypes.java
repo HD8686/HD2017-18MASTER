@@ -16,5 +16,6 @@ public enum HDWaitTypes {
     EncoderChangeBoth,
     EncoderChangeIndividual,
     EncoderChangeIndividualAvg,
+    EncoderChangeDiag,
     driveHandlerTarget,
 }
