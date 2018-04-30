@@ -31,6 +31,7 @@ public class HDRobot {
     public ModernRoboticsI2cRangeSensor backUS, frontUS, rightUS, leftUS;
     public Servo leftBoxServo, rightBoxServo, glyphStopper, glyphGripper, relicBeak, relicArm;
     public DigitalChannel liftTouch;
+    public DigitalChannel liftTouchBottom;
 
     public HDRobot(HardwareMap hardwareMap){
         HDOpMode.getInstance().dashboard.addDiagnosticSpecificTelemetry(0, "Gyro currently calibrating...");
@@ -56,6 +57,9 @@ public class HDRobot {
 
         liftTouch = hardwareMap.get(DigitalChannel.class, "liftTouch");
         liftTouch.setMode(DigitalChannel.Mode.INPUT);
+
+        liftTouchBottom = hardwareMap.get(DigitalChannel.class, "liftTouchBottom");
+        liftTouchBottom.setMode(DigitalChannel.Mode.INPUT);
 
         frontUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US1");
         backUS = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "US2");

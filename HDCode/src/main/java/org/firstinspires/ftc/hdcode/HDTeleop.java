@@ -67,6 +67,8 @@ public class HDTeleop extends HDOpMode implements HDGamepad.HDButtonMonitor{
     @Override
     public void continuousRun(double elapsedTime) {
         if(robot.IMU1.isCalibrated()) {
+            dashboard.addDiagnosticSpecificTelemetry(1, "Touch: %s", String.valueOf(robot.liftTouchBottom.getState()));
+            dashboard.addDiagnosticSpecificTelemetry(2, "Enc: %s", String.valueOf(robot.liftMotor.getCurrentPosition()));
             telemetry();
             driveTrain();
             glyph();

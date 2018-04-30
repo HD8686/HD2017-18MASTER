@@ -224,7 +224,7 @@ public class Blue_Relic_Glyph_Jewel implements HDAuto {
                     robot.robotDrive.gyroTurn(90, 0.0085, 0.000004, 0.0006, 0.00, 2.0, 1.0, -1.0, robot.IMU1.getZheading());
                     break;
                 case driveForward:
-                    SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);
+                    SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 75.0);
                     robot.robotGlyph.extendBox();
                     robot.robotDrive.VLF(-.25, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;

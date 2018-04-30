@@ -185,12 +185,12 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.05);
                     }else{
                         SM.setNextState(States.driveToCryptobox, HDWaitTypes.Timer, 0.35);
-                        robot.robotJewel.hitFront();
+                        robot.robotJewel.hitBack();
                     }
                     break;
                 case driveToCryptobox:
                     if(turnLeft){
-                        if(robot.robotDrive.getEncoderAverage() < -50){
+                        if(robot.robotDrive.getEncoderAverage() > 50){
                             robot.robotJewel.resetJewel();
                         }
                     }else{
@@ -200,43 +200,43 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                     double percentCompleted;
                     switch (vuMark) {
                         case UNKNOWN:
-                            targetEncoder = -1495;
+                            targetEncoder = 1495;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case LEFT:
-                            targetEncoder = -1840;
+                            targetEncoder = 1115;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case CENTER:
-                            targetEncoder = -1500;
+                            targetEncoder = 1500;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         case RIGHT:
-                            targetEncoder = -1115;
+                            targetEncoder = 1840;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                         default:
-                            targetEncoder = -1500;
+                            targetEncoder = 1500;
                             error = targetEncoder - robot.robotDrive.getEncoderAverage();
                             percentCompleted = Math.abs(((double) error)/((double) Math.abs(targetEncoder)));
                             if(percentCompleted > .75){percentCompleted = 0.65;}
-                            robot.robotDrive.VLF(-((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
+                            robot.robotDrive.VLF(((percentCompleted > 0.1) ? percentCompleted : 0.1), 0, 0.01, 2,robot.IMU1.getZheading());
                             break;
                     }
                     Log.w("error", String.valueOf(error));
-                    if(error > -10){
+                    if(error < 10){
                         robot.robotDrive.motorBreak();
                         waitBeforeNextState(0.3, States.turnToCryptobox);
                     }
@@ -271,12 +271,14 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                     robot.robotDrive.tankDrive(-.25, -.25);
                     break;
                 case backAway:
-                    SM.setNextState(States.done, HDWaitTypes.EncoderChangeBoth, 250.0);
+                    SM.setNextState(States.driveToGlyphs, HDWaitTypes.EncoderChangeBoth, 250.0);
                     robot.robotDrive.VLF(.25, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case driveToGlyphs:
-                    SM.setNextState(States.waitToCollect, HDWaitTypes.EncoderChangeBoth, 2000.0);
+                    SM.setNextState(States.waitToCollect, HDWaitTypes.EncoderChangeBoth, 1350.0);
                     robot.robotDrive.VLF(.50, 90, 0.01, 2, robot.IMU1.getZheading());
+                    robot.robotGlyph.setIntakePower(1.0);
+                    robot.robotGlyph.startConveyor();
                     break;
                 case waitToCollect:
                     SM.setNextState(States.strafeToColumn, HDWaitTypes.Timer, 1.0);
@@ -287,26 +289,26 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                 case strafeToColumn:
                     switch (vuMark) {
                         case UNKNOWN:
-                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
-                            break;
-                        case LEFT:
-                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
-                            break;
-                        case CENTER:
-                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
+                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
                             robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
                             break;
                         case RIGHT:
-                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
+                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
+                            break;
+                        case CENTER:
+                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
+                            break;
+                        case LEFT:
+                            SM.setNextState(States.driveToCryptobox2, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
                             robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
                             break;
                     }
                     break;
                 case driveToCryptobox2:
-                    SM.setNextState(States.driveForward2, HDWaitTypes.EncoderChangeBoth, 2000.0);
-                    robot.robotDrive.VLF(.50, -90, 0.01, 2, robot.IMU1.getZheading());
+                    SM.setNextState(States.driveForward2, HDWaitTypes.EncoderChangeBoth, 1350.0);
+                    robot.robotDrive.VLF(-.50, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case driveForward2:
                     SM.setNextState(States.openBox2, HDWaitTypes.EncoderChangeBoth, 150.0);
@@ -335,7 +337,7 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                     robot.robotDrive.VLF(.25, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case driveToGlyphs2:
-                    SM.setNextState(States.waitToCollect2, HDWaitTypes.EncoderChangeBoth, 2000.0);
+                    SM.setNextState(States.waitToCollect2, HDWaitTypes.EncoderChangeBoth, 1350.0);
                     robot.robotDrive.VLF(.50, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case waitToCollect2:
@@ -344,30 +346,29 @@ public class Blue_Relic_Multi_Glyph_Jewel implements HDAuto {
                     robot.robotGlyph.setIntakePower(1.0);
                     robot.robotGlyph.startConveyor();
                     break;
-
                 case strafeToColumn2:
                     switch (vuMark) {
                         case UNKNOWN:
-                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 540.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
-                            break;
-                        case LEFT:
-                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
-                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
-                            break;
-                        case CENTER:
-                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 540.0);
+                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 350.0);
                             robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
                             break;
                         case RIGHT:
-                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 270.0);
+                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
                             robot.robotDrive.mecanumDrive_Polar(.25, 0, 0, robot.IMU1.getZheading());
+                            break;
+                        case CENTER:
+                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 350.0);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
+                            break;
+                        case LEFT:
+                            SM.setNextState(States.driveToCryptobox3, HDWaitTypes.EncoderChangeIndividualAvg, 175.0);
+                            robot.robotDrive.mecanumDrive_Polar(.25, 180, 0, robot.IMU1.getZheading());
                             break;
                     }
                     break;
                 case driveToCryptobox3:
-                    SM.setNextState(States.driveForward3, HDWaitTypes.EncoderChangeBoth, 2000.0);
-                    robot.robotDrive.VLF(.50, -90, 0.01, 2, robot.IMU1.getZheading());
+                    SM.setNextState(States.driveForward3, HDWaitTypes.EncoderChangeBoth, 1350.0);
+                    robot.robotDrive.VLF(-.50, 90, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case driveForward3:
                     SM.setNextState(States.openBox3, HDWaitTypes.EncoderChangeBoth, 150.0);

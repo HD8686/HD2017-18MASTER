@@ -193,6 +193,9 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
                 case strafeToCryptobox:
                     robot.robotGlyph.raiseLiftGate();
                     ultrasonicReading = median(list);
+                    if(ultrasonicReading < 20 || ultrasonicReading > 60){
+                        ultrasonicReading = 40;
+                    }
                     Log.w("ultrasonicReading", String.valueOf(ultrasonicReading));
                     Log.w("enc Calc", String.valueOf(Math.round(0.01963*ultrasonicReading*ultrasonicReading - 24*(ultrasonicReading) + 1412.1094)));
                     switch (vuMark) {
@@ -219,7 +222,7 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
                     robot.robotDrive.motorBreak();
                     break;
                 case driveForward:
-                    SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 150.0);
+                    SM.setNextState(States.openBox, HDWaitTypes.EncoderChangeBoth, 75.0);
                     robot.robotGlyph.extendBox();
                     robot.robotDrive.VLF(-.25, 0, 0.01, 2, robot.IMU1.getZheading());
                     break;
@@ -237,7 +240,7 @@ public class Red_NonRelic_Glyph_Jewel implements HDAuto {
                     robot.robotDrive.VLF(.25, 0, 0.01, 2, robot.IMU1.getZheading());
                     break;
                 case pushInGlyph:
-                    SM.setNextState(States.backAway, HDWaitTypes.EncoderChangeBoth, 255.0);
+                    SM.setNextState(States.backAway, HDWaitTypes.EncoderChangeBoth, 275.0);
                     robot.robotDrive.tankDrive(-.25, -.25);
                     break;
                 case backAway:

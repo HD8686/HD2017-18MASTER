@@ -24,12 +24,14 @@ public class HDJewel {
     private ColorSensor jewelColorSensor;
     private DistanceSensor jewelDistance;
 
+    private boolean jewelArmEnabled = true;
+
     private double jewelTiltStowed = 0.39;
     private double jewelTiltHit = 0.785;
 
-    private double hitFront = 0.56;
+    private double hitFront = 0.56; //flipped these due to color sensor on the wrong side
     private double hitBack = .32;
-    private double perpendicularStowed = 0.45; //.51
+    private double perpendicularStowed = 0.45; //.42
 
     public HDJewel(HardwareMap hardwareMap){
 
@@ -52,21 +54,33 @@ public class HDJewel {
         stowPerpendicular();
     }
 
+    public void setJewelArmDisabled(){
+        jewelArmEnabled = false;
+    }
+
+    public void setJewelArmEnabled(){
+        jewelArmEnabled=true;
+    }
+
     public void hitBack(){
-        jewelHitServo.setPosition(hitFront);
+        if(jewelArmEnabled)
+            jewelHitServo.setPosition(hitFront);
     }
 
     public void hitFront(){
-        jewelHitServo.setPosition(hitBack);
+        if(jewelArmEnabled)
+            jewelHitServo.setPosition(hitBack);
     }
 
     public void stowPerpendicular(){
-        jewelHitServo.setPosition(perpendicularStowed);
+            jewelHitServo.setPosition(perpendicularStowed);
     }
 
     public void lowerArm(){
-        jewelHitServo.setPosition(.42);
-        jewelTiltServo.setPosition(jewelTiltHit);
+        if(jewelArmEnabled) {
+            jewelHitServo.setPosition(.42);
+            jewelTiltServo.setPosition(jewelTiltHit);
+        }
     }
 
     public void raiseArm(){
@@ -84,9 +98,9 @@ public class HDJewel {
         if(isRed && isBlue){
             return jewelColor.INCONCLUSIVE;
         } else if(isRed && isBall){
-            return jewelColor.RED;
-        } else if(isBlue & isBall){
             return jewelColor.BLUE;
+        } else if(isBlue & isBall){
+            return jewelColor.RED;
         } else{
             return jewelColor.INCONCLUSIVE;
         }
